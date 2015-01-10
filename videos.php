@@ -10,7 +10,7 @@ include_once "dashboard_functions.php";
 </head>
 <body>
 <div class='container'>
-<h1>Videos <small>list of videos - <a href='index.php'>dashboard</a></small></h1>
+<h1><?php echo count(videos())?> videos <small>list of videos - <a href='index.php'>dashboard</a></small></h1>
 <hr />
 
 <div id='chart'></div>

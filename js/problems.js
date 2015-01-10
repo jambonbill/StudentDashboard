@@ -13,13 +13,13 @@ var vis = d3.select("#chart").append("svg")
 function getData()
 {
 	console.log('getData()');
-	var p = { 'do':'getVideos' };
+	var p = { 'do':'getProblems' };
 
 	$("#more").load("ctrl.php",p,function(x){
 		try{
 			data=eval(x);
 			updateBars();
-			$("#more").html(data.length + " videos");
+			$("#more").html(data.length + " records");
 		}
 		catch(e){
 			console.log( "getData() error" , e.message );
@@ -70,9 +70,9 @@ function updateBars()
 	b.transition(500)
   		//.attr("fill", function(d,i){return color(i);})
 	  	.attr("x", function(d,i){ return i*barw; })
-  		.attr("y", function(d,i){ return 100-d.watched;})
+  		.attr("y", function(d,i){ return 0;})
   		.attr("width" , width/data.length )
-  		.attr("height" , function(d){ return d.watched;} );
+  		.attr("height" , function(d){ return 100;} );
   
 	b.exit().remove(); 
 
@@ -109,10 +109,10 @@ function mouseover(){
 
 function mousemove(d,i){
     var html = "";
-    html+="<b>video " + d.id + "</b><br />\n";
+    html+="<b>problem " + d.id + "</b><br />\n";
     html+="<hr style='margin-top:4px;margin-bottom:4px' />";
-    html+="<b>watched : " + d.watched + "</b><br />\n";
-    html+="<b>duration : " + d.duration_seconds + " seconds</b><br />\n";
+    //html+="<b>watched : " + d.watched + "</b><br />\n";
+    //html+="<b>duration : " + d.duration_seconds + " seconds</b><br />\n";
     ttdiv.html( html )
 	.style("left", ttleft )
 	.style("top", ( d3.event.pageY + 10 ) + "px");

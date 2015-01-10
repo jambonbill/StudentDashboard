@@ -3,15 +3,23 @@
 include "connect.php";
 include "header.php";
 include_once "dashboard_functions.php";
+?>
+<html>
 
-//echo "<pre>";
+<head>
+<title>Problems</title>
+</head>
 
-echo "<title>Problems</title>";
+<body>
+<div class='container'>
+<h1>Problems <small><a href='index.php'>dashboard</a></h1>
+<hr />
 
-echo "<div class=container>";
-echo "<h1>Problems <small><a href=index.php>dashboard</a></h1>";
-echo "<hr />";
+<div id='chart'></div>
 
+<div id='more'></div>
+
+<?php
 // list of problems
 $sql="SELECT * FROM problems WHERE 1;";
 $q=$db->query($sql) or die("error : $sql\n");
@@ -57,6 +65,4 @@ foreach ($problems as $week=>$data) {
 }
 
 ?>
-<script>
-//$('table').tablesorter();
-</script>
+<script src='js/problems.js'></script>

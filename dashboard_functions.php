@@ -100,7 +100,7 @@ function video($video_id='')
  */
 function videos(){
 	global $db;
-	$sql="SELECT * FROM videos WHERE 1;";
+	$sql="SELECT * FROM videos WHERE 1 ORDER BY section, id;";
 	$q=$db->query($sql) or die("Error $sql");
 	$dat=[];
 	while($r=$q->fetch(PDO::FETCH_ASSOC)){
@@ -140,7 +140,7 @@ function video_views(){
  */
 function problems(){
 	global $db;
-	$sql="SELECT * FROM problems WHERE 1;";
+	$sql="SELECT * FROM problems WHERE 1 ORDER BY section, id;";
 	$q=$db->query($sql);
 	$dat=[];
 	while($r=$q->fetch(PDO::FETCH_ASSOC)){
