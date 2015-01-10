@@ -3,23 +3,26 @@
 include "connect.php";
 include "header.php";
 include_once "dashboard_functions.php";
-
-
 if (isset($_GET['id'])) {
 	$student_id=$_GET['id'];
 }else{
 	$student_id=rand(0,500);
 }
+?>
+<html>
+<head>
+<title>Student</title>
+</head>
+<body>
+<div class='container'>
+<h1>Student #<?php echo $student_id?> <small><a href=index.php>dashboard</a></small></h1>
+<hr />
 
-echo "<title>Student</title>";
+<div id='chart_video'></div>
+<div id='chart_problem'></div>
+<div id='more'></div>
 
-echo "<div class=container>";
-echo "<h1>Student #$student_id <small><a href=index.php>dashboard</a></small></h1>";
-echo "<hr />";
-
-//echo "<pre>";
-//echo "student_id=$student_id\n";
-
+<?php
 $sql="SELECT * FROM minutes_per_day WHERE student_id=$student_id;";
 $q=$db->query($sql) or die("error : $sql\n");
 $dat=[];
@@ -148,6 +151,4 @@ foreach($dat as $section=>$dat){
 	echo "</table>";
 }
 ?>
-<script>
-//$('table').tablesorter();
-</script>
+<script src='js/student.js'></script>
