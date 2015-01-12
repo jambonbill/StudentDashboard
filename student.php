@@ -86,7 +86,7 @@ echo "<td><span class='label $label_type'>" . $avg_student . " minutes</span>";/
 
 
 // Problem attemps
-$problem_class=(array_sum(problem_attempts())/500);
+$problem_class=round(array_sum(problem_attempts())/500);
 $problem_student=@(problem_attempts()["$student_id"]*1);
 $label_type='label-default';
 if($problem_student>$problem_class)$label_type='label-success';
@@ -101,7 +101,7 @@ echo "<td><span class='label $label_type'>" . $problem_student . "</span>";// St
 
 // Problems score
 $score_class=problem_score_average();
-$score_student=student_score_average()[$student_id];
+$score_student=@student_score_average()[$student_id]*1;
 
 $label_type='label-default';
 if($score_student>$score_class)$label_type='label-success';
