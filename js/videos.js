@@ -109,6 +109,7 @@ function mouseover(){
 
 function mousemove(d,i){
     var html = "";
+    html+="<b>" + d.section + "::" + d.subsection + "</b><br />\n";
     html+="<b>video " + d.id + "</b><br />\n";
     html+="<hr style='margin-top:4px;margin-bottom:4px' />";
     html+="<b>watched : " + d.watched + "</b><br />\n";

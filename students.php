@@ -24,7 +24,9 @@ function average_problem_attempts(){
 }
 
 
-function average_video_views(){
+// return 20
+function average_video_views()
+{
 	
 	global $db;
 
@@ -36,8 +38,39 @@ function average_video_views(){
 }
 
 
+// return 9
+function average_days_working(){
+	
+	global $db;
+
+	$sql="SELECT COUNT(*) as count FROM minutes_per_day;";
+	$q=$db->query($sql) or die("error : $sql\n");
+	$r=$q->fetch(PDO::FETCH_ASSOC);
+	$minutes_per_day_count=$r['count'];
+
+	return round($r['count']/500);
+}
+
+// return 353
+function average_time_working()
+{
+	return 353;// minutes
+}
+
+function average_time_session(){
+	return 40;// minutes
+}
+
+$avg_day_working=average_days_working();
+$avg_time_working=average_time_working();
+$avg_time_session=average_time_session();
+$avg_problem_attempt=average_problem_attempts();
+
 echo "<pre>";
-echo "Average problem attempts : ".average_problem_attempts()."\n";
+echo "Average days working : $avg_day_working day(s)\n";
+echo "Average time working : $avg_time_working minutes\n";
+echo "Average time /session : $avg_time_session minutes\n";
+echo "Average problem attempts : $avg_problem_attempt\n";
 echo "Average video view : ".average_video_views()."\n";
 echo "</pre>";
 
@@ -77,9 +110,9 @@ echo "<table class='table table-condensed table-striped'>";
 
 echo "<thead>";
 echo "<th width=100>student id</th>";
-echo "<th width=100 title='Number of days'>days</th>";
-echo "<th width=100 title='In minutes'>totaltime</th>";
-echo "<th width=100 title='Average time per day'>avg</th>";
+echo "<th style='text-align:center' title='Number of days working'>Days</th>";
+echo "<th style='text-align:center' title='Total time spent in minutes'>Total time</th>";
+echo "<th style='text-align:center' title='Average time per day'>Avg. per day</th>";
 echo "<th style='text-align:right'>prob. attemps (".count($problems).")</th>";
 echo "<th style='text-align:right'>%</th>";
 echo "<th style='text-align:right'>video views (".count($videos).")</th>";
@@ -91,13 +124,39 @@ for ($i=0; $i <500; $i++) {
 	//print_r($r);exit;
 	echo "<tr>";
 	echo "<td><a href=student.php?id=$i>#".$i."</a>";
-	echo "<td style='text-align:right'>".count($minutes["$i"]);
-	echo "<td style='text-align:right'>".array_sum($minutes["$i"]);// total time
-	echo "<td style='text-align:right'>".round(array_sum($minutes["$i"])/count($minutes["$i"]));// days avg
+	
+	$number_days=count($minutes["$i"]);
+	
+	$label_type='label-default';
+	if ($number_days>$avg_day_working)$label_type='label-success';
+	if ($number_days<$avg_day_working)$label_type='label-danger';
+
+	echo "<td style='text-align:center'><span class='label $label_type'>".$number_days;
+	
+	$work_time=array_sum($minutes["$i"]);
+	$label_type='label-default';
+	if ($work_time>$avg_time_working)$label_type='label-success';
+	if ($work_time<$avg_time_working)$label_type='label-danger';
+	//$avg_time_working
+	echo "<td style='text-align:center'><span class='label $label_type'>".$work_time;// total time
+	
+	$avg_student_session_length=round(array_sum($minutes["$i"])/count($minutes["$i"]));
+
+	$label_type='label-default';
+	if($avg_student_session_length>$avg_time_session)$label_type='label-success';
+	if($avg_student_session_length<$avg_time_session)$label_type='label-danger';
+	echo "<td style='text-align:center'><span class='label $label_type'>".$avg_student_session_length;// days avg
 	//print_r($minutes[$i]);exit;
 	
 	if(!isset($pa["$i"]))$pa["$i"]=[];
-	echo "<td style='text-align:right'>".count($pa["$i"]);// problem attemps
+	
+	
+	$problem_attempts=count($pa["$i"]);
+	$label_type='label-default';
+	if ($problem_attempts>$avg_problem_attempt)$label_type='label-success';
+	if ($problem_attempts<$avg_problem_attempt)$label_type='label-danger';
+
+	echo "<td style='text-align:right'><span class='label $label_type'>".$problem_attempts;// problem attemps
 	echo "<td style='text-align:right'>".round(count($pa["$i"])/count($problems)*100) . " %";// %
 	
 	if (!isset($vv["$i"]))$vv["$i"]=[];

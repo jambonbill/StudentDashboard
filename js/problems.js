@@ -53,7 +53,9 @@ function updateBars()
 	// Bars //
 	var b = vis.selectAll("rect.t1").data( data );
       b.enter().append("rect")
-      .attr("fill", '#eee')
+      .attr("fill", function(d,i){
+      	return color(d.section);
+      })
       .attr("class", "t1" )
       .attr("x", function(d,i){ return i*barw; })
       .attr("y" , 100 )
@@ -109,6 +111,7 @@ function mouseover(){
 
 function mousemove(d,i){
     var html = "";
+    html+="<b>" + d.section + " :: " + d.subsection + "</b><br />\n";
     html+="<b>problem " + d.id + "</b><br />\n";
     html+="<hr style='margin-top:4px;margin-bottom:4px' />";
     //html+="<b>watched : " + d.watched + "</b><br />\n";

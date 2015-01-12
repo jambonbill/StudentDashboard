@@ -4,6 +4,9 @@
 <!-- Optional theme -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
 
+<!-- Tooltip -->
+<link rel="stylesheet" href="tooltip.css">
+
 <!-- JQuery -->
 <script src="js/jquery-1.11.2.min.js"></script>
 

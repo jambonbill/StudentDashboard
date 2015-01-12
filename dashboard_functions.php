@@ -53,18 +53,67 @@ function student_total_scores(){
 	return $dat;
 }
 
+
+
+/**
+ * Return a student score average in %
+ * @return [type] [description]
+ */
+function student_score_average()
+{
+	
+	global $db;
+
+	$sql="SELECT student_id, AVG(score) as score_avg FROM problem_attempts WHERE 1 GROUP BY student_id;";
+	$q=$db->query($sql) or die("error:$sql");
+	$dat=[];
+	while($r=$q->fetch())
+	{
+		$dat[$r['student_id']]=round($r['score_avg']*100);
+	}
+	return $dat;
+}
+
 /**
  * Return the whole thing
  * @return [type] [description]
  */
-function minutes_per_day(){
+/*
+function minutes_per_day($student_id=0)
+{
 	global $db;
-	$sql="SELECT * FROM minutes_per_day WHERE 1;";
+	
+	$student_id*=1;
+
+	if ($student_id > 0) {
+		$sql="SELECT * FROM minutes_per_day WHERE student_id=$student_id;";
+	} else {
+		$sql="SELECT * FROM minutes_per_day WHERE 1;";	
+	}
+
+	
 	$q=$db->query($sql) or die("error : $sql\n");
 	
 	$dat=[];
 	while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		$dat[]=$r;
+	}
+	return $dat;
+}
+*/
+
+
+function minutes_per_day()
+{
+	
+	global $db;
+
+	$sql="SELECT * FROM minutes_per_day WHERE 1;";
+	$q=$db->query($sql) or die("error : $sql\n");
+	
+	$dat=[];
+	while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
+		$dat[$r['student_id']][$r['date']]=$r['minutes_on_site'];
 	}
 	return $dat;
 }
@@ -164,6 +213,16 @@ function problem($problem_id='')
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 
+function problem_score_average()
+{
+	global $db;
+
+	$sql="SELECT AVG(score)*100 as score_avg FROM `problem_attempts` WHERE 1";
+	$q = $db->query($sql);
+
+	return round(61.8504);
+}
+
 
 /**
  * [problem_attempt_count description]
@@ -180,6 +239,24 @@ function problem_attempt_count()
 	}
 	return $dat;
 }
+
+
+/**
+ * Reutn the number of problem attemps per user
+ * @return [type] [description]
+ */
+function problem_attempts()
+{
+	global $db;
+	$sql="SELECT student_id, COUNT(problem_id) as count FROM `problem_attempts` WHERE 1 GROUP BY student_id;";
+	$q=$db->query($sql) or die("errro:$sql");
+	$dat=[];
+	while($r=$q->fetch(PDO::FETCH_ASSOC)){
+		$dat[$r['student_id']]=$r['count'];
+	}
+	return $dat;
+}
+
 
 function problem_success_count()
 {	
