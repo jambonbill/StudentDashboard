@@ -15,7 +15,7 @@ function getData()
 	console.log('getData()');
 	var p = { 'do':'getProblems' };
 
-	$("#more").load("ctrl.php",p,function(x){
+	$("#more").load("student_ctrl.php",p,function(x){
 		try{
 			data=eval(x);
 			updateBars();

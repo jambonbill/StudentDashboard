@@ -75,6 +75,7 @@ echo "Average video view : ".average_video_views()."\n";
 echo "</pre>";
 
 
+
 //
 $sql="SELECT * FROM minutes_per_day WHERE 1;";
 $q=$db->query($sql) or die("error : $sql\n");
