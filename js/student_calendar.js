@@ -1,7 +1,8 @@
 
 var width = 800,
     height = 136,
-    cellSize = 11; // cell size
+    cellSize = 12; // cell size
+
 var month=[];
 month[0] = "Jan";
 month[1] = "Feb";
@@ -21,9 +22,12 @@ var day = d3.time.format("%w"),
     percent = d3.format(".1%"),
     format = d3.time.format("%Y-%m-%d");
 
+/*
 var color = d3.scale.quantize()
     .domain([-.05, .05])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+*/
+//var color=d3.scale.category20c();
 
 var svg = d3.select("#calendarDiv").selectAll("svg")
     .data(d3.range(2018, 2019))
@@ -74,32 +78,46 @@ svg.selectAll(".month")
     });
     
     
-
-
-d3.csv("dji.csv", function(error, csv) {
+loadCsv();
+var data;
+function loadCsv(){
+    
+    console.log('loadCsv()');
+    
+    d3.csv("dji.csv", function(error, csv) {
   
-  
-  var data = d3.nest()
-    .key(function(d) { return d.Date; })
-    .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
-    .map(csv);
+        data = d3.nest()
+            .key(function(d) { return d.Date; })
+            .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
+            .map(csv);
 
-    //console.log();
+        console.log('loadcsv()',data);
+        updateCalendar();
+        //return data;
+    });
+}
 
-  rect
-      .filter(function(d) {
-        console.log("d.length",d.length);
-        return d in data;
-      })
-      //.fill()
+function updateCalendar(){
+    console.log('updateCalendar()');
+
+    rect
+        .filter(function(d) {
+            console.log("d.length",d.length);
+            return d in data;
+        })
+    
+    //.fill()
       //.attr("class", function(d) {
         //console.log(d,"day " + color(data[d]));
         //return "day " + color(data[d]);
       //})
-      .style("fill", function(d, i) { return color(i); })
-    .select("title")
-      .text(function(d) { return d + " :: minutes "; });
-});
+        .style("fill", function(d, i) { return color(i); })
+        .select("title")
+        .text(function(d) { return d + " :: minutes "; });
+    //});
+}
+
+
 
 
 function monthPosition(t0){
