@@ -61,6 +61,7 @@ function average_time_session(){
 	return 40;// minutes
 }
 
+
 $avg_day_working=average_days_working();
 $avg_time_working=average_time_working();
 $avg_time_session=average_time_session();

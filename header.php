@@ -1,8 +1,14 @@
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+<!-- Optional theme (override) -->
+<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.css">
+
+<!-- AdminLte theme (for xs progressbars) -->
+<link rel="stylesheet" href="http://almsaeedstudio.com/AdminLTE/css/AdminLTE.css">
+
+<!-- Font awesome -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- Tooltip -->
 <link rel="stylesheet" href="tooltip.css">

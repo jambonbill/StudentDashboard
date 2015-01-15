@@ -1,12 +1,12 @@
 <?php
 
 // student overview
-
+/*
 $sql="SELECT student_id, MIN(minutes_on_site), MAX(minutes_on_site), AVG(minutes_on_site) FROM minutes_per_day WHERE student_id=$student_id;";
 $q=$db->query($sql) or die("error : $sql\n");
 $r=$q->fetch(PDO::FETCH_ASSOC);
 echo "<pre>";print_r($r);echo "</pre>";//exit;
-
+*/
 
 // count records 
 $sql="SELECT COUNT(*) as count FROM minutes_per_day;";
@@ -19,13 +19,12 @@ $minutes_per_day_count=$r['count'];
 $totaltime=array_sum(minutes_per_day()[$student_id]);
 echo "<table class='table table-striped table-condensed'>";
 echo "<thead>";
-echo "<th></th>";
+echo "<th><i class='fa fa-info-circle'></i> Student stats</th>";
 echo "<th>Class (avg)</th>";
 echo "<th>Student</th>";
 echo "</thead>";
 
 echo "<tbody>";
-
 // days working
 $day_class = round($minutes_per_day_count/500);
 $day_student=count(minutes_per_day()["$student_id"]);
@@ -74,8 +73,8 @@ if($problem_student<$problem_class)$label_type='label-danger';
 
 echo "<tr>";
 echo "<td>Problem attempts";
-echo "<td><span class='label label-default'>" . $problem_class . "</span>";// Class
-echo "<td><span class='label $label_type'>" . $problem_student . "</span>";// Student
+echo "<td><span class='label label-default'>" . $problem_class . "</span> <i class=text-muted>".round($problem_class/108*100)."%</i>";// Class
+echo "<td><span class='label $label_type'>" . $problem_student . "</span> <i class=text-muted>".round($problem_student/108*100)."%</i>";// Student
 
 
 

@@ -19,8 +19,17 @@ switch ($_POST['do']) {
 		exit;
 		break;
 
-	case 'getCalendar':
-		print_r($_POST);
+	case 'getCalendar'://return calendar data
+		//print_r($_POST);
+		$student_id=$_POST['student_id']*1;
+		$sql="SELECT date, minutes_on_site FROM minutes_per_day WHERE student_id=$student_id;";
+		$q=$db->query($sql) or die("error : $sql");
+		$dat=[];
+		while($r=$q->fetch(PDO::FETCH_ASSOC)){
+			$dat[]=['date'=>$r["date"],'minutes'=>+$r["minutes_on_site"]];
+		}
+		echo json_encode($dat);
+		exit;
 		break;
 
 	case 'getProblems':
@@ -31,7 +40,7 @@ switch ($_POST['do']) {
 
 	default:
 		print_r($_POST);
-		die("error");
+		die("error: unknow action");
 		break;
 }
 

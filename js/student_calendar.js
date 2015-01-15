@@ -1,21 +1,11 @@
+// http://bl.ocks.org/mbostock/4063318
 
 var width = 800,
-    height = 136,
+    height = 120,
     cellSize = 12; // cell size
 
-var month=[];
-month[0] = "Jan";
-month[1] = "Feb";
-month[2] = "Mar";
-month[3] = "Apr";
-month[4] = "May";
-month[5] = "Jun";
-month[6] = "Jul";
-month[7] = "Aug";
-month[8] = "Sep";
-month[9] = "Oct";
-month[10]= "Nov";
-month[11]= "Dec";
+var weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var month=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 var day = d3.time.format("%w"),
     week = d3.time.format("%U"),
@@ -27,22 +17,24 @@ var color = d3.scale.quantize()
     .domain([-.05, .05])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 */
-//var color=d3.scale.category20c();
+var color=d3.scale.category20c();
 
 var svg = d3.select("#calendarDiv").selectAll("svg")
-    .data(d3.range(2018, 2019))
+    //.data(d3.range(2018, 2019))
+    .data([2018])
   .enter().append("svg")
+    //.attr("fill", "#c00")
     .attr("width", width)
     .attr("height", height)
-    .attr("class", "RdYlGn")
+    //.attr("class", "RdYlGn")
   .append("g")
-    .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+    .attr("transform", "translate(" + ((width - cellSize * 63) / 2) + "," + (height - cellSize * 7 - 20) + ")");
 
 // year
 svg.append("text")
     .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
     .style("text-anchor", "middle")
-    .text(function(d) { return "Year "+d; });
+    .text(function(d) { return d; });//annee
 
 
 var rect = svg.selectAll(".day")
@@ -55,8 +47,12 @@ var rect = svg.selectAll(".day")
     .attr("y", function(d) { return day(d) * cellSize; })
     .datum(format);
 
+// title must be set, so we can update it later
 rect.append("title")
-    .text(function(d) { return "title="+d; });
+    .text(function(d){ 
+      return '';//
+      //return d;// date
+    });
 
 
 // draw month outlines
@@ -78,43 +74,111 @@ svg.selectAll(".month")
     });
     
     
-loadCsv();
+
+function updateLegend(){
+
+    svg.append("text")
+        .attr("transform", "translate(20," + (cellSize * 8 + 2) + ")")
+        .style("text-anchor", "middle")
+        .text("Less");
+    
+    svg.append("text")
+        .attr("transform", "translate(120," + (cellSize * 8 + 2) + ")")
+        .style("text-anchor", "middle")
+        .text("More");
+
+    var rec = svg.selectAll(".legend")
+        .data([1,25,50,75,100])
+        .enter()
+        .append("rect")
+        .attr("class", "legend")
+        .attr("width", cellSize)
+        .attr("height", cellSize)
+        .attr("x", function(d,i) { return 40 + i * cellSize; })
+        .attr("y", function(d) { return (cellSize*7+4); })
+        .attr("fill", function(d) { return color(d); })
+        //.svg.append("rect").
+}
+
 var data;
+var colors;//color domain
+
+//loadCsv();
 function loadCsv(){
     
     console.log('loadCsv()');
-    
-    d3.csv("dji.csv", function(error, csv) {
-  
+    d3.csv("dji.csv", function(d){
+        return {
+            //Date: new Date(d.Date),
+            Date: d.Date,
+            Minutes: +d.Minutes
+        };
+    },
+    function(error,rows){
+        //console.log(rows);
+        // get min max for color scale
+        var colorDomain = d3.extent( rows ,function(o){return o.Minutes;});
+        colors=d3.scale.linear().domain([0,100]).range(["#E6E685","#1E6823"]);//github colors
+        //console.log("colorDomain", colorDomain);
         data = d3.nest()
             .key(function(d) { return d.Date; })
-            .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
-            .map(csv);
+            .rollup(function(d) { 
+                return d[0].Minutes;
+            })
+            .map(rows);// we convert data to make it fast to digest (key:value)
 
-        console.log('loadcsv()',data);
         updateCalendar();
-        //return data;
     });
 }
 
+function loadCtrl(){
+    console.log('loadCtrl()');
+    var p={
+        'do':'getCalendar',
+        'student_id':$('#student_id').val()
+    }
+    $('#more').load("student_ctrl.php",p,function(x){
+        try{
+            dat=JSON.parse(x);
+            console.log("data",dat);
+            var colorDomain = d3.extent( dat ,function(o){return o.minutes;});
+            //colors=d3.scale.linear().domain(colorDomain).range(["#E6E685","#1E6823"]);//github colors (green)
+            //colors=d3.scale.linear().domain(colorDomain).range(["#ffc9c9","#cc0000"]);//red colors
+            colors=d3.scale.linear().domain(colorDomain).range(["#d6f2fc","#337ab7"]);//blue colors
+            
+            data = d3.nest()
+              .key(function(d) { return d.date; })
+              .rollup(function(d) { 
+                return d[0].minutes;
+              })
+              .map(dat);
+
+            updateCalendar();
+            $('#more').html('');
+        }
+        catch(e){
+            console.log(e);
+        }
+    });
+}
+
+
 function updateCalendar(){
+
     console.log('updateCalendar()');
 
-    rect
-        .filter(function(d) {
-            console.log("d.length",d.length);
-            return d in data;
-        })
+    rect.filter(function(d) {//go through every rect
+        return d in data;//and filters only the one with a matching date in "data"
+    })
     
-    //.fill()
-      //.attr("class", function(d) {
-        //console.log(d,"day " + color(data[d]));
-        //return "day " + color(data[d]);
-      //})
-        .style("fill", function(d, i) { return color(i); })
-        .select("title")
-        .text(function(d) { return d + " :: minutes "; });
-    //});
+    .style("fill", function(d, i) { return colors(data[d]); })
+    .select("title")
+    .text(function(d) { 
+      //console.log('d',d,data[d]);
+      var date=new Date(d);
+      return weekday[date.getDay()] +" "+ date.getDate() + " " + month[date.getMonth()] + " :: " + data[d]+" minutes online";
+    });
+    updateLegend();
 }
 
 
@@ -141,3 +205,6 @@ function monthPath(t0) {
 }
 
 //d3.select(self.frameElement).style("height", "2910px");
+$(function(){
+    loadCtrl();
+});

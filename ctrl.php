@@ -25,6 +25,16 @@ switch ($_POST['do']) {
 		exit;
 		break;		
 
+	case 'heatmap'://heatmap minutes per day (vue calendar)
+		$sql="SELECT date, SUM(minutes_on_site) AS minutes FROM minutes_per_day WHERE 1 GROUP BY date;";
+		$q=$db->query($sql) or die( "Error:$sql");
+		while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
+			$dat[]=['date'=>$r['date'],'minutes'=>+$r['minutes']];
+		}
+		echo json_encode($dat);
+		exit;
+		break;
+
 	default:
 		print_r($_POST);
 		die("error");

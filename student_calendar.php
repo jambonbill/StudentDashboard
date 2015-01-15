@@ -2,26 +2,12 @@
 // student progress calendar, ala github
 // https://github.com/jambonbill?tab=contributions&period=weekly
 ?>
-<style>
-body {
-  font: 10px sans-serif;
-  shape-rendering: crispEdges;
-}
+<!-- AdminLte theme (for xs progressbars) -->
+<link rel="stylesheet" href="css/calendar.css">
 
-.day {
-  fill: #fff;
-  stroke: #ccc;
-}
-
-.month {
-  fill: none;
-  stroke: #aaa;
-  stroke-width: 1px;
-}
-</style>
-
-CalendarDiv::
-
+<h3><i class='fa fa-calendar'></i> Minutes on site</h3>
 <div id='calendarDiv'></div>
 
 <script src='js/student_calendar.js'></script>
+
+<hr />
