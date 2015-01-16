@@ -17,7 +17,7 @@ var color = d3.scale.quantize()
     .domain([-.05, .05])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 */
-var color=d3.scale.category20c();
+//var color=d3.scale.category20c();
 
 var svg = d3.select("#calendarDiv").selectAll("svg")
     //.data(d3.range(2018, 2019))
@@ -88,7 +88,8 @@ function updateLegend(){
         .text("More");
 
     var rec = svg.selectAll(".legend")
-        .data([1,25,50,75,100])
+        
+        .data([colorDomain[0],colorDomain[1]*0.25,colorDomain[1]*0.5,colorDomain[1]*0.75,colorDomain[1]])
         .enter()
         .append("rect")
         .attr("class", "legend")
@@ -96,14 +97,16 @@ function updateLegend(){
         .attr("height", cellSize)
         .attr("x", function(d,i) { return 40 + i * cellSize; })
         .attr("y", function(d) { return (cellSize*7+4); })
-        .attr("fill", function(d) { return color(d); })
+        .attr("fill", function(d) { return colors(d); })
         //.svg.append("rect").
 }
 
 var data;
 var colors;//color domain
+var colorDomain;
 
 //loadCsv();
+/*
 function loadCsv(){
     
     console.log('loadCsv()');
@@ -117,7 +120,8 @@ function loadCsv(){
     function(error,rows){
         //console.log(rows);
         // get min max for color scale
-        var colorDomain = d3.extent( rows ,function(o){return o.Minutes;});
+        colorDomain = d3.extent( rows ,function(o){return o.Minutes;});
+        conole.log('colorDomain',colorDomain);
         colors=d3.scale.linear().domain([0,100]).range(["#E6E685","#1E6823"]);//github colors
         //console.log("colorDomain", colorDomain);
         data = d3.nest()
@@ -130,7 +134,7 @@ function loadCsv(){
         updateCalendar();
     });
 }
-
+*/
 function loadCtrl(){
     console.log('loadCtrl()');
     var p={
@@ -140,8 +144,9 @@ function loadCtrl(){
     $('#more').load("student_ctrl.php",p,function(x){
         try{
             dat=JSON.parse(x);
-            console.log("data",dat);
-            var colorDomain = d3.extent( dat ,function(o){return o.minutes;});
+            //console.log("data",dat);
+            colorDomain = d3.extent( dat ,function(o){return o.minutes;});
+            console.log('colorDomain',colorDomain);
             //colors=d3.scale.linear().domain(colorDomain).range(["#E6E685","#1E6823"]);//github colors (green)
             //colors=d3.scale.linear().domain(colorDomain).range(["#ffc9c9","#cc0000"]);//red colors
             colors=d3.scale.linear().domain(colorDomain).range(["#d6f2fc","#337ab7"]);//blue colors

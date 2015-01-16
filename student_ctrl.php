@@ -38,6 +38,34 @@ switch ($_POST['do']) {
 		exit;
 		break;		
 
+	case 'getProgressData':
+		//print_r($_POST);
+		$student_id=$_POST['student_id']*1;
+		
+		// all student problem attempts
+		$sql="SELECT * FROM problem_attempts WHERE student_id=$student_id;";
+		$q=$db->query($sql) or die("Error:$sql");
+
+		$problem_attempts=[];
+		while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
+			//print_r($r);
+			$problem_attempts[$r['section']][$r['subsection']][]=$r;
+		}
+
+		// all student video attempts
+		$sql="SELECT * FROM video_views WHERE student_id=$student_id;";
+		$q=$db->query($sql) or die("Error:$sql");
+
+		$video_attempts=[];
+		while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
+			//print_r($r);
+			$video_attempts[$r['section']][$r['subsection']][]=$r;
+		}
+		echo "var pas=".json_encode($problem_attempts).";";//problem attempts
+		echo "var vas=".json_encode($video_attempts).";";//video attempts
+		exit;
+		break;
+
 	default:
 		print_r($_POST);
 		die("error: unknow action");

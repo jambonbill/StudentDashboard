@@ -18,6 +18,7 @@
 
 <!-- JQuery Tablesorter-->
 <script src="js/jquery-tablesorter.min.js"></script>
+<script src="js/jquery.knob.js"></script>
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
