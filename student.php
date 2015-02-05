@@ -4,7 +4,7 @@ include "connect.php";
 include "header.php";
 include_once "dashboard_functions.php";
 
-if (isset($_GET['id'])) {
+if (isset($_GET['id']) && $_GET['id']>0) {
 	$student_id=$_GET['id'];
 } else {
 	$student_id=rand(0,500);
@@ -22,15 +22,13 @@ include "student_data.php";// compute student data
 <body>
 
 <div class='container'>
-<h1>Student #<?php echo $student_id?> <small><a href='index.php' class='pull-right'>dashboard</a></small></h1>
+<h1>Student <a href='?id=<?php echo $student_id?>'>#<?php echo $student_id?></a> <small><a href='index.php' class='pull-right'>dashboard</a></small></h1>
 <hr />
-
 <input type='hidden' id='student_id' value='<?php echo $student_id?>'>
-
-<div id='chart_video'></div>
-<div id='chart_problem'></div>
-
-<div id='more'></div>
+<!--
+<div id='chart_video'>chart_video</div>
+<div id='chart_problem'>chart_problem</div>
+<div id='more'>more</div>
 
 <h3><i class='fa fa-line-chart'></i> Overall course progression <small>problems done</small></h3>
 
@@ -45,6 +43,7 @@ include "student_data.php";// compute student data
 <div class="progress xs">
   <div class="progress-bar progress-bar-grey" role="progressbar" aria-valuenow="<?php echo $problem_class_pct?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $problem_class_pct?>%;"></div>
 </div>
+-->
 
 <!--
 <h3><i class='fa fa-line-chart'></i> Double progression</h3>
@@ -62,11 +61,14 @@ include "student_data.php";// compute student data
 <?php
 
 //include "student_alerts.php";
+include "student_progression_table.php";
 
-include "student_progress.php";//d3js
-include "student_calendar.php";
+include "student_progression.php";//d3js
 
-include "student_overview.php";
+include "student_calendar.php";//d3js
+include "student_constant.php";//d3js
+
+//include "student_overview.php";
 
 //include "student_weeks.php";
 

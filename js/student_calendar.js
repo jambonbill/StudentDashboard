@@ -1,12 +1,23 @@
 // http://bl.ocks.org/mbostock/4063318
 
+//helper functions
+function daysBetween(a, b) {
+    var one = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+    var two = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+    var msecondsPerDay = 1000 * 60 * 60 * 24;
+    var mBetween = two.getTime() - one.getTime();
+    var days = mBetween / msecondsPerDay;
+    return Math.floor(days);// Round down.
+}
+
+
 var width = 800,
     height = 120,
     cellSize = 12; // cell size
 
 var weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var month=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
+var sessions=0;//session number
 var day = d3.time.format("%w"),
     week = d3.time.format("%U"),
     percent = d3.format(".1%"),
@@ -75,33 +86,8 @@ svg.selectAll(".month")
     
     
 
-function updateLegend(){
 
-    svg.append("text")
-        .attr("transform", "translate(20," + (cellSize * 8 + 2) + ")")
-        .style("text-anchor", "middle")
-        .text("Less");
-    
-    svg.append("text")
-        .attr("transform", "translate(120," + (cellSize * 8 + 2) + ")")
-        .style("text-anchor", "middle")
-        .text("More");
-
-    var rec = svg.selectAll(".legend")
-        
-        .data([colorDomain[0],colorDomain[1]*0.25,colorDomain[1]*0.5,colorDomain[1]*0.75,colorDomain[1]])
-        .enter()
-        .append("rect")
-        .attr("class", "legend")
-        .attr("width", cellSize)
-        .attr("height", cellSize)
-        .attr("x", function(d,i) { return 40 + i * cellSize; })
-        .attr("y", function(d) { return (cellSize*7+4); })
-        .attr("fill", function(d) { return colors(d); })
-        //.svg.append("rect").
-}
-
-var data;
+//var data;
 var colors;//color domain
 var colorDomain;
 
@@ -136,17 +122,18 @@ function loadCsv(){
 }
 */
 function loadCtrl(){
-    console.log('loadCtrl()');
+    //console.log('loadCtrl()');
     var p={
         'do':'getCalendar',
         'student_id':$('#student_id').val()
     }
-    $('#more').load("student_ctrl.php",p,function(x){
+    $('#moreCalendar').load("student_ctrl.php",p,function(x){
         try{
             dat=JSON.parse(x);
             //console.log("data",dat);
+            sessions=dat.length;
             colorDomain = d3.extent( dat ,function(o){return o.minutes;});
-            console.log('colorDomain',colorDomain);
+            //console.log('colorDomain',colorDomain);
             //colors=d3.scale.linear().domain(colorDomain).range(["#E6E685","#1E6823"]);//github colors (green)
             //colors=d3.scale.linear().domain(colorDomain).range(["#ffc9c9","#cc0000"]);//red colors
             colors=d3.scale.linear().domain(colorDomain).range(["#d6f2fc","#337ab7"]);//blue colors
@@ -158,8 +145,17 @@ function loadCtrl(){
               })
               .map(dat);
 
-            updateCalendar();
-            $('#more').html('');
+            updateCalendar(data);
+            /*
+            var parseDate = d3.time.format("%Y-%m-%d").parse;
+            dat.forEach(function(d) {
+                d.date = parseDate(d.date);
+            });
+            dd = d3.extent(dat,function(o){return o.date;});
+            var daysb=daysBetween(dd[0],dd[1]);
+            var xdays=Math.floor(daysb/dat.length);
+            */
+            $('#moreCalendar').html(dat.length+" session(s) over x days");
         }
         catch(e){
             console.log(e);
@@ -168,9 +164,9 @@ function loadCtrl(){
 }
 
 
-function updateCalendar(){
+function updateCalendar(data){
 
-    console.log('updateCalendar()');
+    //console.log('updateCalendar()');
 
     rect.filter(function(d) {//go through every rect
         return d in data;//and filters only the one with a matching date in "data"
@@ -183,10 +179,46 @@ function updateCalendar(){
       var date=new Date(d);
       return weekday[date.getDay()] +" "+ date.getDate() + " " + month[date.getMonth()] + " :: " + data[d]+" minutes online";
     });
-    updateLegend();
+    updateCalendarLegend(data);
 }
 
 
+
+function updateCalendarLegend(){
+
+    //session number
+    svg.append("text")
+        .attr("transform", "translate(0," + (cellSize * 8 + 2) + ")")
+        .style("text-anchor", "left")
+        .text(sessions + " session(s)");
+
+
+    svg.append("text")
+        .attr("transform", "translate(470," + (cellSize * 8 + 2) + ")")
+        .style("text-anchor", "right")
+        .text("Less");
+    
+    svg.append("text")
+        .attr("transform", "translate(562," + (cellSize * 8 + 2) + ")")
+        .style("text-anchor", "left")
+        .text("More time");
+
+    var rec = svg.selectAll(".legend")
+        
+        .data([colorDomain[0],colorDomain[1]*0.25,colorDomain[1]*0.5,colorDomain[1]*0.75,colorDomain[1]])
+        .enter()
+        .append("rect")
+        .attr("fill", '#fff')
+        .attr("class", "legend")
+        .attr("width", cellSize)
+        .attr("height", cellSize)
+        .attr("x", function(d,i) { return 500 + i * cellSize; })
+        .attr("y", function(d) { return (cellSize*7+4); })
+        .transition()
+        .delay(function(d,i){return i*20;})
+        .attr("fill", function(d) { return colors(d); })
+        //.svg.append("rect").
+}
 
 
 function monthPosition(t0){
