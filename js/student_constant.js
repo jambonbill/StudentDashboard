@@ -85,6 +85,10 @@ function updateConstant(data){
 
     //compute xscale
     var xScale = d3.time.scale().range([10, width-10]);
+    //Start domain on st spetember for better readability
+    dateDomain[0]=new Date("2018-09-15");
+    //dateDomain[1]=new Date(dateDomain[1].setDate(dateDomain[1].getDate()+1));
+    //console.log(dateDomain[0]);
     xScale.domain(dateDomain);
     
     var rScale = d3.scale.linear().domain(minuteDomain).range([3, 10]);
@@ -122,16 +126,22 @@ function updateConstant(data){
 
 
     var b = cns.selectAll("circle.t1").data(data);
-    var format=d3.time.format('%d%b');
+    var format=d3.time.format('%d %b');
     b.enter().append("circle")
           .attr("class", "t1" )
           .attr("fill", function(d){return '#337ab7';})
-          .style("opacity", 0.7)
+          .style("opacity", 1)
+          .style("stroke","#000")
+          .style("stroke-width",0)
           .attr("r" , 0 )
+          .on("mouseover",function(){d3.select(this).style('stroke-width', 3);})
+          .on("mouseout",function(){d3.select(this).style('stroke-width', 0);})
           .append("title").text(function(d){ 
                 //return d.date+"::"+d.minutes + " minutes";//
                 return format(d.date)+" - "+d.minutes + " minutes";
-            });
+            })
+          //.on()
+          ;
       
     b.transition(50)
         .delay(function(d,i){return i*20})

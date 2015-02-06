@@ -14,7 +14,7 @@ var vis = d3.select("#progressDiv").append("svg")
 // rect 1
 vis.append("rect")
     .attr("fill","#eee")
-    .attr("y", 22)
+    .attr("y", 20)
     .attr("width",700)
     .attr("height",2)
     //.append("text").text("Test on the rect");
@@ -53,36 +53,30 @@ var weeks=vis.selectAll(".weeks")
     .attr("class", "weeks")
     .attr("style", "font-size:12px")
     .attr("transform", function(d,i){
-        return "translate(" + (i*((width)/8)) + ",10)";
+        return "translate(" + (i*((width)/8)) + ",0)";
     })
     ;
     
 // Draw title
 weeks.append("text")
-  .text( function(d,i) {
-    //console.log(d,i);
-    return d; 
-  });
+  .text( function(d,i){return d;})
+    .attr("transform", "translate(4,10)");
+//Draw vertical separators
+weeks.append("line")
+    .attr("x1",0)
+    .attr("x2",0)
+    .attr("y1",0)
+    .attr("y2",35)
+    .attr('stroke', '#999')
+    .attr('stroke-width', 1)
+    .attr("class","crisp")
+    ;
 
 
-//Draw problems rectangles
-/*
-weeks.append("rect")
-  .attr("x",0)
-  .attr("y",20)
-  .attr("width",function(d){return Math.random()*colwidth;})
-  .attr("height",2)
-  .attr("fill","red")
-  ;
-*/
-
-//Draw video rectangles
-
-
-var videos,problems;
+// Draw video rectangles
 function getProgressData(){
     
-    console.log('getProgressData()');
+    //console.log('getProgressData()');
     
     var p={
         'do':'getWeeklyProgress',
@@ -92,8 +86,6 @@ function getProgressData(){
     //$.getJSON( "ajax/test.json", function( data ) {});
     $('#progressMore').load("student_ctrl.php",p,function(json){        
         try{  
-            //console.log('at least try');
-            //var data=eval(x);
             var data=$.parseJSON(json);
             updateProgress(data);
             $('#progressMore').html("ok");
@@ -106,22 +98,15 @@ function getProgressData(){
 
 
 function updateProgress(data){
-    console.log('updateProgress()',data);
-    //updateLegend();
+    //  console.log('updateProgress()',data);
     
     // Draw problems done
     var pbs=weeks.append("rect")
       .attr("x",0)
-      .attr("y",12)
-      .attr("width",function(d){
-        //var pct=Math.round(data[d].problemdone/data[d].problemcount*colwidth);
-        //if(pct)return pct;
-        return 0;
-        //return Math.random()*colwidth;
-    })
+      .attr("y",20)
+      .attr("width",0)
     .attr("height",2)
-    .attr("fill","#0F0")
-    ;
+    .attr("fill","#0F0");
 
     pbs.transition(50).delay(function(d,i){return i*200})
     .attr("width",function(d){
@@ -134,11 +119,10 @@ function updateProgress(data){
     // Draw video rectangles
     var vids=weeks.append("rect")
       .attr("x",0)
-      .attr("y",18)
+      .attr("y",28)
       .attr("width",0)
     .attr("height",2)
-    .attr("fill","#000")
-    ;
+    .attr("fill","#000");
 
     vids.transition(50).delay(function(d,i){return i*200})
         .attr("width",function(d){

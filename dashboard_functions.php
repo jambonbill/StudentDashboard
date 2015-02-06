@@ -12,6 +12,18 @@ function students()
 }
 
 
+// TODO //
+function student_start_dates()
+{
+	global $db;	
+	$sql="SELECT DISTINCT student_id,date FROM minutes_per_day GROUP BY student_id ORDER BY date;";
+	$q=$db->query($sql) or die("error : $sql\n");
+	$data=[];
+	while($r=$q->fetch(PDO::FETCH_ASSOC)){
+		$data[$r['student_id']]=$r['date'];
+	}
+	return $data;
+}
 
 /**
  * Return the total number of minutes spent by ONE student

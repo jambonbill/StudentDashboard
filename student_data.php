@@ -40,3 +40,7 @@ $video_student=@count(video_views()["$student_id"])*1;
 
 //$overall_progress=rand(0,100);//fake number
 $overall_progress=$problem_student_pct;//
+
+
+$startdates=student_start_dates();
+//echo "<pre>";echo count($sd);print_r($sd);

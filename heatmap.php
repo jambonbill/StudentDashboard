@@ -12,13 +12,13 @@ include "dashboard_functions.php";
 </head>
 <body>
 
-
-
 <div class='container'>
 <h1>Student activity heatmap <small>minutes per days <a href='index.php' class='pull-right'>dashboard</a></small></h1>
 <hr />
 <div id='calendarDiv'></div>
 <div id='more'></div>
+
+
 
 <script>
 var minutes_per_day=[];
@@ -111,53 +111,24 @@ function updateCalendar(){
 
 
 $(function(){
-	//console.log('heatmap');
-	/*
-	d3.csv("csv/minutes_per_day.csv",function(d){
-		return {
-			student_id:+d.student_id,
-			//date:new Date(d.date),
-			date:d.date,
-			minutes_on_site:+d.minutes_on_site
-		};
-	},function(error,rows){
-		console.log("minutes_per_day",rows.length + " records",rows[0]);
-		var minutesDomain = d3.extent( rows ,function(o){return o.minutes_on_site;});
-		console.log(minutesDomain);
-		// compute calendar json ...
-		data = d3.nest()
-            .key(function(d) { return d.date; })
-            .rollup(function(d) {
-            	//console.log("rollup",d);
-                //return {d[0].minutes_on_site,d[0].minutes_on_site};
-                //return d3.mean(d, function(g) { return +g.minutes_on_site; });
-                return d3.sum(d, function(g) { return +g.minutes_on_site; });
-            })
-            .map(rows);// we convert data to make it fast to digest (key:value)
-		console.log("nest",data);
-	});
-	*/
-
 	$('#more').load("ctrl.php",{'do':'heatmap'},function(x){
 		try{
 			var dat=JSON.parse(x);	
-			var domain=d3.extent(dat,function(d){return d.minutes;});
+			var dateDomain=d3.extent(dat,function(d){return d.date;});
+            var domain=d3.extent(dat,function(d){return d.minutes;});
 			color=d3.scale.linear().domain(domain).range(["#E6E685","#1E6823"]);//github colors
-			//console.log("ctrl.php",domain);
-			$('#more').html("ok");
+			$('#more').html("<hr />Course running from "+dateDomain[0]+" to " + dateDomain[1] + " (x days)");
 			data=d3.nest()
 				.key(function(d){return d.date;})
 				.rollup(function(d){
 					return d[0].minutes;
 				})
 				.map(dat);
-			//console.log("data final",data);
 			updateCalendar();
 		}
 		catch(e){
 			console.log(e);
 		}
 	});
-
 });
 </script>

@@ -80,3 +80,6 @@ echo "<td><span class='label $label_type'>".$video_student."</span> <i class=tex
 
 echo "</tbody>";
 echo "</table>";
+?>
+
+Days since day one :

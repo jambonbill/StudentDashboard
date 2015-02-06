@@ -2,7 +2,6 @@
 // student progress calendar, ala github
 // https://github.com/jambonbill?tab=contributions&period=weekly
 ?>
-<!-- AdminLte theme (for xs progressbars) -->
 <link rel="stylesheet" href="css/calendar.css">
 
 <h3><i class='fa fa-calendar'></i> Student sessions <small id='moreCalendar'>Minutes on site</small></h3>

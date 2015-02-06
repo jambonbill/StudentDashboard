@@ -173,6 +173,8 @@ function updateCalendar(data){
     })
     
     .style("fill", function(d, i) { return colors(data[d]); })
+    //.style("stroke","#888")
+    //.style("stroke-width",1)
     .select("title")
     .text(function(d) { 
       //console.log('d',d,data[d]);
