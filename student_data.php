@@ -1,5 +1,6 @@
 <?php
 // student data
+// BUG WITH STUDENT 500 !!
 
 // count records (4411)
 $sql="SELECT COUNT(*) as count FROM minutes_per_day;";

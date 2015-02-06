@@ -61,14 +61,14 @@ include "student_data.php";// compute student data
 <?php
 
 //include "student_alerts.php";
-include "student_progression_table.php";
+//include "student_progression_table.php";//html
 
 include "student_progression.php";//d3js
 
-include "student_calendar.php";//d3js
-include "student_constant.php";//d3js
+//include "student_calendar.php";//d3js
+//include "student_constant.php";//d3js
 
-//include "student_overview.php";
+include "student_overview.php";//data table
 
 //include "student_weeks.php";
 

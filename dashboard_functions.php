@@ -213,6 +213,21 @@ function problem($problem_id='')
 	return $q->fetch(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Return the problem count per week
+ * @return [type] [description]
+ */
+function problemCount(){
+	global $db;
+	$sql="SELECT section, COUNT(*) as count FROM problems GROUP BY section;";
+	$q=$db->query($sql);
+	$pc=[];
+	while($r=$q->fetch(PDO::FETCH_ASSOC)){
+		$pc[$r['section']]=$r['count'];
+	}
+	return $pc;
+}
+
 function problem_score_average()
 {
 	global $db;
