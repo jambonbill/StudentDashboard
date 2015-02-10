@@ -1,94 +1,59 @@
 <?php
-// list problems
+// list students
 include "connect.php";
 include "header.php";
-include "dashboard_functions.php";
+include_once "dashboard_functions.php";
+
+$student_id=rand(0,499);
+if (isset($_GET['id']) && $_GET['id']>0) {
+	$student_id=$_GET['id'];
+}
+
+//include "student_data.php";// compute student data
 ?>
 <html>
 <head>
-<script src='js/d3.min.js'></script>
-<script src='js/index.js'></script>
-<title>Dashboard challenge</title>
+<title>Student #<?php echo $student_id?></title>
 </head>
+
 <body>
 
-<div id='chart1'></div>
-
 <div class='container'>
+
+<h1>
+
+	<i class='fa fa-user'></i> Student <a href='?id=<?php echo $student_id?>'>#<?php echo $student_id?></a> &nbsp;
+	
+	<small>
+		<a href='dashboard.php' class='pull-right'>dashboard</a>
+	</small>
+
+</h1>
+
+<hr />
+
+<input type='hidden' id='student_id' value='<?php echo $student_id?>'>
 <?php
-echo "<h1>Course ";
-echo "<small>";
-echo "<a href='students.php'>500 students</a> - ";
-echo "<a href='videos.php'>".count(videos())." videos - ";
-echo "<a href='problems.php'>".count(problems())." problems</a> - ";
-echo "<a href='heatmap.php'>heatmap</a>";
-echo "</small>";
-echo "</h1>";
-echo "<hr />";
+//include "student_alerts.php";
 
-// Course
-// Weeks
+include "student_columns.php";
 
-$students=500;
-$videos=videos();
-$problems=problems();
+include "student_progress_overview.php";//d3
+
+//include "student_progression_table.php";//html
+include "student_progress_detail.php";//d3js
 
 
-$sql="SELECT * FROM videos WHERE 1;";
-$q=$db->query($sql) or die("error");
-$videos=[];
-while($r=$q->fetch(PDO::FETCH_ASSOC)){
-	$videos[$r['section']][$r['subsection']][]=$r;
-}
+//include "student_calendar.php";//d3js heatmap
+include "student_constancy.php";//d3js
 
-$sql="SELECT * FROM problems WHERE 1;";
-$q=$db->query($sql) or die("error");
-$problems=[];
-while($r=$q->fetch(PDO::FETCH_ASSOC)){
-	$problems[$r['section']][$r['subsection']][]=$r;
-}
+include "student_video_and_problems.php";//ailadi style
 
+//include "student_overview.php";//data table
 
+//include "student_weeks.php";
 
-echo "<pre>";
-echo "<li>Avg. time spent : ".round(count(minutes_per_day())/500)." day with ".minutes_average()." minutes per day";
-echo "<li>Avg. problems done : ".round(array_sum(problem_attempt_count())/500);
-echo "<li>Avg. videos viewed : ".round(array_sum(video_access_count())/500);
-echo "</pre>";
-
-echo "<h1>Course structure</h1>";
-
-$sql="SELECT DISTINCT section, subsection FROM videos WHERE 1;";
-$q=$db->query($sql) or die("error: $sql");
-$sections=[];
-while ($r=$q->fetch()) {
-	$sections[$r['section']][]=$r['subsection'];
-}
-ksort($sections);
-
-//echo "<pre>";print_r($videos);echo "</pre>";
-
-foreach($sections as $section=>$subs){
-	ksort($subs);
-	
-	echo "<table class='table table-condensed table-striped'>";
-	echo "<thead>";
-	echo "<th><a href='section.php?id=$section'>Section :: $section</a></th>";
-	echo "<th>Videos</th>";
-	echo "<th>Problems</th>";
-	echo "</thead>";
-	
-	echo "<tbody>";
-	foreach($subs as $sub){
-		echo "<tr>";
-		echo "<td><a href='subsection.php?id=$sub'>$sub</a>";
-		echo "<td>".count($videos["$section"]["$sub"]);
-		echo "<td>".count($problems["$section"]["$sub"]);
-	}
-	echo "</tbody>";
-	echo "</table>";
-}
-/*
-echo "<pre>";
-print_r($dat);
-*/
+//include "student_problem_attempts.php";
+//include "student_video_views.php";//table
+?>
+<script src='js/tooltip.js'></script>

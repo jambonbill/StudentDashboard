@@ -2,7 +2,7 @@
 // student progress overview as d3js
 //echo "<li>$student_id";
 ?>
-<h3><i class='fa fa-bar-chart'></i> Student progress overview <small>the big numbers</small></h3>
+<h3><i class='fa fa-bar-chart'></i> Progress overview <small id='progressOvMore'>the big numbers</small></h3>
 
 <div id='progressOvDiv'></div>
 

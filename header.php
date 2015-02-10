@@ -16,7 +16,7 @@
 <link href="./font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
 <!-- Tooltip -->
-<link rel="stylesheet" href="tooltip.css">
+<link rel="stylesheet" href="css/tooltip.css">
 
 <!-- JQuery -->
 <script src="js/jquery-1.11.2.min.js"></script>

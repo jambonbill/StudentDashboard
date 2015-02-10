@@ -231,12 +231,13 @@ function problem($problem_id='')
  */
 function problemCount(){
 	global $db;
-	$sql="SELECT section, COUNT(*) as count FROM problems GROUP BY section;";
+	$sql="SELECT section, subsection, COUNT(*) as count FROM problems GROUP BY subsection;";
 	$q=$db->query($sql);
 	$pc=[];
 	while($r=$q->fetch(PDO::FETCH_ASSOC)){
-		$pc[$r['section']]=$r['count'];
+		$pc[$r['section']][$r['subsection']]=$r['count'];
 	}
+	//print_r($pc);exit;
 	return $pc;
 }
 

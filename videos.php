@@ -78,7 +78,11 @@ foreach ($videos as $week=>$video) {
 	echo "<td style='text-align:right'>".round($played_total/$duration_total*100)."%";//watched
 	echo "</tfoot>";
 	echo "</table>";
+
+	$grand_duration_total+=$duration_total;
 }
+
+echo "<li>grand_duration_total=$grand_duration_total";
 
 ?>
 </body>
