@@ -1,7 +1,10 @@
 // Constant view
 
+// Average session length : 40 minutes
+// SELECT AVG(minutes_on_site) FROM `minutes_per_day` WHERE 1
+
 var width = 700,
-    height = 100;
+    height = 60;
 
 var weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 var month=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -14,6 +17,7 @@ var day = d3.time.format("%w"),
 
 var cns = d3.select("#constantDiv")
     .append("svg")
+    //.attr("style", "background-color:red")
     .attr("width", width)
     .attr("height", height);
 /*
@@ -43,17 +47,6 @@ function loadConstant(){
             //console.log("dat",dat);
             updateConstancy(dat);
 
-            dd = d3.extent( dat ,function(o){return o.date;});
-            var daysb=daysBetween(dd[0],dd[1]);
-            //console.log('daysBetween(dd[0],dd[1])',daysb);
-            if(dat.length<2){
-                $('#moreConstant').html('Not enough data to compute constancy');
-            } else {
-                var xdays=Math.floor(daysb/dat.length);
-                //$('#moreConstant').html(dat.length+' session(s) over '+(daysb+1)+' day(s), or approx every '+xdays+' days');
-                minuteDomain = d3.extent( dat ,function(o){return o.minutes_on_site;});
-                $('#moreConstant').html(dat.length+' session(s) from '+minuteDomain[0]+' to '+minuteDomain[1]+' minutes');
-            }
         }
         catch(e){
             console.log(e);
@@ -64,8 +57,18 @@ function loadConstant(){
 
 
 function updateConstancy(data){
-    //console.log('updateConstant()',data);
+    
     minuteDomain = d3.extent( data ,function(o){return o.minutes_on_site;});
+
+    if(dat.length<2){
+        $('#moreConstant').html('Not enough data to compute constancy');
+    } else {
+        dd = d3.extent( data ,function(o){return o.date;});
+        var daysb=daysBetween(dd[0],dd[1]);
+        var xdays=Math.floor(daysb/data.length);
+        $('#moreConstant').html(data.length+' session(s) from '+minuteDomain[0]+' to '+minuteDomain[1]+' minutes');
+    }
+
     
     //compute xscale
     var xScale = d3.time.scale().range([20, width-30]);
@@ -91,6 +94,7 @@ function updateConstancy(data){
     //var xAxis = d3.svg.axis().scale(xScale);
     
     //append axis
+    cns.selectAll('g').remove();
     cns.append('g')
         .attr('class', 'axis')
         .style('shape-rendering','crispEdges')
@@ -106,7 +110,8 @@ function updateConstancy(data){
     var b = cns.selectAll("circle.t1").data(data);
     b.enter().append("circle")
           .attr("class", "t1" )
-          .attr("fill", function(d){return '#ffcc00';})
+          //.attr("fill", function(d){return '#ffcc00';})
+          .attr("fill", function(d){return '#939da9';})
           .style("opacity", 1)
           .style("stroke","#000")
           .style("stroke-width",0)
@@ -119,11 +124,6 @@ function updateConstancy(data){
             })
           .on("mousemove",function(){d3.select(this).style('stroke-width', 3);ttmove();})
           .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-          /*
-          .append("title").text(function(d){ 
-                return d3.time.format('%d %b')(d.date)+" - "+d.minutes + " minutes";
-            })
-          */
           ;
       
     b.transition(50)
@@ -137,20 +137,69 @@ function updateConstancy(data){
 
     //updateConstantLegend(data);
     //console.log('constant done');
+    
+
+    //Draw legend 
+    //Draw legend 
+    //Draw legend 
+    
+    var minutes=0;
+    for(var i=0;i<data.length;i++){
+        minutes+=data[i].minutes_on_site;
+    }
+    var avg=minutes/data.length;
+    //console.log(avg+" minutes per session (avg)");
+    /*
+    cns.append("text")
+        .attr("transform", "translate(40,70)")
+        .attr("fill", "#999")
+        .style("font-size", "10px")
+        .style("text-anchor", "left")
+        .text("Student avg. : "+Math.round(avg)+"min");
+
+    cns.append("text")
+        .attr("transform", "translate(140,70)")
+        .attr("fill", "#999")
+        .style("font-size", "10px")
+        .style("text-anchor", "left")
+        .text(" - Class avg. : 40min");
+    */
+    /*
+    cns.append("circle")
+          .attr("class", "t1" )
+          .attr("fill",'#ffcc00')
+          .style("stroke","#000")
+          .style("stroke-width",0)
+          .attr("cx" , 80 )
+          .attr("cy" , 90 )
+          .attr("r" , rScale(avg) )
+
+    cns.append("circle")
+          .attr("class", "t1" )
+          .attr("fill",'#ffcc00')
+          .style("stroke","#000")
+          .style("stroke-width",0)
+          .attr("cx" , 100 )
+          .attr("cy" , 90 )
+          .attr("r" , rScale(40) )
+          */
 }
 
 
-function updateConstantLegend(data){
+/*
+function updateConstancyLegend(data){
     minuteDomain = d3.extent( data ,function(o){return o.minutes_on_site;});
-    //console.log('updateConstantLegend()',minuteDomain);
+    console.log('updateConstancyLegend()',minuteDomain);
+    cns.selectAll("text").remove();
     cns.append("text")
+        .attr("class", "legend")
         .attr("transform", "translate(20,20)")
         .attr("fill", "#999")
         .style("font-size", "10px")
         .style("text-anchor", "left")
         .text("From "+minuteDomain[0]+" to "+minuteDomain[1]+" minutes");
 }   
-
+*/
 
 $(function(){
     loadConstant();

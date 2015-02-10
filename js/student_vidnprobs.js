@@ -1,7 +1,7 @@
 // Video and problems view
 
 var width = 700,
-    height = 180;
+    height = 160;
 
 //var weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 //var month=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -13,19 +13,20 @@ var day = d3.time.format("%w"),
 
 var vps = d3.select("#vidnprobs")
     .append("svg")
+    //.attr("style", 'background-color:red')//test
     .attr("width", width)
     .attr("height", height);
     
 //add legent
 vps.append("text")
-        .attr("transform", "translate(10,70),rotate(-90)")
+        .attr("transform", "translate(10,50),rotate(-90)")
         .style("text-anchor", "left")
         .style("font-size", "10px")
         .style("fill", "#999")
         .text("VIDEO");
 
 vps.append("text")
-        .attr("transform", "translate(10,150),rotate(-90)")
+        .attr("transform", "translate(10,130),rotate(-90)")
         .style("text-anchor", "left")
         .style("font-size", "10px")
         .style("fill", "#999")
@@ -72,35 +73,29 @@ function updateVidnprobs(data){
     var maxv=d3.max(dat,function(o){return o.video});
     //console.log(maxp,maxv); 
     
-    var videoScale=d3.scale.linear().range([0,80]).domain([0,maxv]);
-    var problemScale=d3.scale.linear().range([0,80]).domain([0,maxp]);
+    var videoScale=d3.scale.linear().range([0,60]).domain([0,maxv]);
+    var problemScale=d3.scale.linear().range([0,60]).domain([0,maxp]);
 
-
+    //delete previous axis (a bit silly since it dont change)
+    
     
     //define xAxis
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient('bottom')
-        //.ticks(d3.time.days, 1)
-        //.ticks(d3.time.days, 7)//tick every x
         .ticks(4)//x tick
         //https://github.com/mbostock/d3/wiki/Time-Formatting
-        //.tickFormat(d3.time.format('%a %d'))
-        //.tickFormat(d3.time.format('%b'))//27Sep
         .tickFormat(d3.time.format('%b'))//Sep
-        .tickSize(40)
+        .tickSize(60)
         .tickPadding(5);
         
-    
-    //var xAxis = d3.svg.axis().scale(xScale);
-    
     //append axis
+    vps.selectAll('g').remove();
     vps.append('g')
         .attr('class', 'axis')
-        .attr('transform', 'translate(0, 80)')
+        .attr('transform', 'translate(0, 60)')
         .style('shape-rendering','crispEdges')
         .call(xAxis)
-
         .selectAll("text")
             .style("font-size", "11px")
             .style("text-anchor", "start");
@@ -108,10 +103,7 @@ function updateVidnprobs(data){
     //override css
     vps.selectAll('.axis line, .axis path').style({'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
     
-
-
-    var b = vps.selectAll("bars.video").data(data);
-    //var format=d3.time.format('%d %b');
+    var b = vps.selectAll("rect.video").data(data);
     b.enter().append("rect")// video
           .attr("class", "video" )
           .attr("fill", function(d){return '#000';})
@@ -119,7 +111,7 @@ function updateVidnprobs(data){
           .style("stroke-width",0)
           .attr("width" , 5 )
           .attr("x" , function(d){return xScale(d.date);} )
-          .attr("y" , 80)
+          .attr("y" , 60)
           .attr("height" , 0)
           .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
@@ -127,40 +119,26 @@ function updateVidnprobs(data){
             })
           .on("mousemove",function(){ttmove();})
           .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-          /*
-          .append("title").text(function(d){
-            if(d.video){
-                var minutes=Math.round(d.video/60);
-                return d.date+" - " + minutes+ " minutes of video";    
-            }
-            return '';
-          })
-          */
           ;
     
     b.transition().delay(function(d,i){return i*20})
         .attr("y" , function(d){
-            if(d.video)return 80-videoScale(d.video);
-            return 80;
+            if(d.video)return 60-videoScale(d.video);
+            return 60;
         })
         .attr("height" , function(d){
             if(d.video)return videoScale(d.video);
             return 0;
         });
     
+    b.exit().remove();
 
-    var b = vps.selectAll("bars.problems").data(data);
-    b.enter().append("rect")// problems
-        .attr("class", "video" )
-        .attr("fill", function(d){
-            var pct=Math.round(d.problem_score/d.problem_done*100);
-            return colorDomain(pct);
-            //return '#337ab7';
-        })
-        .style("stroke",function(d){return colorDomain(Math.round(d.problem_score/d.problem_done*100))})
+    var c = vps.selectAll("rect.problems").data(data);
+    c.enter().append("rect")// problems
+        .attr("class", "problems" )
         .style("stroke-width",0)
         .attr("x" , function(d){return xScale(d.date);} )
-        .attr("y" , 81)
+        .attr("y" , 61)
         .attr("width",5)
         .attr("height",0)
         .on("mouseover",function(d){
@@ -173,19 +151,19 @@ function updateVidnprobs(data){
         })
         .on("mousemove",function(){ttmove();})
         .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-        /*
-        .append("title").text(function(d){
-            if(d.problem)return formatDate(d.date)+" - "+d.problem+" problem(s) done";
-            return '';
-        })
-        */
         ;
     
-    b.transition().delay(function(d,i){return i*20})
+    c.transition().delay(function(d,i){return i*20})
+        .attr("fill", function(d){
+            var pct=Math.round(d.problem_score/d.problem_done*100);
+            return colorDomain(pct);
+        })
+        .style("stroke",function(d){return colorDomain(Math.round(d.problem_score/d.problem_done*100))})
         .attr("height" , function(d){
             if(d.problem_done)return Math.max(0,problemScale(d.problem_done));
         })
     
+    c.exit().remove();
 }
 
 //var formatDate=d3.time.format('%d %b');

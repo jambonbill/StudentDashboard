@@ -57,3 +57,38 @@ include "student_video_and_problems.php";//ailadi style
 //include "student_video_views.php";//table
 ?>
 <script src='js/tooltip.js'></script>
+
+
+<a href=#reload id='btnReload' class='btn btn-default'>Reload</a>
+<div id='loader'></div>
+<script>
+$(function(){
+	$('#btnReload').click(function(){
+		var student_id=Math.round(Math.random()*500);
+		//console.log(student_id);
+		$('#loader').html("loading...");
+		$('#loader').load('student_ctrl.php',{'do':'getDailyData','student_id':student_id},function(json){
+			try{
+				dat=JSON.parse(json);
+				//convert dates
+				dat.forEach(function(d){
+                	d.date = d3.time.format("%Y-%m-%d").parse(d.date);
+            	}); 
+				$('#loader').html(dat.length + " records");
+
+				updateConstancy(dat);
+				updateVidnprobs(dat);
+
+			}
+			catch(e){
+				console.log(e);
+				$('#loader').html(json);
+			}
+		});
+
+		//updateProgress(progressdata)
+
+
+	});
+});
+</script>

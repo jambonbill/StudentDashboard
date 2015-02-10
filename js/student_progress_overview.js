@@ -10,7 +10,8 @@ colors.push('#EDC82B');
 colors.push('#E5E131');
 colors.push('#B9DB50');
 colors.push('#8DD685');
-colors.push('#00B22D');//Vert
+colors.push('#30ad77');//Vert
+//colors.push('#00B22D');//Vert
 
 var colorDomain=d3.scale.linear()
     .domain([0,50,60,70,80,90,100])
@@ -35,6 +36,7 @@ function colorLegend(colors){
     
     var x=220;
     var y=50;
+    var cellwidth=16;
 
     pvis.append('text')
         .attr('font-size', '12px' )
@@ -51,16 +53,16 @@ function colorLegend(colors){
     pvis.append('text')
         .attr('font-size', '12px' )
         .attr("fill", "#999")
-        .attr("transform", "translate("+(x+180)+","+(y+24)+")")
-        .text('All correct');
+        .attr("transform", "translate("+(x+78)+","+(y+24)+")")
+        .text('Correct');
 
     pvis.selectAll(".colors")
         .data(colors)
         .enter()
         .append("rect")
-        .attr("width", 32)
+        .attr("width", cellwidth)
         .attr("height", 8)
-        .attr("x", function(d,i){return x+i*34;})
+        .attr("x", function(d,i){return x+i*(cellwidth+1);})
         .attr("y", y+4)
         //.attr("style", "font-size:11px")
         .attr("fill", function(d){return d;})
@@ -185,7 +187,7 @@ function getOvData(){
         try{  
             var data=$.parseJSON(json);
             computeStats(data);
-            $('#progressOvMore').html("ok");
+            $('#progressOvMore').html(data.length + " session(s)");
         }
         catch(e){
             console.log(e);
@@ -208,15 +210,46 @@ function computeStats(data){
         
     var problem_done=0,
         problem_score=0,
-        video_watched=0;
+        video_watched=0,
+        minutes_on_site=0;
     
     $.each(data,function(i,o){
         //console.log(i,o);
         if(o.problem_done)problem_done+=o.problem_done;
         if(o.problem_score)problem_score+=o.problem_score;
         if(o.video)video_watched+=o.video;//in seconds
+        if(o.minutes_on_site)minutes_on_site+=o.minutes_on_site;
     });
     
+
+    // Start date
+    var htm=mm[0]+"<br>";
+    var daysago=daysBetween(new Date(mm[0]),new Date('2018-12-24'));//last connection
+    htm+="<i class='text-muted'>("+daysago+" days ago)</i>"
+    $('#start').html(htm);
+
+
+
+    // 'Connected' (sessions)
+    $('#connectedTitle').html("<i class='fa fa-calendar-o'></i> "+data.length+" sessions");
+
+    var htm="";
+    //htm+=""
+    var daysago=daysBetween(new Date(mm[1]),new Date('2018-12-24'));//last connection
+    if(daysago>15){
+        htm+="<i class='fa fa-warning' style='color:#c00'></i> Last seen "+daysago+" days ago</i><br />";
+    }else{
+        htm+="<i class='text-muted'></i> Last seen : "+daysago+" days ago</i><br />";
+    }
+    
+    //htm+="<i class='text-muted'>"+daysago+" day(s) ago</i>";
+
+    
+    $('#connectedBody').html(htm);
+
+    //$('#end').html("End html");
+
+
     //console.log("problem_done", problem_done,"/108 problems");
     //console.log("problem_score",problem_score,"/"+problem_done);
     //console.log("video_watched",video_watched,"/49452 seconds");

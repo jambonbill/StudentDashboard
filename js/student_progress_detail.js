@@ -11,25 +11,6 @@ var vis = d3.select("#progressDiv").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-// rect 1
-/*
-vis.append("rect")
-    .attr("fill","#eee")
-    .attr("y", 20)
-    .attr("width",700)
-    .attr("height",16)
-    //.append("text").text("Test on the rect");
-    ;
-
-// rect 2
-vis.append("rect")
-    .attr("fill","#f6f6f6")
-    .attr("y", 38)
-    .attr("width",700)
-    .attr("height",16)
-    //.append("text").text("Test on the rect");
-    ;
-*/
 
 // draw week groups
 var weeks=vis.selectAll(".weeks")
@@ -43,28 +24,6 @@ var weeks=vis.selectAll(".weeks")
         return "translate(" + (i*((width)/8)) + ",0)";
     })
     ;
-
-// Draw invisible recangles for mouseover (foireux)
-/*
-weeks.append("rect")
-    .attr("x",0).attr("y",0)
-    .attr("width",width/8)
-    .attr("height",100)
-    .attr("fill",'#fff')
-    .on("mouseover",function(d){
-        var htm="";//
-        $.each(progressdata[d],function(lecture,o){
-            htm+="<b>"+lecture+"</b><hr style='margin-top:4px;margin-bottom:4px;' />";
-            htm+=o.problemdone+"/"+o.problemcount+" problems done<br />";
-            htm+=o.videopct+"% video watched<br />";
-            //htm+="<br />";
-        });        
-        ttover(htm);
-    })
-    .on("mousemove",function(){ttmove();})
-    .on("mouseout",function(){ttout();})
-    ;
-*/  
 
 // Draw title
 weeks.append("text")
@@ -86,8 +45,7 @@ weeks.append("line")
 
 
 
-// Draw video rectangles
-var progressdata;//global for tooltips
+
 function getProgressData(){
     //console.log('getProgressData()');
     var p={
@@ -95,13 +53,13 @@ function getProgressData(){
         'student_id':$('#student_id').val()
     }
     
-    $('#progressMore').load("student_ctrl.php",p,function(json){        
+    $('#progressMore').load("student_ctrl.php",p,function(json){
         try{  
             var data=$.parseJSON(json);
-            progressdata=data;
             updateProgress(data);
             
             //compute stats
+            /*
             var problemcount=0,
                 problemdone=0,
                 problemscore=0,
@@ -119,6 +77,8 @@ function getProgressData(){
             var videoprogress=Math.round(videopct/16);
             //console.log();
             $('#progressMore').html(problemprogress+"% problems done, "+videoprogress+"% video watched ");
+            */
+           $('#progressMore').html(data.length + "records");
         }
         catch(e){
             console.log(e);

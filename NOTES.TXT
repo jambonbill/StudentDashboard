@@ -4,12 +4,21 @@
 - We look at the dashboard from the student point of view
  (create a progress summary that shows a student how they're doing in the context of their peers)
 
+- Today is 2018-12-24
+
 - There are 500 students
-- There is only one course
-- There is NO forum data
+
+- There is only one course :
+-- Course start on 2018-09-14
+-- 108 Problems in total
+-- 141 Videos
+-- xxx Seconds of video
+
+- NO forum data
 - The course is divided in 8 weeks
 - There are two lectures per week
-- 141 Videos
+
+
 - Each lecture is associated with a number of problems
 - Each problem earn a maximum of 1 point (bool)
 

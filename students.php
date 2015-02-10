@@ -125,7 +125,7 @@ echo "<tbody>";
 for ($i=0; $i <500; $i++) {
 	//print_r($r);exit;
 	echo "<tr>";
-	echo "<td><a href=student.php?id=$i>#".$i."</a>";
+	echo "<td><a href=index.php?id=$i>#".$i."</a>";
 	
 	$number_days=count($minutes["$i"]);
 	
