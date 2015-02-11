@@ -2,18 +2,10 @@
 // list students
 include "connect.php";
 include "header.php";
-include_once "dashboard_functions.php";
-
-$student_id=rand(0,499);
-if (isset($_GET['id']) && $_GET['id']>0) {
-	$student_id=$_GET['id'];
-}
-
-//include "student_data.php";// compute student data
 ?>
 <html>
 <head>
-<title>Student #<?php echo $student_id?></title>
+<title>Student dashboard</title>
 </head>
 
 <body>
@@ -21,13 +13,8 @@ if (isset($_GET['id']) && $_GET['id']>0) {
 <div class='container'>
 
 <h1>
-
-	<i class='fa fa-user'></i> Student <a href='?id=<?php echo $student_id?>'>#<?php echo $student_id?></a> &nbsp;
-	
-	<small>
-		<a href='dashboard.php' class='pull-right'>dashboard</a>
-	</small>
-
+	<i class='fa fa-user'></i> Student
+	<small id='student_id'>#</small>
 </h1>
 
 <hr />
@@ -58,37 +45,26 @@ include "student_video_and_problems.php";//ailadi style
 ?>
 <script src='js/tooltip.js'></script>
 
-
+<hr />
 <a href=#reload id='btnReload' class='btn btn-default'>Reload</a>
 <div id='loader'></div>
+
+<script src='js/csvdata.js'></script>
 <script>
+
 $(function(){
 	$('#btnReload').click(function(){
-		var student_id=Math.round(Math.random()*500);
-		//console.log(student_id);
-		$('#loader').html("loading...");
-		$('#loader').load('student_ctrl.php',{'do':'getDailyData','student_id':student_id},function(json){
-			try{
-				dat=JSON.parse(json);
-				//convert dates
-				dat.forEach(function(d){
-                	d.date = d3.time.format("%Y-%m-%d").parse(d.date);
-            	}); 
-				$('#loader').html(dat.length + " records");
-
-				updateConstancy(dat);
-				updateVidnprobs(dat);
-
-			}
-			catch(e){
-				console.log(e);
-				$('#loader').html(json);
-			}
-		});
-
-		//updateProgress(progressdata)
-
-
+		updateStudent(Math.round(Math.random()*500))
 	});
 });
+
+function updateStudent(student_id){
+	var dat=getStudentData(student_id);
+	computeStats(dat);//columns and arcs
+	updateConstancy(dat);
+	updateVidnprobs(dat);
+
+	var weeklydata=getWeeklyData(student_id);
+	updateProgressDetails(weeklydata)
+}
 </script>

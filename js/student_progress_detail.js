@@ -44,51 +44,8 @@ weeks.append("line")
 
 
 
-
-
-function getProgressData(){
-    //console.log('getProgressData()');
-    var p={
-        'do':'getWeeklyProgress',
-        'student_id':$('#student_id').val()
-    }
-    
-    $('#progressMore').load("student_ctrl.php",p,function(json){
-        try{  
-            var data=$.parseJSON(json);
-            updateProgress(data);
-            
-            //compute stats
-            /*
-            var problemcount=0,
-                problemdone=0,
-                problemscore=0,
-                videopct=0;
-            $.each(data,function(week,objs){
-                $.each(objs,function(subsection,o){
-                    //console.log(week,subsection,o);
-                    if(o.problemcount)problemcount+=o.problemcount;
-                    if(o.problemdone)problemdone+=o.problemcount; else o.problemdone=0;
-                    if(o.problemscore)problemscore+=o.problemscore; else o.problemscore=0;
-                    if(o.videopct)videopct+=o.videopct; else o.videopct=0;
-                })
-            });
-            var problemprogress=Math.round(problemdone/problemcount*100);
-            var videoprogress=Math.round(videopct/16);
-            //console.log();
-            $('#progressMore').html(problemprogress+"% problems done, "+videoprogress+"% video watched ");
-            */
-           $('#progressMore').html(data.length + "records");
-        }
-        catch(e){
-            console.log(e);
-        }
-    });
-}
-
-
-function updateProgress(data){
-    //  console.log('updateProgress()',data);
+function updateProgressDetails(data){
+      console.log('updateProgressDetails()',data);
     
     // Draw problems done
     var pbs=weeks.append("rect")
@@ -97,6 +54,7 @@ function updateProgress(data){
         .attr("width",0)
         .attr("height",8)
         .attr("fill",function(d){
+            /*
             var score=0;
             var done=0;
             $.each(data[d],function(lecture,o){
@@ -105,15 +63,16 @@ function updateProgress(data){
             });
             var pct=Math.round(score/done*100);
             //console.log(pct+"%");
-            return colorDomain(pct);
-            //return "#B9DB50";
+            */
+            return colorDomain(100);
         })//vert
         //.attr("stroke","#B9DB50")
         .attr("stroke-width","0")
         .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
             
-            var htm="<b>"+d +" problems</b><hr />";
+            var htm="<b>"+d +" - x problems</b><hr />";
+            
             htm+="<table width=100%>";
             htm+="<tr><td>";
             htm+="<td>Done";
@@ -122,18 +81,29 @@ function updateProgress(data){
 
             $.each(data[d],function(lecture,o){
                 
+                //console.log(o.problem,Object.keys(o.problem));
+                
+                //compute score
+                var score=0;
+                for(var i=0;i<Object.keys(o.problem).length;i++){
+                    var k=Object.keys(o.problem)[i];
+                    //console.log(o.problem[k]);
+                    score+=o.problem[k].score;
+                }
+
                 htm+="<tr><td>"+lecture;
-                htm+="<td>"+o.problemdone+"/"+o.problemcount;
+                htm+="<td>"+score+"/"+Object.keys(o.problem).length;
                 //htm+="<td>"+o.problemdone+"/"+o.problemcount+" done";
                 htm+="<td>";
-                if(o.problemscore && o.problemdone){
-                    htm+=Math.round(o.problemscore/o.problemdone*100)+"%";
+                if(score && Object.keys(o.problem).length){
+                    htm+=Math.round(score/Object.keys(o.problem).length*100)+"%";
                 }
                 htm+="</tr>";
                 //if(o.problemdone)problemdone+=o.problemdone;
                 //if(o.problemcount)problemcount+=o.problemcount;
             });
             htm+="</table>";
+            
             ttover(htm);
         })
         .on("mousemove",function(){ttmove();})
@@ -146,12 +116,12 @@ function updateProgress(data){
         var problemdone=0;
         var problemcount=0;
         $.each(data[d],function(lecture,o){
-            if(o.problemdone)problemdone+=o.problemdone;
-            if(o.problemcount)problemcount+=o.problemcount;
+            //if(o.problemdone)problemdone+=o.problemdone;
+            //if(o.problemcount)problemcount+=o.problemcount;
         });
-        var pct=Math.round(problemdone/problemcount*colwidth);
-        if(pct)return pct;
-        return 0;
+        //var pct=Math.round(problemdone/problemcount*colwidth);
+        //if(pct)return pct;
+        return 33;
     })
 
     // Draw video rectangles
@@ -165,7 +135,7 @@ function updateProgress(data){
     .attr("stroke-width","0")
     .on("mouseover",function(d){
         d3.select(this).style('stroke-width', 2);
-        var htm="<b>"+d+" video watched<hr />";
+        var htm="<b>"+d+" :: x videos<hr />";
         htm+="<table width=100%>";
         $.each(data[d],function(lecture,o){
             htm+="<tr><td>"+lecture+"<td>"+o.videopct+"%";
@@ -186,7 +156,7 @@ function updateProgress(data){
         var pct=Math.round(video/2/100*colwidth);
         //var pct=Math.random()*colwidth;
         if(pct)return pct;
-        return 0;
+        return 33;
     })
 }
 
@@ -194,5 +164,5 @@ function updateProgress(data){
 
 //d3.select(self.frameElement).style("height", "2910px");
 $(function(){
-    getProgressData();
+    //getProgressData();
 });

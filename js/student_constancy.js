@@ -29,7 +29,7 @@ cns.append("text")
         .text("MINUTES");
 */
 
-
+/*
 function loadConstant(){
     //console.log('loadConstant()');
     var p={
@@ -53,14 +53,14 @@ function loadConstant(){
         }
     });
 }
-
+*/
 
 
 function updateConstancy(data){
     
     minuteDomain = d3.extent( data ,function(o){return o.minutes_on_site;});
 
-    if(dat.length<2){
+    if(data.length<2){
         $('#moreConstant').html('Not enough data to compute constancy');
     } else {
         dd = d3.extent( data ,function(o){return o.date;});
@@ -117,9 +117,34 @@ function updateConstancy(data){
           .style("stroke-width",0)
           .attr("r" , 0 )
           .on("mouseover",function(d){
+            //console.log(d);
             d3.select(this).style('stroke-width', 3);
-            var htm="<b>"+d3.time.format('%A %d %b')(d.date)+"</b><hr />";
-            htm+=d.minutes_on_site+" minutes on site";
+            var htm="<b>"+d3.time.format('%A %d %b')(d.date)+" :: "+d.minutes_on_site+" minutes</b><hr />";
+            
+            
+            //Problems
+            if(d.problem){
+                htm+="<b>"+d.problem.length+" problem(s)</b>";
+                htm+="<table width='100%'>";
+                for(var i=0;i<d.problem.length;i++){
+                    htm+="<tr>";
+                    htm+="<td>"+d.problem[i].problem_id;
+                    htm+="<td>"+d.problem[i].score+"/"+d.problem[i].max_points;
+                }
+                htm+="</table>";
+            }
+            //Videos
+            if(d.video){
+                htm+="<b>"+d.video.length+" video(s)</b>";
+                htm+="<table width='100%'>";
+                for(var i=0;i<d.video.length;i++){
+                    htm+="<tr>";
+                    htm+="<td>"+d.video[i].video_id;
+                    //htm+="<td>"+d.video[i].watched_seconds+"/"+d.video[i].duration_seconds;
+                    htm+="<td style='text-align:right'>"+Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100)+"%";
+                }
+                htm+="</table>";   
+            }
             ttover(htm);
             })
           .on("mousemove",function(){d3.select(this).style('stroke-width', 3);ttmove();})
@@ -200,7 +225,3 @@ function updateConstancyLegend(data){
         .text("From "+minuteDomain[0]+" to "+minuteDomain[1]+" minutes");
 }   
 */
-
-$(function(){
-    loadConstant();
-});

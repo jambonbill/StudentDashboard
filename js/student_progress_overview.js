@@ -10,8 +10,27 @@ colors.push('#EDC82B');
 colors.push('#E5E131');
 colors.push('#B9DB50');
 colors.push('#8DD685');
-colors.push('#30ad77');//Vert
+colors.push('#30ad77');//Vert correct
 //colors.push('#00B22D');//Vert
+
+//quicklookup
+var lectures=[];
+lectures.push({'section':'Week 1','subsection':'Lecture 1'});
+lectures.push({'section':'Week 1','subsection':'Lecture 2'});
+lectures.push({'section':'Week 2','subsection':'Lecture 3'});
+lectures.push({'section':'Week 2','subsection':'Lecture 4'});
+lectures.push({'section':'Week 3','subsection':'Lecture 5'});
+lectures.push({'section':'Week 3','subsection':'Lecture 6'});
+lectures.push({'section':'Week 4','subsection':'Lecture 7'});
+lectures.push({'section':'Week 4','subsection':'Lecture 8'});
+lectures.push({'section':'Week 5','subsection':'Lecture 9'});
+lectures.push({'section':'Week 5','subsection':'Lecture 10'});
+lectures.push({'section':'Week 6','subsection':'Lecture 11'});
+lectures.push({'section':'Week 6','subsection':'Lecture 12'});
+lectures.push({'section':'Week 7','subsection':'Lecture 13'});
+lectures.push({'section':'Week 7','subsection':'Lecture 14'});
+lectures.push({'section':'Week 8','subsection':'Lecture 15'});
+lectures.push({'section':'Week 8','subsection':'Lecture 16'});
 
 var colorDomain=d3.scale.linear()
     .domain([0,50,60,70,80,90,100])
@@ -176,7 +195,10 @@ pvis.append("text").attr("x",90).attr("y",15).text("50%")
 pvis.append("text").attr("x",105).attr("y",25).text("Video")
     .style("font-size", "10px");
 */
-function getOvData(){    
+
+
+/*
+function getOvData(){
     //console.log('getOvData()');
     var p={
         'do':'getDailyData',
@@ -186,6 +208,10 @@ function getOvData(){
     $('#progressOvMore').load("student_ctrl.php",p,function(json){        
         try{  
             var data=$.parseJSON(json);
+            //convert dates
+            data.forEach(function(d){
+                d.date = d3.time.format("%Y-%m-%d").parse(d.date);
+            });
             computeStats(data);
             $('#progressOvMore').html(data.length + " session(s)");
         }
@@ -194,6 +220,13 @@ function getOvData(){
         }
     });
 }
+*/
+
+
+/*
+function updateColumns(data){
+}
+*/
 
 
 function computeStats(data){
@@ -206,7 +239,7 @@ function computeStats(data){
     //console.log('computeStats(data)',data);
     //console.log(data.length+" session(s)");
     var mm=d3.extent(data,function(d){return d.date});
-    console.log("From "+mm[0] + " to "+mm[1]);
+    //console.log("From "+mm[0] + " to "+mm[1]);
         
     var problem_done=0,
         problem_score=0,
@@ -217,7 +250,7 @@ function computeStats(data){
         //console.log(i,o);
         if(o.problem_done)problem_done+=o.problem_done;
         if(o.problem_score)problem_score+=o.problem_score;
-        if(o.video)video_watched+=o.video;//in seconds
+        if(o.video_watched)video_watched+=o.video_watched;//in seconds
         if(o.minutes_on_site)minutes_on_site+=o.minutes_on_site;
     });
     
@@ -258,31 +291,35 @@ function computeStats(data){
     var problemscore=(problem_score/problem_done);
     var videoprogress=(video_watched/49452);
 
+    pvis.selectAll("path, text").remove();
+
     // Arc problems
     pvis.append("path")
-    .datum({endAngle:(problemprogress*tau)})
-    .style("fill", colorDomain(problemscore*100))
-    .style("stroke", colorDomain(problemscore*100))
-    .style("stroke-width", 0)
-    .attr("d", arc1)
-    .attr("transform", "translate(60,60)")
-    .on("mouseover",function(d){
-        d3.select(this).style('stroke-width', 2);
-        var htm="<b>Problems</b><hr />";
-        htm+="<table width=100%>";
-        htm+="<tr><td>Done<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
-        htm+="<tr><td>Correct<td>"+problem_score+"/"+problem_done+"<td>"+Math.round(problemscore*100)+"%";
-        htm+="</table>";
-        ttover(htm);
-    })
-    .on("mousemove",function(){ttmove();})
-    .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-    ;
+        .attr("class", 'arc1')
+        .datum({endAngle:(problemprogress*tau)})
+        .style("fill", colorDomain(problemscore*100))
+        .style("stroke", colorDomain(problemscore*100))
+        .style("stroke-width", 0)
+        .attr("d", arc1)
+        .attr("transform", "translate(60,60)")
+        .on("mouseover",function(d){
+            d3.select(this).style('stroke-width', 2);
+            var htm="<b>Problems</b><hr />";
+            htm+="<table width=100%>";
+            htm+="<tr><td>Done<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
+            htm+="<tr><td>Correct<td>"+problem_score+"/"+problem_done+"<td>"+Math.round(problemscore*100)+"%";
+            htm+="</table>";
+            ttover(htm);
+        })
+        .on("mousemove",function(){ttmove();})
+        .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
+        ;
     
     //console.log('problemdone/problemcount',problemdone/problemcount);
 
     // Arc video
     pvis.append("path")
+        .attr("class", 'arc2')
         .datum({endAngle:(videoprogress*tau)})
         .style("fill", "#000")
         .style("stroke", "#000")
@@ -317,7 +354,3 @@ function computeStats(data){
     
 }
 
-
-$(function(){
-    getOvData();
-});

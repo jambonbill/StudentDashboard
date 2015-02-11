@@ -155,6 +155,11 @@ switch ($_POST['do']) {
 			$date=$r['date_attempted'];
 			@$daily[$date]["problem_done"]++;
 			@$daily[$date]["problem_score"]+=$r['score'];
+			//@$daily[$date]["section"]=$r['section'];
+			if(!@in_array($r['subsection'], $daily[$date]["subsection"])){
+				@$daily[$date]["subsection"][]=$r['subsection'];	
+			}
+			
 		}
 		
 		$sql="SELECT * FROM video_views WHERE student_id=$student_id;";
@@ -162,6 +167,10 @@ switch ($_POST['do']) {
 		while ($r=$q->fetch(PDO::FETCH_ASSOC)) {
 			$date=$r['date_viewed'];
 			@$daily[$date]["video"]+=$r['watched_seconds'];
+			//@$daily[$date]["section"]=$r['section'];
+			if(!@in_array($r['subsection'], $daily[$date]["subsection"])){
+				@$daily[$date]["subsection"][]=$r['subsection'];
+			}
 		}
 		
 		$dat=[];
@@ -172,6 +181,10 @@ switch ($_POST['do']) {
 		
 		echo json_encode($dat);exit;
 		break;
+
+
+
+
 
 	default:
 		print_r($_POST);

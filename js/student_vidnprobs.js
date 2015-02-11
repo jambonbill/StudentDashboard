@@ -32,6 +32,7 @@ vps.append("text")
         .style("fill", "#999")
         .text("PROBLEMS");
 
+/*
 function loadVidnProbs(){
     //console.log('loadVidnProbs()');
     var p={
@@ -57,21 +58,22 @@ function loadVidnProbs(){
         }
     });
 }
-
+*/
 
 
 function updateVidnprobs(data){
 
     //console.log('updateVidnprobs()',data);    
-    //var dateDomain = d3.extent( dat ,function(o){return o.date;});        
-    //dateDomain[0]=new Date("2018-09-14");//start of the course
-    dateDomain=[new Date("2018-09-14"),new Date("2018-12-24")];//fixed scale
-
+    
+    //compute o.problem_done and o.video_watched
+    
+    
     //compute xscale
+    dateDomain=[new Date("2018-09-14"),new Date("2018-12-24")];//fixed scale
     var xScale = d3.time.scale().range([20, width-30]).domain(dateDomain);
-    var maxp=d3.max(dat,function(o){return o.problem_done});
-    var maxv=d3.max(dat,function(o){return o.video});
-    //console.log(maxp,maxv); 
+    var maxp=d3.max(data,function(o){return o.problem_done});
+    var maxv=d3.max(data,function(o){return o.video_watched});
+    //console.log(maxp,maxv);
     
     var videoScale=d3.scale.linear().range([0,60]).domain([0,maxv]);
     var problemScale=d3.scale.linear().range([0,60]).domain([0,maxp]);
@@ -115,7 +117,23 @@ function updateVidnprobs(data){
           .attr("height" , 0)
           .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
-                ttover("<b>"+d3.time.format('%A %d %b')(d.date) +"</b><hr />"+ d.minutes_on_site+" minutes of video");
+                var htm="<b>"+d3.time.format('%A %d %b')(d.date) +" :: x minutes of video</b><hr />";
+                //htm+= d.minutes_on_site+" minutes of video<br />";
+                if(d.video){
+                    htm+="<b>"+d.video.length+" video(s)</b>";
+                    htm+="<table width='100%'>";
+                    for(var i=0;i<d.video.length;i++){
+                        htm+="<tr>";
+                        htm+="<td>"+d.video[i].video_id;
+                        //htm+="<td>"+d.video[i].watched_seconds;
+                        //htm+="<td>"+d.video[i].duration_seconds;
+                        htm+="<td>"+Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100)+"%";
+                    }
+                    htm+="</table>";
+                }
+                
+                //htm+= "on "+d.subsection.join(", ");
+                ttover(htm);
             })
           .on("mousemove",function(){ttmove();})
           .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
@@ -123,16 +141,24 @@ function updateVidnprobs(data){
     
     b.transition().delay(function(d,i){return i*20})
         .attr("y" , function(d){
-            if(d.video)return 60-videoScale(d.video);
+            if(d.video){
+                //console.log(d.video);
+                //for(var i=0;i<d.video.length;i++)
+                //return 10;
+                return 60-videoScale(d.video_watched);
+            }
             return 60;
         })
         .attr("height" , function(d){
-            if(d.video)return videoScale(d.video);
+            if(d.video){
+                //return 10;
+                return videoScale(d.video_watched);
+            }
             return 0;
         });
     
     b.exit().remove();
-
+    
     var c = vps.selectAll("rect.problems").data(data);
     c.enter().append("rect")// problems
         .attr("class", "problems" )
@@ -143,9 +169,17 @@ function updateVidnprobs(data){
         .attr("height",0)
         .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
-            var htm="<b>"+d3.time.format('%A %d %b')(d.date)+"</b><hr />";
             var pct=Math.round(d.problem_score/d.problem_done*100);
-            htm+=d.problem_done+" problem done<br />";
+            var htm="<b>"+d3.time.format('%A %d %b')(d.date)+" :: "+d.problem.length+" problem(s) done</b><hr />";
+            
+            //htm+="<b>"+d.problem.length+" problem(s) done</b>";
+            htm+="<table width=100%>";
+            for(var i=0;i<d.problem.length;i++){
+                htm+="<tr>";
+                htm+="<td>"+d.problem[i].problem_id;
+                htm+="<td>"+d.problem[i].score+"/1";
+            }
+            htm+="</table>";
             htm+="Score: "+d.problem_score+"/"+d.problem_done+" ("+pct+"%)<br />";
             ttover(htm);
         })
@@ -164,10 +198,12 @@ function updateVidnprobs(data){
         })
     
     c.exit().remove();
+    
 }
 
 //var formatDate=d3.time.format('%d %b');
-
+/*
 $(function(){
     loadVidnProbs();
 });
+*/
