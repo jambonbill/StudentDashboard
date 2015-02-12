@@ -29,31 +29,7 @@ cns.append("text")
         .text("MINUTES");
 */
 
-/*
-function loadConstant(){
-    //console.log('loadConstant()');
-    var p={
-        'do':'getDailyData',
-        'student_id':$('#student_id').val()
-    }
-    $('#moreConstant').html("loading...");
-    $('#moreConstant').load("student_ctrl.php",p,function(x){
-        try{
-            dat=JSON.parse(x);
-            var parseDate = d3.time.format("%Y-%m-%d").parse;
-            dat.forEach(function(d) {
-                d.date = parseDate(d.date);
-            });
-            //console.log("dat",dat);
-            updateConstancy(dat);
 
-        }
-        catch(e){
-            console.log(e);
-        }
-    });
-}
-*/
 
 
 function updateConstancy(data){
@@ -119,30 +95,43 @@ function updateConstancy(data){
           .on("mouseover",function(d){
             //console.log(d);
             d3.select(this).style('stroke-width', 3);
-            var htm="<b>"+d3.time.format('%A %d %b')(d.date)+" :: "+d.minutes_on_site+" minutes</b><hr />";
+            var htm="<b>"+d3.time.format('%A %d %b')(d.date)+" - "+d.minutes_on_site+" minutes</b><hr />";
             
             
             //Problems
             if(d.problem){
-                htm+="<b>"+d.problem.length+" problem(s)</b>";
+                
                 htm+="<table width='100%'>";
+                htm+="<thead>";
+                htm+="<th>"+d.problem.length+" problem(s)</th>";
+                htm+="<th style='text-align:right'>Score</th>";
+                htm+="</thead>";
+                htm+="<tbody>";
                 for(var i=0;i<d.problem.length;i++){
                     htm+="<tr>";
                     htm+="<td>"+d.problem[i].problem_id;
-                    htm+="<td>"+d.problem[i].score+"/"+d.problem[i].max_points;
+                    htm+="<td style='text-align:right'>"+d.problem[i].score+"/"+d.problem[i].max_points;
                 }
+                htm+="</tbody>";
                 htm+="</table>";
             }
             //Videos
             if(d.video){
-                htm+="<b>"+d.video.length+" video(s)</b>";
+                
                 htm+="<table width='100%'>";
+                htm+="<thead>";
+                htm+="<th>"+d.video.length+" video(s)</th>";
+                htm+="<th style='text-align:right'>Watched</th>";
+                htm+="</thead>";
+                htm+="<tbody>";
                 for(var i=0;i<d.video.length;i++){
                     htm+="<tr>";
-                    htm+="<td>"+d.video[i].video_id;
+                    htm+="<td>"+d.video[i].section+" - "+d.video[i].video_id;
                     //htm+="<td>"+d.video[i].watched_seconds+"/"+d.video[i].duration_seconds;
-                    htm+="<td style='text-align:right'>"+Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100)+"%";
+                    var pct=Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100);
+                    htm+="<td style='text-align:right;color:"+greyScale(pct)+"'>"+pct+"%";
                 }
+                htm+="</tbody>";
                 htm+="</table>";   
             }
             ttover(htm);

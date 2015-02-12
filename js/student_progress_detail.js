@@ -45,65 +45,49 @@ weeks.append("line")
 
 
 function updateProgressDetails(data){
-      console.log('updateProgressDetails()',data);
-    
+    console.log('updateProgressDetails()',data);
+    weeks.selectAll("rect").remove();
+
     // Draw problems done
     var pbs=weeks.append("rect")
+        .attr("class","problem")
         .attr("x",0)
         .attr("y",20)
         .attr("width",0)
         .attr("height",8)
         .attr("fill",function(d){
-            /*
+            //console.log(data[d]);
             var score=0;
             var done=0;
             $.each(data[d],function(lecture,o){
-                if(o.problemscore)score+=o.problemscore;
-                if(o.problemdone)done+=o.problemdone;
+                if(o.problem_score)score+=o.problem_score;
+                if(o.problem_done)done+=o.problem_done;
             });
-            var pct=Math.round(score/done*100);
-            //console.log(pct+"%");
-            */
-            return colorDomain(100);
+            return colorDomain(score/done*100);
         })//vert
-        //.attr("stroke","#B9DB50")
+        .attr("stroke","#000")
         .attr("stroke-width","0")
         .on("mouseover",function(d){
-            d3.select(this).style('stroke-width', 2);
+            d3.select(this).style('stroke-width', 1);
             
-            var htm="<b>"+d +" - x problems</b><hr />";
+            var htm="<b>"+d +" Problems</b><hr />";
             
             htm+="<table width=100%>";
-            htm+="<tr><td>";
-            htm+="<td>Done";
-            htm+="<td>Score";
-            htm+="</tr>";
-
-            $.each(data[d],function(lecture,o){
-                
+            htm+="<thead><th></th>";
+            htm+="<th style='text-align:center'>Done</th>";
+            htm+="<th style='text-align:right'>Score</th>";
+            htm+="</thead>";
+            htm+="<tbody>";
+            $.each(data[d],function(lecture,o){                
                 //console.log(o.problem,Object.keys(o.problem));
-                
-                //compute score
-                var score=0;
-                for(var i=0;i<Object.keys(o.problem).length;i++){
-                    var k=Object.keys(o.problem)[i];
-                    //console.log(o.problem[k]);
-                    score+=o.problem[k].score;
-                }
-
                 htm+="<tr><td>"+lecture;
-                htm+="<td>"+score+"/"+Object.keys(o.problem).length;
-                //htm+="<td>"+o.problemdone+"/"+o.problemcount+" done";
-                htm+="<td>";
-                if(score && Object.keys(o.problem).length){
-                    htm+=Math.round(score/Object.keys(o.problem).length*100)+"%";
-                }
+                htm+="<td style='text-align:center'>"+o.problem_score+"/"+o.problem_count;
+                var pct=Math.round(o.problem_score/o.problem_count*100);
+                htm+="<td style='text-align:right;color:"+colorDomain(pct)+"'><b>"+pct+"%</b></td>";
                 htm+="</tr>";
-                //if(o.problemdone)problemdone+=o.problemdone;
-                //if(o.problemcount)problemcount+=o.problemcount;
             });
+            htm+="</tbody>";
             htm+="</table>";
-            
             ttover(htm);
         })
         .on("mousemove",function(){ttmove();})
@@ -113,19 +97,22 @@ function updateProgressDetails(data){
     pbs.transition().delay(function(d,i){return i*200})
     .attr("width",function(d){
         //console.log(d,data[d]);
-        var problemdone=0;
-        var problemcount=0;
+        var problem_done=0;
+        var problem_count=0;
         $.each(data[d],function(lecture,o){
-            //if(o.problemdone)problemdone+=o.problemdone;
-            //if(o.problemcount)problemcount+=o.problemcount;
+            if(o.problem_done)problem_done+=o.problem_done;
+            if(o.problem_count)problem_count+=o.problem_count;
         });
-        //var pct=Math.round(problemdone/problemcount*colwidth);
-        //if(pct)return pct;
-        return 33;
-    })
+        var pct=Math.round(problem_done/problem_count*colwidth);
+        if(pct)return pct;
+        return 0;
+    });
+
+    //pbs.exit().remove();
 
     // Draw video rectangles
     var vids=weeks.append("rect")
+      .attr("class","video")
       .attr("x",0)
       .attr("y",30)
       .attr("width",0)
@@ -134,12 +121,34 @@ function updateProgressDetails(data){
     .attr("stroke","#000")
     .attr("stroke-width","0")
     .on("mouseover",function(d){
+        //console.log(data[d]);
         d3.select(this).style('stroke-width', 2);
-        var htm="<b>"+d+" :: x videos<hr />";
-        htm+="<table width=100%>";
+        var htm="<b>"+d+" Videos<hr />";
         $.each(data[d],function(lecture,o){
-            htm+="<tr><td>"+lecture+"<td>"+o.videopct+"%";
+            //console.log(o.video);
+            htm+="<table width='100%'>";
+            htm+="<thead>";
+            htm+="<th>"+lecture+"</th>";
+            htm+="<th style='text-align:center'>Duration</th>";
+            htm+="<th style='text-align:right'>Watched</th></thead>";
+            htm+="<tbody>";
+            for(var i=0;i<Object.keys(o.video).length;i++){
+                var k=Object.keys(o.video)[i];
+                htm+="<tr><td>"+k;
+                htm+="<td style='text-align:center'>"+o.video[k].duration_seconds;
+                if(o.video[k].watched_seconds){
+                    var pct=Math.round(o.video[k].watched_seconds/o.video[k].duration_seconds*100);
+                } else {
+                    var pct=0;
+                }
+                htm+="<td style='text-align:right;color:"+greyScale(pct)+"'><b>"+pct+"%</b></td>";
+
+            }
+
+            htm+="</tbody>";
+            htm+="</table>";
         });
+        
         ttover(htm);
     })
     .on("mousemove",function(){ttmove();})
@@ -148,21 +157,20 @@ function updateProgressDetails(data){
 
     vids.transition().delay(function(d,i){return i*200})
         .attr("width",function(d){
-        var video=0;
+        var duration=0;
+        var watched=0;
         $.each(data[d],function(lecture,o){
-            //console.log(lecture,data[d].length);
-            if(o.videopct)video+=o.videopct;
+            duration+=o.video_duration;
+            if(o.watched_seconds)watched +=o.watched_seconds;
         });
-        var pct=Math.round(video/2/100*colwidth);
+        //console.log("watched:"+watched,"duration:"+duration);
+        if(duration && watched){
+            return (watched/duration*colwidth);
+        }
+        
+        //var pct=Math.round(video/2*colwidth);
         //var pct=Math.random()*colwidth;
-        if(pct)return pct;
-        return 33;
-    })
-}
-
-
-
-//d3.select(self.frameElement).style("height", "2910px");
-$(function(){
-    //getProgressData();
-});
+        //if(pct)return pct;
+        return 0;
+    });
+};

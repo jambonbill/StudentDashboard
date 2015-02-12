@@ -32,33 +32,6 @@ vps.append("text")
         .style("fill", "#999")
         .text("PROBLEMS");
 
-/*
-function loadVidnProbs(){
-    //console.log('loadVidnProbs()');
-    var p={
-        'do':'getDailyData',
-        'student_id':$('#student_id').val()
-    }
-    $('#moreVidndprobs').html("loading...");
-    $('#moreVidndprobs').load("student_ctrl.php",p,function(x){
-        try{
-            dat=JSON.parse(x);
-            dat.forEach(function(d) {
-                d.date = d3.time.format("%Y-%m-%d").parse(d.date);
-            });            
-            // console.log("dat",dat);
-            updateVidnprobs(dat);
-
-            if(dat.length){
-                $('#moreVidndprobs').html(dat.length+' record(s)');
-            }            
-        }
-        catch(e){
-            console.log(e);
-        }
-    });
-}
-*/
 
 
 function updateVidnprobs(data){
@@ -117,18 +90,25 @@ function updateVidnprobs(data){
           .attr("height" , 0)
           .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
-                var htm="<b>"+d3.time.format('%A %d %b')(d.date) +" :: x minutes of video</b><hr />";
+                var htm="<b>"+d3.time.format('%A %d %b')(d.date) +" :: Video watched</b><hr />";
                 //htm+= d.minutes_on_site+" minutes of video<br />";
                 if(d.video){
-                    htm+="<b>"+d.video.length+" video(s)</b>";
+                    //console.log(d.video);
                     htm+="<table width='100%'>";
+                    htm+="<thead>"
+                    htm+="<th>"+d.video.length+" video(s)</th>";
+                    htm+="<th style='text-align:center'>Duration</th>";
+                    htm+="<th style='text-align:right'>Watched</th>";
                     for(var i=0;i<d.video.length;i++){
                         htm+="<tr>";
-                        htm+="<td>"+d.video[i].video_id;
-                        //htm+="<td>"+d.video[i].watched_seconds;
-                        //htm+="<td>"+d.video[i].duration_seconds;
-                        htm+="<td>"+Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100)+"%";
+                        htm+="<td>"+d.video[i].section+" - "+d.video[i].video_id;
+                        //htm+="<td>"+d.video[i].video_id;
+                        htm+="<td style='text-align:center'>"+d.video[i].duration_seconds;
+                        
+                        var pct=Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100);
+                        htm+="<td style='text-align:right;color:"+greyScale(pct)+"'><b>"+pct+"%</b></td>";
                     }
+                    htm+="</tbody>";
                     htm+="</table>";
                 }
                 
@@ -174,13 +154,20 @@ function updateVidnprobs(data){
             
             //htm+="<b>"+d.problem.length+" problem(s) done</b>";
             htm+="<table width=100%>";
+            htm+="<thead>";
+            htm+="<th>Problem(s) done</th>";
+            htm+="<th style='text-align:right'>Score</th>";
+            htm+="</thead>";
+            htm+="<tbdody>";
             for(var i=0;i<d.problem.length;i++){
                 htm+="<tr>";
-                htm+="<td>"+d.problem[i].problem_id;
-                htm+="<td>"+d.problem[i].score+"/1";
+                htm+="<td>"+d.problem[i].section+" - "+d.problem[i].problem_id;
+                htm+="<td style='text-align:right'>"+d.problem[i].score+"/1";
             }
+            htm+="<tr><td><td style='text-align:right'>"+d.problem_score+"/"+d.problem_done+" ("+pct+"%)</tr>";
+            htm+="</tbody>";
             htm+="</table>";
-            htm+="Score: "+d.problem_score+"/"+d.problem_done+" ("+pct+"%)<br />";
+            
             ttover(htm);
         })
         .on("mousemove",function(){ttmove();})

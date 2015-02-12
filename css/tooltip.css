@@ -15,8 +15,13 @@ div.tooltip hr{
 }
 
 
+div.tooltip th{
+  font-weight: bold;
+  color:white;
+  font-size: 13px;
+}
 
 div.tooltip td{
-  color:white;
-  font: 12px sans-serif;
+  color:#ddd;
+  font-size: 12px;
 }

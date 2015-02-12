@@ -13,6 +13,8 @@ colors.push('#8DD685');
 colors.push('#30ad77');//Vert correct
 //colors.push('#00B22D');//Vert
 
+
+
 //quicklookup
 var lectures=[];
 lectures.push({'section':'Week 1','subsection':'Lecture 1'});
@@ -35,6 +37,8 @@ lectures.push({'section':'Week 8','subsection':'Lecture 16'});
 var colorDomain=d3.scale.linear()
     .domain([0,50,60,70,80,90,100])
     .range(colors);
+
+var greyScale=d3.scale.linear().domain([0,100]).range(['#666','#eee']);//video completion
 
 var pvis = d3.select("#progressOvDiv").append("svg")
     .attr("width", width)

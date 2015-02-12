@@ -10,6 +10,9 @@ var group_100=[23,47,84,95,119,127,129,130,146,158,208,214,246,287,296,307,315,3
 //Over 50% progress
 var group_50=[92,159,113,363,152,342,449,423,161,460,283,162,178,120];
 
+//lazy users
+var group_0=[4,7,16,22,30];
+
 $(function(){
 	
 	// https://github.com/mbostock/d3/wiki/CSV
@@ -71,7 +74,7 @@ $(function(){
 			console.log("csv_problems",csv_problems.length);
 			console.log("csv_video_views",csv_video_views.length);
 			console.log("csv_videos",csv_videos.length);
-			updateStudent(92);
+			//updateStudent(Math.round(Math.random()*500));
 			return ld;
 		}else{
 			console.log('loading csv...');
@@ -80,12 +83,13 @@ $(function(){
 	}
 
 	var t=setTimeout(csvloaded,50);//todo -> retry on fail
-
+	/*
 	$('#btnRandom').click(function(){
 		var student_id=Math.round(Math.random()*500);
 		var dat=getStudentData(student_id);
 		//console.log(dat);
 	});
+	*/
 });
 
 function minutes_per_day(student_id){
@@ -158,9 +162,12 @@ function getStudentData(student_id){
 
 //
 function getWeeklyData(student_id){
+
 	var weeks=['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6','Week 7','Week 8'];
+	//var problems=csv_problems;
 	var prb=problem_attempts(student_id);
 	var vid=video_views(student_id);
+	console.log("prb",prb);
 	var scores={};
 	var dat={};
 	
@@ -169,6 +176,7 @@ function getWeeklyData(student_id){
 	$.each(csv_problems,function(i,o){
 		if(!dat[o.section][o.subsection])dat[o.section][o.subsection]={};
 		if(!dat[o.section][o.subsection]['problem'])dat[o.section][o.subsection]['problem']={};
+		
 		dat[o.section][o.subsection]['problem'][o.id]=o;
 		//dat[o.section][o.subsection]['problem_done']=0;
 		//dat[o.section][o.subsection]['problem_score']=0;
@@ -191,21 +199,45 @@ function getWeeklyData(student_id){
 		dat[o.section][o.subsection]['video'][o.video_id].watched_seconds=o.watched_seconds;
 	});
 
-	
 	$.each(dat,function(week,obj){
 		$.each(obj,function(lecture,o){
-			//console.log(week,lecture,o);
+			/*
+			dat[week][lecture].problem_done=0;
+			dat[week][lecture].problem_score=0;
+			dat[week][lecture].problem_progress=0;
+			dat[week][lecture].video_duration=0;
+			dat[week][lecture].watched_seconds=0;
+			dat[week][lecture].watched_progress=0;
+			*/
+
+			var done=0;
+			var score=0;
 			//precalc problem data
 			dat[week][lecture].problem_count=Object.keys(o.problem).length;
-			dat[week][lecture].problem_done=Math.random()*100;
-			dat[week][lecture].problem_score=Math.random()*100;
+			for(var i=0;i<Object.keys(o.problem).length;i++){
+				var k=Object.keys(o.problem)[i];
+				if(o.problem[k].score)score+=o.problem[k].score;
+				if(o.problem[k].date_attempted)done++;
+			}
+			dat[week][lecture].problem_done=done;
+			dat[week][lecture].problem_score=score;
+			dat[week][lecture].problem_progress=Math.round(done/Object.keys(o.problem).length*100);
 			
-			//problem_done
-			//problem_score
 			//precalc video data
+			var duration=0;
+			var watched=0;
+			for(var i=0;i<Object.keys(o.video).length;i++){
+				var k=Object.keys(o.video)[i];
+				if(o.video[k].duration_seconds)duration+=o.video[k].duration_seconds;
+				if(o.video[k].watched_seconds)watched+=o.video[k].watched_seconds;
+			}
+			dat[week][lecture].video_duration=duration;
+			dat[week][lecture].watched_seconds=watched;
+			dat[week][lecture].watched_progress=Math.round(watched/duration*100);
 		});
 	});
-	
 
+
+	//console.log('getWeeklyData('+student_id+')',dat);
 	return dat;
 }
