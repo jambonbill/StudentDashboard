@@ -1,4 +1,4 @@
-var width = 700,
+var width = 200,
     height = 150,
     tau = 2 * Math.PI; // http://tauday.com/tau-manifesto
 
@@ -35,8 +35,8 @@ function daysBetween(a, b) {
 
 function colorLegend(colors){
     
-    var x=220;
-    var y=50;
+    var x=0;
+    var y=130;
     var cellwidth=16;
 
     pvis.append('text')
@@ -48,13 +48,13 @@ function colorLegend(colors){
     pvis.append('text')
         .attr('font-size', '12px' )
         .attr("fill", "#999")
-        .attr("transform", "translate("+x+","+(y+24)+")")
+        .attr("transform", "translate("+x+","+(y+20)+")")
         .text('Bad');
 
     pvis.append('text')
         .attr('font-size', '12px' )
         .attr("fill", "#999")
-        .attr("transform", "translate("+(x+78)+","+(y+24)+")")
+        .attr("transform", "translate("+(x+78)+","+(y+20)+")")
         .text('Correct');
 
     pvis.selectAll(".colors")
@@ -62,7 +62,7 @@ function colorLegend(colors){
         .enter()
         .append("rect")
         .attr("width", cellwidth)
-        .attr("height", 8)
+        .attr("height", 6)
         .attr("x", function(d,i){return x+i*(cellwidth+1);})
         .attr("y", y+4)
         //.attr("style", "font-size:11px")
@@ -163,7 +163,7 @@ function computeStats(data){
     var problemscore=(problem_score/problem_done);
     var videoprogress=(video_watched/49452);
 
-    pvis.selectAll("path, text").remove();
+    pvis.selectAll("path, text.pct").remove();
 
     // Arc problems
     pvis.append("path")
@@ -212,17 +212,22 @@ function computeStats(data){
         .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
         ;
 
-    pvis.append("text").attr("x",60).attr("y",65).text(Math.round(videoprogress*100)+"%")
+    pvis.append("text").attr("class","pct")
+        .attr("x",60).attr("y",65).text(Math.round(videoprogress*100)+"%")
         .style("font-size", "20px").style("text-anchor", "middle");
-        //
-    pvis.append("text").attr("x",60).attr("y",75).text("Video")
+
+    pvis.append("text").attr("class","pct")
+        .attr("x",60).attr("y",75).text("Video")
         .attr("fill","#333")
         .style("font-size", "10px").style("text-anchor", "middle");
 
-    pvis.append("text").attr("x",100).attr("y",15).text(Math.round(problemprogress*100)+"%")    
+    pvis.append("text").attr("class","pct")
+        .attr("x",100).attr("y",15).text(Math.round(problemprogress*100)+"%")    
         .attr("fill",colorDomain(problemscore*100))
         .style("font-size", "20px");
-    pvis.append("text").attr("x",105).attr("y",25).text("Problems")
+
+    pvis.append("text").attr("class","pct")
+        .attr("x",105).attr("y",25).text("Problems")
         .style("font-size", "10px");
     
 }

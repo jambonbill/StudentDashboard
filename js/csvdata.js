@@ -3,6 +3,7 @@ var csv_problem_attempts;//	student_id,section,subsection,problem_id,date_attemp
 var csv_problems;//		id,section,subsection,max_points
 var csv_video_views;//	student_id,section,subsection,video_id,date_viewed,duration_seconds,watched_seconds
 var csv_videos;//	id,section,subsection,duration_seconds
+var csv_class;//	***
 
 //100% progress
 var group_100=[23,47,84,95,119,127,129,130,146,158,208,214,246,287,296,307,315,346,369,370,393,394,408,431,450,461,499];
@@ -16,6 +17,7 @@ var group_0=[4,7,16,22,30];
 $(function(){
 	
 	// https://github.com/mbostock/d3/wiki/CSV
+    $('#student_id').html("Loading csv data...");
     
 	d3.csv("minutes_per_day.csv", function(error,data) {
 		data.forEach(function(d){
@@ -60,6 +62,18 @@ $(function(){
    		csv_videos=data;
 	});
 
+	d3.csv("class.csv",function(error,d){
+		d.forEach(function(o){
+			o.student_id=+o.student_id;
+			o.problem_done=+o.problem_done;
+			o.problem_score=+o.problem_score;
+			o.sessions=+o.sessions;
+			o.time_spent=+o.time_spent;
+			o.video_count=+o.video_count;
+			o.video_watched=+o.video_watched;
+		});
+   		csv_class=d;
+	});
 
 	csvloaded=function(){
 		var ld=true;
@@ -74,6 +88,7 @@ $(function(){
 			console.log("csv_problems",csv_problems.length);
 			console.log("csv_video_views",csv_video_views.length);
 			console.log("csv_videos",csv_videos.length);
+			console.log("csv_class",csv_class.length);
 			//updateStudent(Math.round(Math.random()*500));
 			return ld;
 		}else{

@@ -13,7 +13,7 @@ include "header.php";
 <div class='container'>
 
 <h1>
-	<i class='fa fa-user'></i> Student
+	<i class='fa fa-user'></i> Student dashboard
 	<small id='student_id'>#</small>
 </h1>
 
@@ -45,9 +45,9 @@ include "student_video_and_problems.php";//ailadi style
 ?>
 <script src='js/tooltip.js'></script>
 
-<a href=#reload id='btn100' class='btn btn-default'><i class='fa fa-star'></i> Group 100</a>
-<a href=#reload id='btn50' class='btn btn-default'><i class='fa fa-star-half-o'></i> Group 50</a>
-<a href=#reload id='btn0' class='btn btn-default'><i class='fa fa-star-o'></i> Group 0</a>
+<a href=#reload id='btn100' class='btn btn-default' title='All problems done'><i class='fa fa-star'></i> Group 100</a>
+<a href=#reload id='btn50' class='btn btn-default' title='Most problems done'><i class='fa fa-star-half-o'></i> Group 50</a>
+<a href=#reload id='btn0' class='btn btn-default' title='No problem done'><i class='fa fa-star-o'></i> Group 0</a>
 <a href=#reload id='btnReload' class='btn btn-default'>Random student</a>
 <div id='loader'></div>
 

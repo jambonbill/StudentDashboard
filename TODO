@@ -1,13 +1,32 @@
 TODO
 ---------------------------
-Global : Load data from csv
+Global : 
+
+Buttons or dropdown on the top menu
+
 
  ** Class views **
+-----------------------------
+- Problem progression
+- Video Progression
+- Session length
+
+
+Class data structure :
+---------------------------
+[student_id].video_watched
+[student_id].problem_done
+[student_id].problem_score
+[student_id].time_spent
+[student_id].sessions
+[student_id].session_average
+
+
 
 
 Progress Overview
 -----------------------
-
+Fusioner dans les colonnes
 
 
 Progression detail
@@ -17,13 +36,13 @@ Progression detail
 
 Constancy
 ------------------------
-
+Draw scale before update
 Add "Today" on the scale->right ?
 
 
-Video and problems
---------------------
-
+Video watched and problems done
+-------------------------------
+Make 'crisp' bars
 
 
 
@@ -31,6 +50,8 @@ Video and problems
 -------------------
 Done
 -----------------
+- Load data from csv
+Center bars on x value
 Make sure the axis stays on the back (drawn only one)
 Reduce the vertical scale
 Delete/update values !

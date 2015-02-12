@@ -4,7 +4,7 @@
 <div class='row'>
 	<div class='col-xs-3'>
 		<h3><i class='fa fa-star-half-o'></i> Progress</h3>
-		<div id='more'>more</div>
+		<div id='progressOvDiv'></div>
 	</div>
 	<div class='col-xs-3'>
 		<h3><i class='fa fa-calendar'></i> Start</h3>
@@ -30,3 +30,5 @@
 		</div>
 	</div>
 </div>
+
+<script src='js/student_progress_overview.js'></script>
