@@ -45,7 +45,7 @@ weeks.append("line")
 
 
 function updateProgressDetails(data){
-    console.log('updateProgressDetails()',data);
+    //console.log('updateProgressDetails()',data);
     weeks.selectAll("rect").remove();
 
     // Draw problems done
@@ -81,7 +81,7 @@ function updateProgressDetails(data){
             $.each(data[d],function(lecture,o){                
                 //console.log(o.problem,Object.keys(o.problem));
                 htm+="<tr><td>"+lecture;
-                htm+="<td style='text-align:center'>"+o.problem_score+"/"+o.problem_count;
+                htm+="<td style='text-align:center'>"+o.problem_done+"/"+o.problem_count;
                 var pct=Math.round(o.problem_score/o.problem_count*100);
                 htm+="<td style='text-align:right;color:"+colorDomain(pct)+"'><b>"+pct+"%</b></td>";
                 htm+="</tr>";
@@ -94,7 +94,7 @@ function updateProgressDetails(data){
         .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
         ;
 
-    pbs.transition().delay(function(d,i){return i*200})
+    pbs.transition().delay(function(d,i){return i*100})
     .attr("width",function(d){
         //console.log(d,data[d]);
         var problem_done=0;
@@ -155,7 +155,7 @@ function updateProgressDetails(data){
     .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
     ;
 
-    vids.transition().delay(function(d,i){return i*200})
+    vids.transition().delay(function(d,i){return i*100})
         .attr("width",function(d){
         var duration=0;
         var watched=0;

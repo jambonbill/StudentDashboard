@@ -71,6 +71,9 @@ $(function(){
 	$('#btnReload').click(function(){
 		updateStudent(Math.round(Math.random()*500))
 	});
+	setTimeout(function(){
+		updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
+	},1000);
 });
 
 function updateStudent(student_id){

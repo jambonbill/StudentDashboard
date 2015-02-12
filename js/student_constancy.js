@@ -45,15 +45,11 @@ function updateConstancy(data){
         $('#moreConstant').html(data.length+' session(s) from '+minuteDomain[0]+' to '+minuteDomain[1]+' minutes');
     }
 
-    
-    //compute xscale
+    // compute xscale //
     var xScale = d3.time.scale().range([20, width-30]);
-    // Start domain on 14 september for better readability
-    //dateDomain[0]=new Date("2018-09-14");//start of the course
     dateDomain=[new Date("2018-09-14"),new Date("2018-12-24")];//fixed scale
-    //dateDomain[1]=new Date(dateDomain[1].setDate(dateDomain[1].getDate()+1));
-    //console.log(dateDomain[0]);
     xScale.domain(dateDomain);
+ 
     
     var rScale = d3.scale.linear().domain(minuteDomain).range([3, 10]);
     
@@ -69,19 +65,23 @@ function updateConstancy(data){
 
     //var xAxis = d3.svg.axis().scale(xScale);
     
-    //append axis
-    cns.selectAll('g').remove();
-    cns.append('g')
-        .attr('class', 'axis')
-        .style('shape-rendering','crispEdges')
-        .attr('transform', 'translate(0, 30)')
-        .call(xAxis)
-        .selectAll("text")
+    
+    //cns.selectAll('g').remove();
+    if(cns.selectAll('g')[0].length<1){//append axis only once
+        cns.append('g')
+            .attr('class', 'axis')
+            .style('shape-rendering','crispEdges')
+            .attr('transform', 'translate(0, 30)')
+            .call(xAxis)
+            .selectAll("text")
             .style("font-size", "11px")
             .style("text-anchor", "start");
-            
-    //override css
-    cns.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
+        
+        //override css
+        cns.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
+    }
+    
+    
 
     var b = cns.selectAll("circle.t1").data(data);
     b.enter().append("circle")

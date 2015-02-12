@@ -11,28 +11,6 @@ colors.push('#E5E131');
 colors.push('#B9DB50');
 colors.push('#8DD685');
 colors.push('#30ad77');//Vert correct
-//colors.push('#00B22D');//Vert
-
-
-
-//quicklookup
-var lectures=[];
-lectures.push({'section':'Week 1','subsection':'Lecture 1'});
-lectures.push({'section':'Week 1','subsection':'Lecture 2'});
-lectures.push({'section':'Week 2','subsection':'Lecture 3'});
-lectures.push({'section':'Week 2','subsection':'Lecture 4'});
-lectures.push({'section':'Week 3','subsection':'Lecture 5'});
-lectures.push({'section':'Week 3','subsection':'Lecture 6'});
-lectures.push({'section':'Week 4','subsection':'Lecture 7'});
-lectures.push({'section':'Week 4','subsection':'Lecture 8'});
-lectures.push({'section':'Week 5','subsection':'Lecture 9'});
-lectures.push({'section':'Week 5','subsection':'Lecture 10'});
-lectures.push({'section':'Week 6','subsection':'Lecture 11'});
-lectures.push({'section':'Week 6','subsection':'Lecture 12'});
-lectures.push({'section':'Week 7','subsection':'Lecture 13'});
-lectures.push({'section':'Week 7','subsection':'Lecture 14'});
-lectures.push({'section':'Week 8','subsection':'Lecture 15'});
-lectures.push({'section':'Week 8','subsection':'Lecture 16'});
 
 var colorDomain=d3.scale.linear()
     .domain([0,50,60,70,80,90,100])
@@ -96,49 +74,7 @@ function colorLegend(colors){
 //draw color legend
 colorLegend(colors);
 
-/*
-pvis.append('text')
-    .attr('font-family', 'FontAwesome')
-    .attr('font-size', '128px' )
-    .attr("fill", "#000")
-    .attr("transform", "translate(480,120)")
-    .text(function(d) { return '\uf133' }); //fa-calendar-o
 
-pvis.append('text')
-    .attr('font-family', 'FontAwesome')
-    .attr('font-size', '64px' )
-    .attr("fill", "#E11A2B")
-    .attr("transform", "translate(500,120)")
-    .text(function(d) { return '\uf16a' }); //fa-youtube-play
-*/
-
-/*
-pvis.append("text")
-    .attr("x",160)
-    .attr("y",30)
-    .text("student start on 2018-09-05")
-    .style("font-size", "18px");
-
-pvis.append("text")
-    .attr("x",160)
-    .attr("y",50)
-    .text("33 sessions")
-    .style("font-size", "18px");
-
-
-var dsince=daysBetween(new Date('2018-09-05'), new Date('2018-12-24'));
-pvis.append("text")
-    .attr("x",160)
-    .attr("y",70)
-    .text(" days since begining (today 2018-12-24)")
-    .style("font-size", "18px");
-
-pvis.append("text")
-    .attr("x",160)
-    .attr("y",90)
-    .text("Last session : xxxx-xx-xx (x days ago)")
-    .style("font-size", "18px");
-*/
 
 // An arc function with all values bound except the endAngle. So, to compute an
 // SVG path string for a given angle, we pass an object with an endAngle
@@ -172,79 +108,12 @@ pvis.append("circle")
     .attr("fill","white")
     .attr("stroke","#ddd")
     .attr("stroke-width",1)
-/*
-pvis.append("path")
-  .datum({endAngle:3.14})
-    .style("fill", "#d11626")//youtube red
-    .attr("d", arc1)
-    .attr("transform", "translate(60,60)")
-    ;
-
-pvis.append("path")
-  .datum({endAngle:5})
-    .style("fill", "black")
-    .attr("d", arc2)
-    .attr("transform", "translate(60,60)")
-    ;
-
-pvis.append("text").attr("x",43).attr("y",65).text("75%")
-    .style("font-size", "20px");
-pvis.append("text").attr("x",40).attr("y",75).text("problems")
-    .attr("fill","#999")
-    .style("font-size", "10px");
-
-pvis.append("text").attr("x",90).attr("y",15).text("50%")    
-    .attr("fill","#c00")
-    .style("font-size", "20px");
-pvis.append("text").attr("x",105).attr("y",25).text("Video")
-    .style("font-size", "10px");
-*/
-
-
-/*
-function getOvData(){
-    //console.log('getOvData()');
-    var p={
-        'do':'getDailyData',
-        'student_id':$('#student_id').val()
-    }
-    
-    $('#progressOvMore').load("student_ctrl.php",p,function(json){        
-        try{  
-            var data=$.parseJSON(json);
-            //convert dates
-            data.forEach(function(d){
-                d.date = d3.time.format("%Y-%m-%d").parse(d.date);
-            });
-            computeStats(data);
-            $('#progressOvMore').html(data.length + " session(s)");
-        }
-        catch(e){
-            console.log(e);
-        }
-    });
-}
-*/
-
-
-/*
-function updateColumns(data){
-}
-*/
 
 
 function computeStats(data){
     
-    // compute stats
-    // to compute total percentages,
-    // we need to know the number of problems (141 problems)
-    // and the total video time (49452 seconds)
-    
-    //console.log('computeStats(data)',data);
-    //console.log(data.length+" session(s)");
     var mm=d3.extent(data,function(d){return d.date});
-    //console.log("From "+mm[0] + " to "+mm[1]);
-        
+            
     var problem_done=0,
         problem_score=0,
         video_watched=0,
@@ -259,12 +128,15 @@ function computeStats(data){
     });
     
 
+    // HTML //
+    // HTML //
+    // HTML //
+
     // Start date
     var htm=mm[0]+"<br>";
     var daysago=daysBetween(new Date(mm[0]),new Date('2018-12-24'));//last connection
     htm+="<i class='text-muted'>("+daysago+" days ago)</i>"
     $('#start').html(htm);
-
 
 
     // 'Connected' (sessions)
@@ -279,18 +151,14 @@ function computeStats(data){
         htm+="<i class='text-muted'></i> Last seen : "+daysago+" days ago</i><br />";
     }
     
-    //htm+="<i class='text-muted'>"+daysago+" day(s) ago</i>";
-
-    
+       
     $('#connectedBody').html(htm);
 
-    //$('#end').html("End html");
 
 
-    //console.log("problem_done", problem_done,"/108 problems");
-    //console.log("problem_score",problem_score,"/"+problem_done);
-    //console.log("video_watched",video_watched,"/49452 seconds");
 
+
+    
     var problemprogress=(problem_done/108);
     var problemscore=(problem_score/problem_done);
     var videoprogress=(video_watched/49452);
@@ -308,10 +176,11 @@ function computeStats(data){
         .attr("transform", "translate(60,60)")
         .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
-            var htm="<b>Problems</b><hr />";
+            var htm="<b>Course problems</b><hr />";
             htm+="<table width=100%>";
-            htm+="<tr><td>Done<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
-            htm+="<tr><td>Correct<td>"+problem_score+"/"+problem_done+"<td>"+Math.round(problemscore*100)+"%";
+            htm+="<tr><td>Completion<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
+            var pct=Math.round(problemscore*100);
+            htm+="<tr><td>Score<td>"+problem_score+"/"+problem_done+"<td><b style='color:"+colorDomain(pct)+"'>"+pct+"%</b>";
             htm+="</table>";
             ttover(htm);
         })
@@ -332,7 +201,7 @@ function computeStats(data){
         .attr("transform", "translate(60,60)")
         .on("mouseover",function(d){
             d3.select(this).style('stroke-width', 2);
-            var htm="<b>Video</b><hr />";
+            var htm="<b>Course videos</b><hr />";
             htm+="<table width=100%>";
             htm+="<tr><td>"+Math.round(video_watched/60)+"/"+Math.round(49452/60)+" minutes";
             htm+="<td>"+Math.round(videoprogress*100)+"%</tr>";

@@ -36,11 +36,11 @@ $(function(){
    		csv_problem_attempts=data;
 	});
 
-	d3.csv("problems.csv", function(error,data) {
-		data.forEach(function(d){
-			d.max_points=+d.max_points;
+	d3.csv("problems.csv", function(error,o) {
+		o.forEach(function(r){
+			r.max_points=+r.max_points;
 		});
-   		csv_problems=data;
+   		csv_problems=o;
 	});
 
 	d3.csv("video_views.csv", function(error,data) {
@@ -164,10 +164,9 @@ function getStudentData(student_id){
 function getWeeklyData(student_id){
 
 	var weeks=['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6','Week 7','Week 8'];
-	//var problems=csv_problems;
 	var prb=problem_attempts(student_id);
 	var vid=video_views(student_id);
-	console.log("prb",prb);
+	
 	var scores={};
 	var dat={};
 	
@@ -176,40 +175,33 @@ function getWeeklyData(student_id){
 	$.each(csv_problems,function(i,o){
 		if(!dat[o.section][o.subsection])dat[o.section][o.subsection]={};
 		if(!dat[o.section][o.subsection]['problem'])dat[o.section][o.subsection]['problem']={};
-		
-		dat[o.section][o.subsection]['problem'][o.id]=o;
-		//dat[o.section][o.subsection]['problem_done']=0;
-		//dat[o.section][o.subsection]['problem_score']=0;
-		//dat[o.section][o.subsection]['problem_count']=0;
+		dat[o.section][o.subsection]['problem'][o.id]={'id':o.id,'section':o.section,'subsection':o.subsection,'max_points':o.max_points};
 	});
 
 	$.each(csv_videos,function(i,o){
 		if(!dat[o.section][o.subsection]['video'])dat[o.section][o.subsection]['video']={};
-		dat[o.section][o.subsection]['video'][o.id]=o;
+		dat[o.section][o.subsection]['video'][o.id]={'id':o.id,'section':o.section,'subsection':o.subsection,'duration_seconds':o.duration_seconds};
 	});
-		
+	
+	//console.log('csv_problems before',csv_problems[0]);//bug -> csv_prblems get overwriten !!	
 	$.each(prb,function(i,o){
 		dat[o.section][o.subsection]['problem'][o.problem_id].date_attempted=o.date_attempted;
 		dat[o.section][o.subsection]['problem'][o.problem_id].score=o.score;
 		//scores[o.problem_id]={};
 	});
+	//console.log('csv_problems after',csv_problems[0]);//bug -> csv_prblems get overwriten !!
 
 	$.each(vid,function(i,o){
 		dat[o.section][o.subsection]['video'][o.video_id].date_viewed=o.date_viewed;
 		dat[o.section][o.subsection]['video'][o.video_id].watched_seconds=o.watched_seconds;
 	});
 
+
+
+	
 	$.each(dat,function(week,obj){
 		$.each(obj,function(lecture,o){
-			/*
-			dat[week][lecture].problem_done=0;
-			dat[week][lecture].problem_score=0;
-			dat[week][lecture].problem_progress=0;
-			dat[week][lecture].video_duration=0;
-			dat[week][lecture].watched_seconds=0;
-			dat[week][lecture].watched_progress=0;
-			*/
-
+	
 			var done=0;
 			var score=0;
 			//precalc problem data
@@ -236,7 +228,7 @@ function getWeeklyData(student_id){
 			dat[week][lecture].watched_progress=Math.round(watched/duration*100);
 		});
 	});
-
+	
 
 	//console.log('getWeeklyData('+student_id+')',dat);
 	return dat;
