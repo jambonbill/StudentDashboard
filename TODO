@@ -2,7 +2,6 @@ TODO
 ---------------------------
 Global : 
 
-Buttons or dropdown on the top menu
 
 
  ** Class views **
@@ -10,7 +9,7 @@ Buttons or dropdown on the top menu
 - Problem progression
 - Video Progression
 - Session length
-
+- Add a 'title'
 
 Class data structure :
 ---------------------------
@@ -36,7 +35,7 @@ Progression detail
 
 Constancy
 ------------------------
-Draw scale before update
+Change the "Not enough data to compute" text
 Add "Today" on the scale->right ?
 
 
@@ -50,6 +49,8 @@ Make 'crisp' bars
 -------------------
 Done
 -----------------
+- Get rid of PHP
+- Buttons or dropdown on the top menu
 - Load data from csv
 Center bars on x value
 Make sure the axis stays on the back (drawn only one)
