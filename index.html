@@ -30,9 +30,9 @@
 	<i class='fa fa-user'></i> Student dashboard
 	<small id='student_id'>#</small>
 	<div class='btn-group pull-right'>
-	<a href=# class='btn btn-primary' id='btn100' title='Student with 100% progress'><i class='fa fa-star'></i></a>
-	<a href=# class='btn btn-primary' id='btn50' title='Student with good progress'><i class='fa fa-star-half-o'></i></a>
-	<a href=# class='btn btn-primary' id='btn0' title='Student with little progress'><i class='fa fa-star-o'></i></a>
+	<a href=# class='btn btn-primary' id='btn100' title='Show student with 100% progress'><i class='fa fa-star'></i></a>
+	<a href=# class='btn btn-primary' id='btn50' title='Show student with good progress'><i class='fa fa-star-half-o'></i></a>
+	<a href=# class='btn btn-primary' id='btn0' title='Show student with little progress'><i class='fa fa-star-o'></i></a>
 	<a href=# class='btn btn-primary' id='btnRand' title='Pick a random student'><i class='fa fa-question'></i></a>
 	</div>
 </h1>
@@ -43,19 +43,20 @@
 		<h3><i class='fa fa-star-half-o'></i> Progress</h3>
 		<div id='progressOvDiv'></div>
 	</div>
-	<div class='col-xs-3'>
-		<h3><i class='fa fa-calendar'></i> Start</h3>
-		<div id='start'>
-		x mon yyyy<br />
-		<i class='text-muted'>(x days ago)</i>
-		</div>
-	</div>
+
 	<div class='col-xs-3'>
 		<h3 id='connectedTitle'><i class='fa fa-calendar-o'></i> Connected</h3>
 		<div id='connectedBody'>
 		x times<br />
 		Last conn. : x days ago
 		<i class='text-muted'>Today is 2018-12-24</i>
+		</div>
+	</div>
+	<div class='col-xs-3'>
+		<h3><i class='fa fa-calendar'></i> Start</h3>
+		<div id='start'>
+		x mon yyyy<br />
+		<i class='text-muted'>(x days ago)</i>
 		</div>
 	</div>
 	<div class='col-xs-3'>
@@ -70,24 +71,60 @@
 
 <script src='js/student_progress_overview.js'></script>
 
+<hr />
+
 <!-- student_progress_detail.php -->
-<h3><i class='fa fa-bar-chart'></i> Progression detail per week<small id='progressMore'></small></h3>
+<h3>Progression detail per week<small id='progressMore'></small></h3>
 <div id='progressDiv'></div>
 <script src='js/student_progress_detail.js'></script>
 
 <!-- student_constancy.php -->
-<h3><i class='fa fa-ellipsis-h'></i> Constancy <small id='moreConstant'></small></h3>
+<h3>Constancy <small id='moreConstant'></small></h3>
 <div id='constantDiv'></div>
 <script src='js/student_constancy.js'></script>
 
 <!-- student_video_and_problems.php -->
-<h3><i class='fa fa-bar-chart'></i> Video watched and problems done<small id='moreVidndprobs'></small></h3>
+<h3>Video watched and problems done<small id='moreVidndprobs'></small></h3>
 <div id='vidnprobs'></div>
 <script src='js/student_vidnprobs.js'></script>
 
+
+<!-- Compare to class -->
+<div class='row'>
+	<div class='col-xs-6'>
+		<h3>Class comparison</h3>
+		<div id='colA'></div>
+		<select id='selector1' class='form-control'>
+			<option value='a'>Problem done / Video count</option>
+			<option value='a2'>Problem done / Video watched (time)</option>
+			<option value='a3'>Video watched / Video count</option>
+			<option value='b'>Time spent / Score</option>
+			<option value='c'>Time spent / Problem done</option>
+			<option value='d'>Session length avg / Problem score</option>
+			<option value='e'>Time spent / Sessions</option>
+		</select>
+	</div>
+	
+	<div class='col-xs-6'>
+	<h3>Ranking</h3>
+	<div id='colB'></div>
+		<select id='selector2' class='form-control'>
+			<option value='video_watched'>Video watched</option>
+			<option value='problem_done'>Problem done (course completion)</option>
+			<option value='problem_score'>Problem score (for problem done !)</option>
+			<option value='time_spent'>Total time spent on site</option>
+			<option value='sessions'>Number of sessions</option>
+			<option value='session_avg'>Session average</option>
+		</select>
+	</div>
+</div>
+
+
+
+
 <script src='js/tooltip.js'></script>
 
-<div id='loader'></div>
+<div id='loader'></div><!-- ?? -->
 
 <script src='js/csvdata.js'></script>
 <script>

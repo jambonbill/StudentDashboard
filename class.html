@@ -17,12 +17,13 @@
 <body>
 <div class='container'>
 <h1>
-	<i class='fa fa-user'></i> Class view <small>(how do i compare to class)</small>
+	<i class='fa fa-user'></i> Dashboard <small>(how do i compare to class)</small>
 </h1>
 <hr />
 
 <div class='row'>
 	<div class='col-xs-6'>
+		<h3><i class='fa fa-user'></i> Compare to class</h3>
 		<div id='colA'></div>
 		<select id='selector1' class='form-control'>
 		<option value='a'>Problem done / Video count</option>
@@ -36,11 +37,12 @@
 	</div>
 	
 	<div class='col-xs-6'>
+	<h3><i class='fa fa-user'></i> Compare to class</h3>
 	<div id='colB'></div>
 	<select id='selector2' class='form-control'>
 	<option value='video_watched'>Video watched</option>
 	<option value='problem_done'>Problem done (course completion)</option>
-	<option value='problem_score'>Problem score (for problem done !)</option>
+	<option value='problem_score'>Problem score (for problems done !)</option>
 	<option value='time_spent'>Total time spent on site</option>
 	<option value='sessions'>Number of sessions</option>
 	<option value='session_avg'>Session average</option>
@@ -49,7 +51,7 @@
 </div>
 
 <script>
-var width = 340,height = 240;//
+var width = 340,height = 340;//
 var cola = d3.select("#colA").append("svg").attr("width", width).attr("height", height);
 var colb = d3.select("#colB").append("svg").attr("width", width).attr("height", height);
 
@@ -122,7 +124,7 @@ function updateClass1(data,criteria,student_id){
 	var xDomain=d3.extent(data,function(d){return d.vx;});
 	var yDomain=d3.extent(data,function(d){return d.vy;});
 	var xScale=d3.scale.linear().range([30, width-30]).domain(xDomain);
-	var yScale=d3.scale.linear().range([200, 10]).domain(yDomain);	
+	var yScale=d3.scale.linear().range([300, 10]).domain(yDomain);	
 	
 	//define xAxis
     var xAxis = d3.svg.axis().scale(xScale).orient('bottom')
@@ -139,7 +141,7 @@ function updateClass1(data,criteria,student_id){
     cola.selectAll('g,text').remove();//delete axis
     cola.append('g').attr('class', 'axis')
         .style('shape-rendering','crispEdges')
-        .attr('transform', 'translate(0, 200)')
+        .attr('transform', 'translate(0, 300)')
         .call(xAxis)
         .selectAll("text")
         .style("font-size", "11px")
@@ -155,7 +157,7 @@ function updateClass1(data,criteria,student_id){
 
 	//X label
 	cola.append('text')
-       	.attr("transform","translate(340,198)")
+       	.attr("transform","translate(340,298)")
        	.style("text-anchor", "end")
        	.style("font-size", "11px")
        	.text(labelx);
@@ -168,11 +170,49 @@ function updateClass1(data,criteria,student_id){
        	.style("font-size", "11px")
        	.text(labely);
 		
-		//override css
-        cola.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
+	//override css
+    cola.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
-	var m=cola.selectAll("circle.student").data(data);
+    
+
+    // Pinpoint student with 2 lines
+	var ipos=0;//studend position
+	$.each(data,function(i,d){if(d.student_id==student_id)ipos=i;});
+	//console.log(ipos,xScale(ipos));
 	
+
+	// Vertical line to pin point the user
+	var vline= cola.selectAll("line.vline").data([data[ipos]]);
+	vline.enter().append("line")
+		.attr("class","vline")
+		.attr("stroke","#ccc")
+		.attr("stroke-width",1)
+		.style('shape-rendering','crispEdges');
+	
+	vline.transition()
+		.attr("x1",function(d){return xScale(d.vx);})
+		.attr("x2",function(d){return xScale(d.vx);})
+		.attr("y1",0).attr("y2",300);
+
+
+	// Horizontal line to pin point the user
+	var vline= cola.selectAll("line.hline").data([data[ipos]]);
+	vline.enter().append("line")
+		.attr("class","hline")
+		.attr("stroke","#ccc")
+		.attr("stroke-width",1)
+		.style('shape-rendering','crispEdges');
+	
+	vline.transition()
+		.attr("y1",function(d){return yScale(d.vy);})
+		.attr("y2",function(d){return yScale(d.vy);})
+		.attr("x1",30).attr("x2",300);
+
+
+
+
+	// Plot students (class)
+	var m=cola.selectAll("circle.student").data(data);
 	m.enter().append("circle").attr("class","student")
 		.attr("cx",width/2)
 		.attr("cy",height/2)
@@ -211,7 +251,10 @@ function updateClass1(data,criteria,student_id){
 		.on("mousemove",function(d,i){ttmove();})
 		.on("mouseout",function(d,i){
 			d3.select(this).style('stroke-width', 0);
-			d3.select(this).style('opacity', 0.5);
+			d3.select(this).style('opacity', function(d){
+				if(d.student_id==student_id)return 1;
+				return 0.5;
+			});
 			ttout();})
 		;
 	m.transition().delay(10)
@@ -222,16 +265,10 @@ function updateClass1(data,criteria,student_id){
 			return '#999';
 			//return colorDomain(d.problem_done/d.problem_score*100);
 		})
+		.attr("r",function(d){if(d.student_id==student_id)return 5;else return 4;})
+		.style("opacity", function(d){if(d.student_id==student_id)return 1;else return 0.5;})
 		;
-	/*
-	var c=cola.selectAll("line.cursor").data([40,40]);
-	c.enter().append("line")
-		.attr("class","cursor")
-		.attr("x1",function(d,i){return 40})
-		.attr("x2",function(d,i){return 40})
-		.attr("y1",function(d,i){return 40})
-		.attr("y2",function(d,i){return 40})
-	*/
+
 }
 
 
@@ -293,7 +330,7 @@ function updateClass2(data,criteria,student_id){
 	colb.append('g')
 	    .attr('class', 'axis')
 	    .style('shape-rendering','crispEdges')
-	    .attr('transform', 'translate(0, 200)')
+	    .attr('transform', 'translate(0, 300)')
 	    .call(xAxis)
 	    .selectAll("text")
 	    .style("font-size", "11px")
@@ -302,7 +339,7 @@ function updateClass2(data,criteria,student_id){
 
 	//X label
 	colb.append('text')
-       	.attr("transform","translate(340,198)")
+       	.attr("transform","translate(340,298)")
        	.style("text-anchor", "end")
        	.style("font-size", "11px")
        	.text("Students");
@@ -320,7 +357,7 @@ function updateClass2(data,criteria,student_id){
 
 	
 
-	var yScale = d3.scale.linear().range([200,10]).domain(domain);
+	var yScale = d3.scale.linear().range([300,10]).domain(domain);
 	var yAxis = d3.svg.axis().scale(yScale).orient('left')
 	    .ticks(5)//x tick
 	    .tickSize(2)
@@ -333,79 +370,13 @@ function updateClass2(data,criteria,student_id){
         .selectAll("text")
         .style("font-size", "11px")
         .style("text-anchor", "left");
-/*
-	colb.append('g')
-	    .attr('class', 'yaxis')
-	    .style('shape-rendering','crispEdges')
-	    .attr('transform', 'translate(30,0)')
-	    .call(yAxis)
-	    .selectAll("text")
-	    .style("font-size", "11px")
-	    .style("text-anchor", "left");
-*/
 
 	//override css
     colb.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
-	var us=colb.selectAll("circle.classroom").data(data)
-	us.enter()
-		.append("circle")
-		.attr("class","classroom")
-		.attr("r",0)
-		.attr("fill","#999")
-		.on("mouseover",function(d,i){
-			var htm="<b>Student #"+d.student_id+"</b><hr />";
-			htm+="<table width=100%>";
-			htm+="<tr><td>Sessions<td style='text-align:right'>"+d.sessions;
-			htm+="<tr><td>Avg session time<td style='text-align:right'>"+d.session_avg+" minute";
-			htm+="<tr><td>Time spent<td style='text-align:right'>"+d.time_spent+" minutes";
-			htm+="<tr><td>Problems done<td style='text-align:right'>"+d.problem_done+"/108";
-			var score=Math.round(d.problem_score/d.problem_done*100);
-			htm+="<tr><td>Problems score<td style='text-align:right'><b style='color:"+colorDomain(score)+"'>"+d.problem_score+"/"+d.problem_done+" ("+score+"%)</b>";
-			htm+="<tr><td>Video count<td style='text-align:right'>"+d.video_count+"/141";
-			htm+="<tr><td>Video watched<td style='text-align:right'>"+d.video_watched+" sec";
-			htm+="</table>";
-			ttover(htm);
-		})
-		.on("mousemove",function(d,i){ttmove();})
-		.on("mouseout",function(d,i){ttout();})
-		;
-	
-	us.transition()
-		.attr("cx",function(d,i){return xScale(i);})
-		.attr("cy",function(d,i){return yScale(d.val);})
-		.attr("fill",function(d){
-			if(d.student_id==student_id)return "#c00";
-			return "#999"
-		})
-		.attr("r",function(d){
-			if(d.student_id==student_id)return 5;
-			return 2;
-		})
-		;
-	
-	var ipos=0;
-	$.each(data,function(i,d){
-		if(d.student_id==student_id)ipos=i;
-	});
-	
-	// Vertical line to pin point the user
-	var vline= colb.selectAll("line.student").data([ipos]);
-	vline.enter().append("line")
-		.attr("class","student")
-		.attr("stroke","#999")
-		.attr("stroke-width",1)
-		.style('shape-rendering','crispEdges')
-		;
-	
-	vline.transition()
-		.attr("x1",function(d){return xScale(d);})
-		.attr("x2",function(d){return xScale(d);})
-		.attr("y1",0)
-		.attr("y2",200);
-	
-	
-	/*
+/*
+
+    // Draw Line / Area
 	var area = d3.svg.area().interpolate("linear")
     	.x(function(d,i){return xScale(i);})
     	.y0(200)
@@ -420,14 +391,99 @@ function updateClass2(data,criteria,student_id){
 		.attr("class", "area")
 		.attr("opacity", 0.1)
 		.attr("d", area(data));
-	*/
-	/*
+	
+	colb.selectAll("path.line").remove();
 	var linegraph = colb.append("path")
+        .attr("class", "line")
         .attr("d", lineFunction(data))
-        .attr("stroke", "red")
+        .attr("stroke", "#999")
         .attr("stroke-width", 2)
         .attr("fill", "none");
+
+
 	*/
+
+
+	var ipos=0;//studend position
+	$.each(data,function(i,d){if(d.student_id==student_id)ipos=i;});
+	
+	// Vertical line to pin point the user
+	var vline= colb.selectAll("line.vline").data([ipos]);
+	vline.enter().append("line")
+		.attr("class","vline")
+		.attr("stroke","#ccc")
+		.attr("stroke-width",1)
+		.style('shape-rendering','crispEdges')
+		;
+	
+	vline.transition()
+		.attr("x1",function(d){return xScale(d);})
+		.attr("x2",function(d){return xScale(d);})
+		.attr("y1",0).attr("y2",300);
+
+	// Horizontal line to pin point the user
+	// TODO ***
+	/*
+	var vline= colb.selectAll("line.hline").data([ipos]);
+	vline.enter().append("line")
+		.attr("class","hline")
+		.attr("stroke","#ccc")
+		.attr("stroke-width",1)
+		.style('shape-rendering','crispEdges');
+	
+	vline.transition()
+		.attr("y1",function(d){return yScale(d);})
+		.attr("y2",function(d){return yScale(d);})
+		.attr("x1",30).attr("x2",300);
+	*/
+
+	var us=colb.selectAll("circle.classroom").data(data)
+	us.enter()
+		.append("circle")
+		.attr("class","classroom")
+		.attr("r",0)
+		.style("opacity", 0.5)
+		.attr("fill","#999")
+		.attr("stroke","#000")
+		.attr("stroke-width",0)
+		.on("mouseover",function(d,i){
+			d3.select(this).style('stroke-width', 2);
+			d3.select(this).style('opacity', 1);
+			var htm="<b>Student #"+d.student_id+"</b><hr />";
+			htm+="<table width=100%>";
+			htm+="<tr><td>Sessions<td style='text-align:right'>"+d.sessions;
+			htm+="<tr><td>Avg session time<td style='text-align:right'>"+d.session_avg+" minute";
+			htm+="<tr><td>Time spent<td style='text-align:right'>"+d.time_spent+" minutes";
+			
+			htm+="<tr><td>Video count<td style='text-align:right'>"+d.video_count+"/141";
+			htm+="<tr><td>Video watched<td style='text-align:right'>"+d.video_watched+" sec";
+			htm+="<tr><td>Problems done<td style='text-align:right'>"+d.problem_done+"/108";
+			var score=Math.round(d.problem_score/d.problem_done*100);
+			htm+="<tr><td>Problems score<td style='text-align:right'><b style='color:"+colorDomain(score)+"'>"+d.problem_score+"/"+d.problem_done+" ("+score+"%)</b>";
+			htm+="</table>";
+			ttover(htm);
+		})
+		.on("mousemove",function(d,i){ttmove();})
+		.on("mouseout",function(d,i){
+			d3.select(this).style('stroke-width', 0);
+			d3.select(this).style('opacity', 0.5);
+			ttout();
+		})
+		;
+	
+	us.transition()
+		.attr("cx",function(d,i){return xScale(i);})
+		.attr("cy",function(d,i){return yScale(d.val);})
+		.attr("fill",function(d){
+			if(d.student_id==student_id)return "#c00";
+			return "#999"
+		})
+		.attr("r",function(d){
+			if(d.student_id==student_id)return 5;
+			return 3;
+		})
+		;
+		
 }
 
 
