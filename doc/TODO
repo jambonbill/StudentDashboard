@@ -1,0 +1,68 @@
+TODO
+---------------------------
+Global : 
+
+
+
+
+Progress Overview
+-----------------------
+Align the % and the label correctly
+Watch the vertical spacings for all parts
+
+"Bad - Correct" become "Bad - Good"
+
+Move the Legend 
+
+Mettre la colone 'Session' avant 'Start'
+Fusioner dans les colonnes
+
+
+Progression detail
+------------------------
+
+
+
+Constancy
+------------------------
+Add "Today" on the scale->right ?
+
+
+Video watched and problems done
+-------------------------------
+Make 'crisp' bars
+
+
+
+
+-------------------------------------------------------------------
+-- Done
+-----------------------------------------------------------
+Change the "Not enough data to compute" text
+
+- Get rid of PHP
+- Buttons or dropdown on the top menu
+- Load data from csv
+Center bars on x value
+Make sure the axis stays on the back (drawn only one)
+Reduce the vertical scale
+Delete/update values !
+
+
+
+Class data structure :
+---------------------------
+[student_id].video_watched
+[student_id].problem_done
+[student_id].problem_score
+[student_id].time_spent
+[student_id].sessions
+[student_id].session_average
+
+
+ ** Class views **
+-----------------------------
+- Problem progression
+- Video Progression
+- Session length
+- Add a 'title'
