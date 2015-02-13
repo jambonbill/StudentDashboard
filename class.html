@@ -2,23 +2,16 @@
 <head>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
-<!-- Optional theme (override) -->
-<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.css">
-<!-- Font awesome cdn -->
-<!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
 <!-- Font awesome local -->
 <link href="./font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-<!-- Tooltip -->
-<link rel="stylesheet" href="css/tooltip.css">
 <!-- JQuery -->
 <script src="js/jquery-1.11.2.min.js"></script>
-<!-- JQuery Tablesorter-->
-<script src="js/jquery-tablesorter.min.js"></script>
-<script src="js/jquery.knob.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- D3JS -->
 <script src="js/d3.min.js"></script>
+<!-- Tooltip css (load after d3)-->
+<link rel="stylesheet" href="css/tooltip.css">
 <title>Class</title>
 </head>
 <body>
@@ -29,18 +22,22 @@
 <hr />
 
 <div class='row'>
-	
 	<div class='col-xs-6'>
 		<div id='colA'></div>
-		<select id='selector' class='form-control'>
-		<option value=''>Select class view</option>
+		<select id='selector1' class='form-control'>
+		<option value='a'>Problem done / Video count</option>
+		<option value='a2'>Problem done / Video watched (time)</option>
+		<option value='a3'>Video watched / Video count</option>
+		<option value='b'>Time spent / Score</option>
+		<option value='c'>Time spent / Problem done</option>
+		<option value='d'>Session length avg / Problem score</option>
+		<option value='e'>Time spent / Sessions</option>
 		</select>
 	</div>
 	
 	<div class='col-xs-6'>
 	<div id='colB'></div>
-	<select id='selector' class='form-control'>
-	<option value=''>Select paramater to compare with the class</option>
+	<select id='selector2' class='form-control'>
 	<option value='video_watched'>Video watched</option>
 	<option value='problem_done'>Problem done (course completion)</option>
 	<option value='problem_score'>Problem score (for problem done !)</option>
@@ -53,42 +50,94 @@
 
 <script>
 var width = 340,height = 240;//
-var cola = d3.select("#colA").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+var cola = d3.select("#colA").append("svg").attr("width", width).attr("height", height);
+var colb = d3.select("#colB").append("svg").attr("width", width).attr("height", height);
 
-var colb = d3.select("#colB").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+//Progress colors (Ailadi scheme) ()
+var colors=[];
+colors.push('#FF5F06');//Rouge orange
+colors.push('#F39224');
+colors.push('#EDC82B');
+colors.push('#E5E131');
+colors.push('#B9DB50');
+colors.push('#8DD685');
+colors.push('#30ad77');//Vert correct
+var colorDomain=d3.scale.linear().domain([0,50,60,70,80,90,100]).range(colors);
 
-function udpateClass(data){	
-	//console.log('udpateClass()');
-	var xScale = d3.scale.linear().range([20, width-30]).domain([0,108]);
-	var yScale = d3.scale.linear().range([100, 0]).domain([0,141]);
-	var domain=d3.extent(data,function(d){return d.video_watched;});
-    console.log('video_watched domain',domain);
-    var videoWatchedScale=d3.scale.linear().range([200, 20]).domain(domain);
-    var problemDoneScale=d3.scale.linear().range([20, width-30]).domain([0,108]);
+// Column A
+function updateClass1(data,criteria,student_id){
+	//console.log('udpateClass()',criteria);
+	switch(criteria){
+		case 'a':
+			var labelx="Video watched (count)";
+			var labely="Problem done";
+			$.each(data,function(k,o){o.vx=o.video_count});
+			$.each(data,function(k,o){o.vy=o.problem_done});
+			break;
+		
+		case 'a2':
+			var labelx="Video watched (time)";
+			var labely="Problem done";
+			$.each(data,function(k,o){o.vx=o.video_watched});
+			$.each(data,function(k,o){o.vy=o.problem_done});
+			break;
 
+		case 'a3':
+			var labelx="Video watched (time)";
+			var labely="Video watched (count)";
+			$.each(data,function(k,o){o.vx=o.video_watched});
+			$.each(data,function(k,o){o.vy=o.video_count});
+			break;
+
+		case 'b':
+			var labelx="Time spent (minutes)";
+			var labely="Problem score";
+			$.each(data,function(k,o){o.vx=o.time_spent});
+			$.each(data,function(k,o){o.vy=o.problem_score});
+			break;
+		
+		case 'c':
+			var labelx="Time spent (minutes)";
+			var labely="Problem done";
+			$.each(data,function(k,o){o.vx=o.time_spent});
+			$.each(data,function(k,o){o.vy=o.problem_done});
+			break;
+		
+
+		case 'd':
+			var labelx="Avg Session length (minutes)";
+			var labely="Problem score";
+			$.each(data,function(k,o){o.vx=o.session_avg});
+			$.each(data,function(k,o){o.vy=o.problem_score});
+			break;
+
+		case 'e':
+			var labelx="Time spent (minutes)";
+			var labely="Sessions";
+			$.each(data,function(k,o){o.vx=o.time_spent});
+			$.each(data,function(k,o){o.vy=o.sessions});
+			break;
+	}
+
+	var xDomain=d3.extent(data,function(d){return d.vx;});
+	var yDomain=d3.extent(data,function(d){return d.vy;});
+	var xScale=d3.scale.linear().range([30, width-30]).domain(xDomain);
+	var yScale=d3.scale.linear().range([200, 10]).domain(yDomain);	
+	
 	//define xAxis
-    var xAxis = d3.svg.axis()
-        .scale(xScale)
-        .orient('bottom')
+    var xAxis = d3.svg.axis().scale(xScale).orient('bottom')
         .ticks(5)//x tick
-        //.tickFormat(d3.time.format('%b'))//27Sep
         .tickSize(4)
         .tickPadding(4);
 
 	//define yAxis
-    var yAxis = d3.svg.axis()
-        .scale(yScale)
-        .orient('left')
+    var yAxis = d3.svg.axis().scale(yScale).orient('left')
         .ticks(5)//x tick
         .tickSize(5)
         .tickPadding(5);
 
-    cola.append('g')
-        .attr('class', 'axis')
+    cola.selectAll('g,text').remove();//delete axis
+    cola.append('g').attr('class', 'axis')
         .style('shape-rendering','crispEdges')
         .attr('transform', 'translate(0, 200)')
         .call(xAxis)
@@ -96,187 +145,289 @@ function udpateClass(data){
         .style("font-size", "11px")
         .style("text-anchor", "start");
 
-    cola.append('g')
-        .attr('class', 'axis')
+    cola.append('g').attr('class','axis')
         .style('shape-rendering','crispEdges')
-        .attr('transform', 'translate(30, 20)')
+        .attr('transform', 'translate(30, 0)')
         .call(yAxis)
         .selectAll("text")
         .style("font-size", "11px")
         .style("text-anchor", "left");
-/*
-	cls.append("g")
-      .attr("class", "y axis")
-      .call(xAxis)
-    	.append("text")
-      //.attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Problems done");
-*/
-/*	
-	cls.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    	.append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Video watched");
-*/
+
+	//X label
+	cola.append('text')
+       	.attr("transform","translate(340,198)")
+       	.style("text-anchor", "end")
+       	.style("font-size", "11px")
+       	.text(labelx);
+
+    //Y label
+    cola.append('text')
+    	.attr("transform","")
+    	.attr("transform","translate(42,0),rotate(-90)")
+		.style("text-anchor", "end")
+       	.style("font-size", "11px")
+       	.text(labely);
+		
 		//override css
         cola.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
-	var m=cola.selectAll("rect.avg").data(data);
-	m.enter()
-		.append("circle")
-		.attr("cx",function(d,i){
-			//console.log('d.problem_done',d.problem_done);
-			return problemDoneScale(d.problem_done);
-		})
-		.attr("cy",function(d,i){
-			//return i;
-			return videoWatchedScale(d.video_watched);
-		})
-		.attr("r",5)
+	var m=cola.selectAll("circle.student").data(data);
+	
+	m.enter().append("circle").attr("class","student")
+		.attr("cx",width/2)
+		.attr("cy",height/2)
+		.attr("r",4)
+		.attr("stroke","#000")
+		.attr("stroke-width",0)
 		.style("opacity", 0.5)
-		.attr("fill","#999")
-		.append("title").text(function(d){ 
-			return d.problem_done+" problems - "+d.video_watched+" video"; 
-		});
+		.attr("fill",function(d){
+			return '#999';
+			//return colorDomain(d.problem_done/d.problem_score*100);
+		})
+		.on("mouseover",function(d,i){
+			d3.select(this).style('stroke-width', 2);
+			d3.select(this).style('opacity', 1);
+			var htm="<b>Student #"+d.student_id+"</b><hr />";
+			htm+="<table width=100%>";
+			htm+="<tr><td>Sessions<td style='text-align:right'>"+d.sessions;
+			htm+="<tr><td>Avg session time<td style='text-align:right'>"+Math.round(d.session_avg)+" minute";
+			
+			if(d.time_spent>60){
+				var hours=Math.round(d.time_spent/60)+"h and "+d.time_spent%60+" minutes";
+				htm+="<tr><td>Time spent<td style='text-align:right'>"+hours;	
+			}else{
+				htm+="<tr><td>Time spent<td style='text-align:right'>"+d.time_spent+" minutes";	
+			}
+			
+			
+			htm+="<tr><td>Problems done<td style='text-align:right'>"+d.problem_done+"/108";
+			var score=Math.round(d.problem_score/d.problem_done*100);
+			htm+="<tr><td>Problems score<td style='text-align:right'><b style='color:"+colorDomain(score)+"'>"+d.problem_score+"/"+d.problem_done+" ("+score+"%)</b>";
+			htm+="<tr><td>Video count<td style='text-align:right'>"+d.video_count+"/141";
+			htm+="<tr><td>Video watched<td style='text-align:right'>"+d.video_watched+" sec";
+			htm+="</table>";
+			ttover(htm);
+		})
+		.on("mousemove",function(d,i){ttmove();})
+		.on("mouseout",function(d,i){
+			d3.select(this).style('stroke-width', 0);
+			d3.select(this).style('opacity', 0.5);
+			ttout();})
+		;
+	m.transition().delay(10)
+		.attr("cx",function(d,i){return xScale(d.vx);})
+		.attr("cy",function(d,i){return yScale(d.vy);})
+		.attr("fill",function(d){
+			if(d.student_id==student_id)return '#c00';
+			return '#999';
+			//return colorDomain(d.problem_done/d.problem_score*100);
+		})
+		;
+	/*
+	var c=cola.selectAll("line.cursor").data([40,40]);
+	c.enter().append("line")
+		.attr("class","cursor")
+		.attr("x1",function(d,i){return 40})
+		.attr("x2",function(d,i){return 40})
+		.attr("y1",function(d,i){return 40})
+		.attr("y2",function(d,i){return 40})
+	*/
 }
 
 
 
-//Column B
-var xScale = d3.scale.linear().range([30, width-30]).domain([0,500]);
-var xAxis = d3.svg.axis()
+
+
+
+// Column B
+function updateClass2(data,criteria,student_id){
+	//console.log('updateSelector criteria',criteria);
+	switch(criteria){
+		
+		case 'video_watched'://no
+			var labely="Video watched";
+			$.each(data,function(i,d){d.val=d.video_watched});		
+			break;
+		
+		case 'problem_done':
+			var labely="Problem done";
+			$.each(data,function(i,d){d.val=d.problem_done});
+			break;
+
+		case 'problem_score':
+			var labely="Problem score";
+			$.each(data,function(i,d){d.val=d.problem_score});
+			break;
+
+		case 'time_spent':
+			var labely="Time spent";
+			$.each(data,function(i,d){d.val=d.time_spent});
+			break;
+		
+		case 'sessions':
+			var labely="Sessions";
+			$.each(data,function(i,d){d.val=d.sessions});
+			break;
+
+		case 'session_avg'://
+			var labely="Avg session length (minutes)";
+			$.each(data,function(i,d){d.val=d.session_avg});
+			break;
+		
+		default:console.log('criteria error');return false;break;
+	}
+	
+	data.sort(function(a,b){return a.val-b.val});	
+	var domain=d3.extent(data,function(d){return d.val});
+	
+	//console.log('domain '+criteria,domain);
+	var xScale = d3.scale.linear().range([30, width-30]).domain([0,500]);
+	var xAxis = d3.svg.axis()
     .scale(xScale)
     .orient('bottom')
     .ticks(5)//x tick
     .tickSize(4)
     .tickPadding(5);
 
-colb.append('g')
-    .attr('class', 'axis')
-    .style('shape-rendering','crispEdges')
-    //.attr('transform', 'translate(0, 400)')
-    .call(xAxis)
-    .selectAll("text")
-    .style("font-size", "11px")
-    .style("text-anchor", "start");
+	colb.selectAll('g,text').remove();//quick and dirty :: todo update axis
+	colb.append('g')
+	    .attr('class', 'axis')
+	    .style('shape-rendering','crispEdges')
+	    .attr('transform', 'translate(0, 200)')
+	    .call(xAxis)
+	    .selectAll("text")
+	    .style("font-size", "11px")
+	    .style("text-anchor", "start");
+	
+
+	//X label
+	colb.append('text')
+       	.attr("transform","translate(340,198)")
+       	.style("text-anchor", "end")
+       	.style("font-size", "11px")
+       	.text("Students");
+
+    //Y label
+    colb.append('text')
+    	.attr("transform","")
+    	.attr("transform","translate(42,0),rotate(-90)")
+		.style("text-anchor", "end")
+       	.style("font-size", "11px")
+       	.text(labely);
+
 	//override css
     colb.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
-
-
-
-
-function updateSelector(data,criteria){
-
-	//console.log('criteria',criteria);
-	var xScale = d3.scale.linear().range([20, width-30]).domain([0,500]);
 	
-	switch(criteria){
-		
-		case 'video_watched'://no
-			data.sort(function(a,b){return b.video_watched-a.video_watched});
-			var domain=d3.extent(data,function(d){return d.video_watched});
-			break;
-		
-		case 'problem_done'://no
-			data.sort(function(a,b){return b.problem_done-a.problem_done});
-			var domain=d3.extent(data,function(d){return d.problem_done});
-			break;
 
-		case 'problem_score'://no
-			data.sort(function(a,b){return b.problem_score-a.problem_score});
-			var domain=d3.extent(data,function(d){return d.problem_score});
-			break;
-
-		case 'time_spent'://no
-			data.sort(function(a,b){return b.time_spent-a.time_spent});
-			var domain=d3.extent(data,function(d){return d.time_spent});
-			break;
-		
-		case 'sessions'://no
-			data.sort(function(a,b){return b.sessions-a.sessions});
-			var domain=d3.extent(data,function(d){return d.sessions});
-			break;
-
-		case 'session_avg'://
-			data.sort(function(a,b){return b.session_avg-a.session_avg});
-			var domain=d3.extent(data,function(d){return d.session_avg});
-			break;
-		
-		default:
-			console.log('criteria error');
-			return false;
-			break;
-	}
-	
-	//console.log('domain '+criteria,domain);
-	
-	var yScale = d3.scale.linear().range([0,200]).domain(domain);
-	
+	var yScale = d3.scale.linear().range([200,10]).domain(domain);
 	var yAxis = d3.svg.axis().scale(yScale).orient('left')
-	    //.ticks(5)//x tick
+	    .ticks(5)//x tick
 	    .tickSize(2)
-	    .tickPadding(5);
+	    .tickPadding(2);
 
-	colb.selectAll("g.yaxis").remove();
+    colb.append('g').attr('class','axis')
+        .style('shape-rendering','crispEdges')
+        .attr('transform', 'translate(30, 0)')
+        .call(yAxis)
+        .selectAll("text")
+        .style("font-size", "11px")
+        .style("text-anchor", "left");
+/*
 	colb.append('g')
 	    .attr('class', 'yaxis')
 	    .style('shape-rendering','crispEdges')
-	    .style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'})
 	    .attr('transform', 'translate(30,0)')
 	    .call(yAxis)
 	    .selectAll("text")
 	    .style("font-size", "11px")
-	    .style("text-anchor", "start");
-		
+	    .style("text-anchor", "left");
+*/
+
 	//override css
-    //cls.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
+    colb.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
 	var us=colb.selectAll("circle.classroom").data(data)
 	us.enter()
 		.append("circle")
 		.attr("class","classroom")
 		.attr("r",0)
-		.attr("fill","#c00");
-
-	us.transition().delay(function(d,i){return i;})
-		.attr("cx",function(d,i){return xScale(i);})
-		.attr("cy",function(d,i){
-			switch(criteria){
-				case 'video_watched':return yScale(d.video_watched);break;
-				case 'problem_done':return yScale(d.problem_done);break;
-				case 'problem_score':return yScale(d.problem_score);break;
-				case 'time_spent':return yScale(d.time_spent);break;
-				case 'sessions':return yScale(d.sessions);break;
-				case 'session_avg':return yScale(d.session_avg);break;
-				//case 'time_spent':return yScale(d.time_spent);break;
-				default: 
-					console.log('CY CRITERIA ERROR');
-					return yScale(0);
-			}
+		.attr("fill","#999")
+		.on("mouseover",function(d,i){
+			var htm="<b>Student #"+d.student_id+"</b><hr />";
+			htm+="<table width=100%>";
+			htm+="<tr><td>Sessions<td style='text-align:right'>"+d.sessions;
+			htm+="<tr><td>Avg session time<td style='text-align:right'>"+d.session_avg+" minute";
+			htm+="<tr><td>Time spent<td style='text-align:right'>"+d.time_spent+" minutes";
+			htm+="<tr><td>Problems done<td style='text-align:right'>"+d.problem_done+"/108";
+			var score=Math.round(d.problem_score/d.problem_done*100);
+			htm+="<tr><td>Problems score<td style='text-align:right'><b style='color:"+colorDomain(score)+"'>"+d.problem_score+"/"+d.problem_done+" ("+score+"%)</b>";
+			htm+="<tr><td>Video count<td style='text-align:right'>"+d.video_count+"/141";
+			htm+="<tr><td>Video watched<td style='text-align:right'>"+d.video_watched+" sec";
+			htm+="</table>";
+			ttover(htm);
 		})
-		.attr("r",4)
-		.append("title").text(function(d,i){
-			switch(criteria){
-				case 'video_watched':return d.video_watched;break;
-				case 'problem_done':return d.problem_done;break;
-				case 'problem_score':return d.problem_score;break;
-				case 'time_spent':return d.time_spent;break;
-				case 'sessions':return d.sessions;break;
-				case 'session_avg':return d.session_avg;break;
-				//case 'time_spent':return yScale(d.time_spent);break;
-				default: 
-					return 'title error';
-			}
-		});
+		.on("mousemove",function(d,i){ttmove();})
+		.on("mouseout",function(d,i){ttout();})
+		;
+	
+	us.transition()
+		.attr("cx",function(d,i){return xScale(i);})
+		.attr("cy",function(d,i){return yScale(d.val);})
+		.attr("fill",function(d){
+			if(d.student_id==student_id)return "#c00";
+			return "#999"
+		})
+		.attr("r",function(d){
+			if(d.student_id==student_id)return 5;
+			return 2;
+		})
+		;
+	
+	var ipos=0;
+	$.each(data,function(i,d){
+		if(d.student_id==student_id)ipos=i;
+	});
+	
+	// Vertical line to pin point the user
+	var vline= colb.selectAll("line.student").data([ipos]);
+	vline.enter().append("line")
+		.attr("class","student")
+		.attr("stroke","#999")
+		.attr("stroke-width",1)
+		.style('shape-rendering','crispEdges')
+		;
+	
+	vline.transition()
+		.attr("x1",function(d){return xScale(d);})
+		.attr("x2",function(d){return xScale(d);})
+		.attr("y1",0)
+		.attr("y2",200);
+	
+	
+	/*
+	var area = d3.svg.area().interpolate("linear")
+    	.x(function(d,i){return xScale(i);})
+    	.y0(200)
+    	.y1(function(d){return yScale(d.val);});
+                
+	var lineFunction = d3.svg.line()
+        .x(function(d,i){return xScale(i);})
+        .y(function(d){return yScale(d.val);});
+	
+    colb.selectAll("path.area").remove();
+	colb.append("path")
+		.attr("class", "area")
+		.attr("opacity", 0.1)
+		.attr("d", area(data));
+	*/
+	/*
+	var linegraph = colb.append("path")
+        .attr("d", lineFunction(data))
+        .attr("stroke", "red")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
+	*/
 }
 
 
@@ -294,14 +445,19 @@ d3.csv("class.csv",function(error,d){
 	});
 	csv_class=d;
 	console.log("csv_class",csv_class.length);
-	udpateClass(csv_class);
+	updateClass1(csv_class,$('#selector1').val(),119);
+	updateClass2(csv_class,$('#selector2').val(),119);
 });
 
 $(function(){
-	$('#selector').change(function(o){
-		if($('#selector').val())updateSelector(csv_class,$('#selector').val());
+	$('#selector1').change(function(o){
+		if($('#selector1').val())updateClass1(csv_class,$('#selector1').val(),119);
 	});
+	$('#selector2').change(function(o){
+		if($('#selector2').val())updateClass2(csv_class,$('#selector2').val(),119);
+	});
+	//updateSelector(csv_class,$('#selector2').val());//init
 });
 
 </script>
-
+<script src="js/tooltip.js"></script>

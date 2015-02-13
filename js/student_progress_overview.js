@@ -12,9 +12,7 @@ colors.push('#B9DB50');
 colors.push('#8DD685');
 colors.push('#30ad77');//Vert correct
 
-var colorDomain=d3.scale.linear()
-    .domain([0,50,60,70,80,90,100])
-    .range(colors);
+var colorDomain=d3.scale.linear().domain([0,50,60,70,80,90,100]).range(colors);
 
 var greyScale=d3.scale.linear().domain([0,100]).range(['#666','#eee']);//video completion
 
