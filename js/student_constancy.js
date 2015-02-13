@@ -37,7 +37,7 @@ function updateConstancy(data){
     minuteDomain = d3.extent( data ,function(o){return o.minutes_on_site;});
 
     if(data.length<2){
-        $('#moreConstant').html('Not enough data to compute constancy');
+        $('#moreConstant').html('<i class="fa fa-warning" style="color:#c00"></i> Only one session');
     } else {
         dd = d3.extent( data ,function(o){return o.date;});
         var daysb=daysBetween(dd[0],dd[1]);
