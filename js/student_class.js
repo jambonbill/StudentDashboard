@@ -82,7 +82,7 @@ function updateClass1(data,criteria,student_id){
 
 	var xDomain=d3.extent(data,function(d){return d.vx;});
 	var yDomain=d3.extent(data,function(d){return d.vy;});
-	var xScale=d3.scale.linear().range([30, width-30]).domain(xDomain);
+	var xScale=d3.scale.linear().range([30, width-10]).domain(xDomain);
 	var yScale=d3.scale.linear().range([height-40, 10]).domain(yDomain);	
 	
 	//define xAxis
@@ -119,16 +119,16 @@ function updateClass1(data,criteria,student_id){
        	.attr("transform","translate("+width+","+(height-10)+")")
        	.attr("fill", "#999")
        	.style("text-anchor", "end")
-       	.style("font-size", "11px")
-       	.text(labelx);
+       	.style("font-size", "10px")
+       	.text(labelx.toUpperCase());
 
     //Y label
     cola.append('text')
     	.attr("fill", "#999")
     	.attr("transform","translate(42,0),rotate(-90)")
 		.style("text-anchor", "end")
-       	.style("font-size", "11px")
-       	.text(labely);
+       	.style("font-size", "10px")
+       	.text(labely.toUpperCase());
 		
 	//override css
     cola.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
@@ -170,7 +170,7 @@ function updateClass1(data,criteria,student_id){
 	vline.transition()
 		.attr("y1",function(d){return yScale(d.vy);})
 		.attr("y2",function(d){return yScale(d.vy);})
-		.attr("x1",30).attr("x2",width-30);
+		.attr("x1",30).attr("x2",width);
 
 
 
@@ -238,7 +238,7 @@ function updateClass1(data,criteria,student_id){
 		.attr("cy",function(d,i){return yScale(d.vy);})
 		.attr("fill",function(d){
 			if(d.student_id==student_id)return '#c00';
-			return '#999';
+			return '#939da9';
 			//return colorDomain(d.problem_done/d.problem_score*100);
 		})
 		.attr("r",function(d){if(d.student_id==student_id)return 5;else return 4;})
@@ -294,7 +294,7 @@ function updateClass2(data,criteria,student_id){
 	var domain=d3.extent(data,function(d){return d.val});
 	
 	//console.log('domain '+criteria,domain);
-	var xScale = d3.scale.linear().range([30, width-30]).domain([0,500]);
+	var xScale = d3.scale.linear().range([30, width-20]).domain([0,500]);
 	var xAxis = d3.svg.axis()
     .scale(xScale)
     .orient('bottom')
@@ -318,8 +318,8 @@ function updateClass2(data,criteria,student_id){
 		.attr("fill", "#999")
        	.attr("transform","translate("+width+","+(height-10)+")")
        	.style("text-anchor", "end")
-       	.style("font-size", "11px")
-       	.text("Students");
+       	.style("font-size", "10px")
+       	.text("STUDENTS");
 
     //Y label
     colb.append('text')
@@ -327,8 +327,8 @@ function updateClass2(data,criteria,student_id){
     	.attr("transform","")
     	.attr("transform","translate(42,0),rotate(-90)")
 		.style("text-anchor", "end")
-       	.style("font-size", "11px")
-       	.text(labely);
+       	.style("font-size", "10px")
+       	.text(labely.toUpperCase());
 
 	//override css
     colb.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
@@ -385,7 +385,7 @@ function updateClass2(data,criteria,student_id){
 	vline.transition()
 		.attr("y1",function(d){return yScale(data[d].val);})
 		.attr("y2",function(d){return yScale(data[d].val);})
-		.attr("x1",30).attr("x2",width-30);
+		.attr("x1",30).attr("x2",width);
 
 	var us=colb.selectAll("circle.classroom").data(data)
 	us.enter()
@@ -396,7 +396,6 @@ function updateClass2(data,criteria,student_id){
 			if(d.student_id==student_id)return 1;
 			return 0.5;
 		})
-		.attr("fill","#939da9")
 		.attr("stroke","#000")
 		.attr("stroke-width",0)
 		.on("mouseover",function(d,i){
@@ -448,7 +447,7 @@ function updateClass2(data,criteria,student_id){
 		.attr("cy",function(d,i){return yScale(d.val);})
 		.attr("fill",function(d){
 			if(d.student_id==student_id)return "#c00";
-			return "#999"
+			return "#939da9"
 		})
 		.style("opacity", function(d){
 			if(d.student_id==student_id)return 1;

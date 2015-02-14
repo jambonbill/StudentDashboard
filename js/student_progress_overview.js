@@ -1,6 +1,4 @@
-var width = 200,
-    height = 150,
-    tau = 2 * Math.PI; // http://tauday.com/tau-manifesto
+var tau = 2 * Math.PI; // http://tauday.com/tau-manifesto
 
 //Progress colors (Ailadi scheme)
 var colors=[];
@@ -13,12 +11,11 @@ colors.push('#8DD685');
 colors.push('#30ad77');//Vert correct
 
 var colorDomain=d3.scale.linear().domain([0,40,50,60,80,90,100]).range(colors);
-
 var greyScale=d3.scale.linear().domain([0,100]).range(['#666','#eee']);//video completion
 
-var pvis = d3.select("#progressOvDiv").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+var pvis = d3.select("#progressOvDiv").append("svg").attr("width", 200).attr("height", 114);
+var lgnd = d3.select("#endBody").append("svg").attr("width", 200).attr("height", 100);
+
 
 //also declared in student_calendar.js !
 function daysBetween(a, b) {
@@ -33,45 +30,63 @@ function daysBetween(a, b) {
 
 function colorLegend(colors){
     
-    var x=0;
-    var y=130;
-    var cellwidth=16;
+    var x=0,y=130,cellwidth=16;
 
-    pvis.append('text')
-        .attr('font-size', '11px' )
+    pvis.append('text').attr('font-size', '11px' )
         .attr("fill", "#000")
         .attr("transform", "translate("+x+","+y+")")
         .text('Answer quality legend');
 
-    pvis.append('text')
-        .attr('font-size', '11px' )
+    pvis.append('text').attr('font-size', '11px' )
         .attr("fill", "#999")
         .attr("transform", "translate("+x+","+(y+20)+")")
-        .text('Bad');
+        .text('BAD');
 
-    pvis.append('text')
-        .attr('font-size', '11px' )
+    pvis.append('text').attr('font-size', '11px' )
         .attr("fill", "#999")
         .attr("transform", "translate("+(x+90)+","+(y+20)+")")
-        .text('Good');
+        .text('GOOD');
 
-    pvis.selectAll(".colors")
-        .data(colors)
+    pvis.selectAll(".colors").data(colors)
         .enter()
         .append("rect")
         .attr("width", cellwidth)
         .attr("height", 6)
         .attr("x", function(d,i){return x+i*(cellwidth+1);})
         .attr("y", y+4)
-        //.attr("style", "font-size:11px")
         .attr("fill", function(d){return d;})
         .append("title").text(function(d){return d;});
-        ;
 }
 
 //draw color legend
-colorLegend(colors);
+//colorLegend(colors);
+//draw another version
+colorLegend2(colors);
 
+function colorLegend2(colors){
+
+    var x=0,y=0,cellwidth=140/colors.length;
+    /*
+    lgnd.append('text').attr('font-size', '11px' )
+        .attr("fill", "#000")
+        .attr("transform", "translate("+x+","+y+")")
+        .text('Problem answer legend');
+    */
+    lgnd.append('text').attr('font-size','11px').attr("fill","#999")
+        .attr("transform", "translate("+x+","+(y+26)+")").text('BAD');
+
+    lgnd.append('text').attr('font-size', '11px' ).attr("fill","#999")
+        .attr("transform","translate("+(x+146)+","+(y+26)+")")
+        .style("text-anchor","end").text('GOOD');
+
+    lgnd.selectAll(".colors").data(colors).enter()
+        .append("rect")
+        .attr("width", cellwidth).attr("height", 8)
+        .attr("x", function(d,i){return x+i*(cellwidth+1);})
+        .attr("y", y+8)
+        .attr("fill", function(d){return d;})
+        .append("title").text(function(d){return d;});   
+}
 
 
 // An arc function with all values bound except the endAngle. So, to compute an
@@ -104,6 +119,19 @@ pvis.append("circle")
     .attr("fill","white")
     .attr("stroke","#ddd")
     .attr("stroke-width",1)
+
+// Video
+pvis.append("text").attr("class","txt")
+    .attr("x",60).attr("y",75).text("Video")
+    .attr("fill","#999")
+    .style("font-size", "10px").style("text-anchor", "middle");
+
+// Problems
+pvis.append("text").attr("class","txt")
+    .attr("x",125).attr("y",28).text("Problems")
+    .attr("fill", "#999")
+    .style("font-size", "10px").style("text-anchor", "middle");
+
 
 function computeStats(data){
     
@@ -174,10 +202,11 @@ function computeStats(data){
     var problemscore=(problem_score/problem_done);
     var videoprogress=(video_watched/49452);
 
-    pvis.selectAll("path, text.pct").remove();
+    
+    pvis.selectAll("path").remove();//Todo : update path instead
 
     // Arc problems
-    pvis.append("path")
+    var foreground1=pvis.append("path")
         .attr("class", 'arc1')
         .datum({endAngle:(problemprogress*tau)})
         .style("fill", colorDomain(problemscore*100))
@@ -203,7 +232,7 @@ function computeStats(data){
     //console.log('problemdone/problemcount',problemdone/problemcount);
 
     // Arc video
-    pvis.append("path")
+    var foreground2=pvis.append("path")
         .attr("class", 'arc2')
         .datum({endAngle:(videoprogress*tau)})
         .style("fill", "#000")
@@ -223,24 +252,94 @@ function computeStats(data){
         .on("mousemove",function(){ttmove();})
         .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
         ;
-
-    pvis.append("text").attr("class","pct")
-        .attr("x",60).attr("y",65).text(Math.round(videoprogress*100)+"%")
-        .style("font-size", "24px").style("text-anchor", "middle");
-
-    pvis.append("text").attr("class","pct")
-        .attr("x",60).attr("y",75).text("Video")
-        .attr("fill","#333")
-        .style("font-size", "10px").style("text-anchor", "middle");
-
-    pvis.append("text").attr("class","pct")
-        .attr("x",125).attr("y",18).text(Math.round(problemprogress*100)+"%")    
-        .attr("fill",colorDomain(problemscore*100))
-        .style("font-size", "24px").style("text-anchor", "middle");
-
-    pvis.append("text").attr("class","pct")
-        .attr("x",125).attr("y",28).text("Problems")
-        .style("font-size", "10px").style("text-anchor", "middle");
     
+
+
+    // Video progress %    
+    var a = pvis.selectAll("text.pctvideo").data([Math.round(videoprogress*100)]);
+        a.enter().append("text").attr("class","pctvideo")
+        .attr("x",60).attr("y",65).text("0%")
+        .style("font-size", "24px").style("text-anchor", "middle")
+        
+        a.transition().text(function(d){return d+"%";});
+
+    // Problem progress %
+    var b = pvis.selectAll("text.pctproblem").data([Math.round(problemprogress*100)]);
+        b.enter().append("text").attr("class","pctproblem")
+        .attr("x",125).attr("y",18).text("0%")   
+        .style("font-size", "24px").style("text-anchor", "middle");
+    
+        b.transition()
+            .attr("fill",colorDomain(problemscore*100))
+            .text(function(d){return d+"%";});    
 }
 
+
+
+
+
+/*
+// Arc problems
+var foreground1=pvis.append("path")
+    .attr("class", 'arc1')
+    .datum({endAngle:(1*tau)})
+    .style("fill", colorDomain(0))
+    .style("stroke", colorDomain(0))
+    .style("stroke-width", 0)
+    .attr("d", arc1)
+    .attr("transform", "translate(60,60)")
+    .on("mouseover",function(d){
+        d3.select(this).style('stroke-width', 2);
+        var htm="<b>Course problems</b><hr />";
+        htm+="<table width=100%>";
+        htm+="<tr><td>Completion<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
+        var pct=Math.round(problemscore*100);
+        var color=colorDomain(pct);
+        htm+="<tr><td style='color:"+color+"'>Score<td style='color:"+color+"'>"+problem_score+"/"+problem_done+"<td><b style='color:"+color+"'>"+pct+"%</b>";
+        htm+="</table>";
+        ttover(htm);
+    })
+    .on("mousemove",function(){ttmove();})
+    .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
+    ;
+
+//console.log('problemdone/problemcount',problemdone/problemcount);
+
+// Arc video
+var foreground2=pvis.append("path")
+    .attr("class", 'arc2')
+    .datum({endAngle:(1*tau)})
+    .style("fill", "#000")
+    .style("stroke", "#000")
+    .style("stroke-width", 0)
+    .attr("d", arc2)
+    .attr("transform", "translate(60,60)")
+    .on("mouseover",function(d){
+        d3.select(this).style('stroke-width', 2);
+        var htm="<b>Course videos</b><hr />";
+        htm+="<table width=100%>";
+        htm+="<tr><td>"+Math.round(video_watched/60)+"/"+Math.round(49452/60)+" minutes";
+        htm+="<td>"+Math.round(videoprogress*100)+"%</tr>";
+        htm+="</table>";
+        ttover(htm);
+    })
+    .on("mousemove",function(){ttmove();})
+    .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
+    ;
+
+
+// Creates a tween on the specified transition's "d" attribute, transitioning
+// any selected arcs from their current angle to the specified new angle.
+function arcTween(transition, newAngle) {
+    transition.attrTween("d", function(d) {
+        var interpolate = d3.interpolate(d.endAngle, newAngle);
+        return function(t){
+            d.endAngle = interpolate(t);
+            return arc1(d);
+        };
+    });
+}
+
+*/
+
+//foreground1.transition().duration(750).call(arcTween,Math.random()*tau);

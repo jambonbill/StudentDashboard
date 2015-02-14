@@ -3,16 +3,17 @@ TODO
 Global : 
 --------
 
-
+DONE : Move the Legend to the right part
+TODO : Mettre la legende plus bas, en dessous d'un HR gris
+TODO : Mettre les valeurs sur la legende, ou au moins une explication : "Problems answered score"
 TODO : Animate arcs :)
-TODO : Afficher la session moyenne
-
-TODO : Add a last bar on the right, to progress detail
-TODO : Afficher le score
-
+TODO : Afficher le score !!
+TODO : Class, essayer de mettre les legendes y "en dehors" du graph
 
 TODO : Constancy : reduce the space between title and graph (hmmm)
 
+DONE : Afficher la session moyenne
+DONE : On progress details, add a last bar on the right, 
 DONE : Nettoyer le border par default dans la partie overview
 DONE : Last seen xx days ago in grey
 DONE : Pourcentages plus gros
@@ -26,15 +27,15 @@ DONE : Constancy : Add "Session length" on the left
 
 Progress Overview
 -----------------------
-TODO : Align the % and the label correctly
-TODO : Watch the vertical spacings for all parts
+DONE : Align the % and the label correctly
+DONE : Watch the vertical spacings for all parts
 
 DONE : "Bad - Correct" become "Bad - Good"
 DONE : Mettre la colone 'Session' avant 'Start'
 
-Move the Legend 
 
-Fusioner dans les colonnes
+
+??? Fusioner dans les colonnes
 
 
 Progression detail

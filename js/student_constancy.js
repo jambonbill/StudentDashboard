@@ -17,7 +17,7 @@ var cns = d3.select("#constantDiv")
     .attr("height", constheight);
 
 // compute xscale //
-var xScale = d3.time.scale().range([20, constwidth-30]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);//fixed scale
+var xScale = d3.time.scale().range([20, constwidth- 20]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);//fixed scale
 var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(5).tickFormat(d3.time.format('%b')).tickSize(10).tickPadding(5);
 cns.append('g')
     .attr('class', 'axis')

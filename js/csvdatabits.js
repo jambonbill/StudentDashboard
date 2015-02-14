@@ -38,11 +38,11 @@ $(function(){
    		csv_problem_attempts=data;
 	});
 
-	d3.csv("http://databits.io/bits/student-dashboard/files/problems.csv", function(error,o) {
-		o.forEach(function(r){
-			r.max_points=+r.max_points;
+	d3.csv("http://databits.io/bits/student-dashboard/files/problems.csv", function(error,data) {
+		data.forEach(function(d){
+			d.max_points=+d.max_points;
 		});
-   		csv_problems=o;
+   		csv_problems=data;
 	});
 
 	d3.csv("http://databits.io/bits/student-dashboard/files/video_views.csv", function(error,data) {

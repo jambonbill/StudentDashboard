@@ -41,7 +41,16 @@ weeks.append("line")
     .attr('stroke-width', 1)
     .attr("class","crisp")
     ;
-
+// Draw last separator
+vis.append("line")
+    .attr("x1",width-1)
+    .attr("x2",width-1)
+    .attr("y1",10)
+    .attr("y2",60)
+    .attr('stroke', '#ddd')
+    .attr('stroke-width', 1)
+    .attr("class","crisp")
+    ;
 
 
 function updateProgressDetails(data){

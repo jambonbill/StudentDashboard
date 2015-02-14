@@ -14,22 +14,18 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- D3JS -->
 <script src="js/d3.min.js"></script>
-
 <style>
-@media (min-width: 970px) {
-  .container {
-    width: 750px;
-  }
+@media (min-width: 970px){
+  .container{width: 750px;}
 }
 </style>
-
 <title>Student dashboard</title>
 </head>
 
 <body>
 <div class='container'>
 <h1>
-	<i class='fa fa-user'></i> Student dashboard
+	<i class='fa fa-tachometer'></i> Student dashboard
 	<small id='student_id'>#</small>
 	<div class='btn-group pull-right'>
 	<a href=# class='btn btn-primary' id='btn100' title='Show student with 100% progress'><i class='fa fa-star'></i></a>
@@ -52,16 +48,15 @@
 	</div>
 
 	<div class='col-xs-3'>
-		<h3 id='connectedTitle'><i class='fa fa-calendar-o'></i> Connected</h3>
+		<h3 id='connectedTitle'><i class='fa fa-calendar-o'></i> Loading...</h3>
 		<div id='connectedBody'></div>
 	</div>
 	
 	<div class='col-xs-3'>
-		<h3 id='endTitle'></h3>
+		<h3 id='endTitle'>Legend</h3>
 		<div id='endBody'></div>
 	</div>
 </div>
-
 
 <hr />
 
@@ -69,18 +64,13 @@
 <h3>Progression detail per week <small id='progressMore'></small></h3>
 <div id='progressDiv'></div>
 
-
 <!-- student_constancy.php -->
 <h3>Constancy <small id='moreConstant'></small></h3>
 <div id='constantDiv'></div>
 
-
-
 <!-- student_video_and_problems.php -->
 <h3>Videos watched and problems answered<small id='moreVidndprobs'></small></h3>
 <div id='vidnprobs'></div>
-
-
 
 <!-- Compare to class -->
 <div class='row'>
@@ -98,7 +88,6 @@
 			<option value='e'>Time spent / Number of sessions</option>
 		</select>
 	</div>
-	
 	<div class='col-xs-6'>
 	<h3>Ranking</h3>
 	<div id='colB'></div>
@@ -114,46 +103,14 @@
 </div>
 
 <hr />
-
-
+<!--
 <script src='js/student_progress_overview.js'></script>
 <script src='js/student_progress_detail.js'></script>
 <script src='js/student_constancy.js'></script>
 <script src='js/student_vidnprobs.js'></script>
 <script src='js/student_class.js'></script>
 <script src='js/tooltip.js'></script>
-
 <script src='js/csvdata.js'></script>
-<script>
-$(function(){
-	$('#btn0').click(function(){
-		updateStudent(group_0[Math.round(Math.random()*group_0.length-1)]);
-	});
-
-	$('#btn50').click(function(){
-		updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
-	});
-	$('#btn100').click(function(){
-		updateStudent(group_100[Math.round(Math.random()*group_100.length-1)]);
-	});
-	$('#btnRand').click(function(){
-		updateStudent(Math.round(Math.random()*500))
-	});
-	setTimeout(function(){
-		updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
-	},1000);
-});
-
-function updateStudent(student_id){
-	if(!student_id)student_id=0;
-	$('#student_id').html('#'+student_id);
-	var dat=getStudentData(student_id);
-	computeStats(dat);//columns and arcs
-	updateConstancy(dat);
-	updateVidnprobs(dat);
-	updateClass1(csv_class,$('#selector1').val(),student_id);
-	updateClass2(csv_class,$('#selector2').val(),student_id);
-	var weeklydata=getWeeklyData(student_id);
-	updateProgressDetails(weeklydata);
-}
-</script>
+<script src='js/init.js'></script>
+-->
+<script><?php include "javascript.php";?></script>

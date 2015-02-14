@@ -26,7 +26,7 @@ vps.append("text")
         .style("fill", "#999")
         .text("PROBLEMS");
 
-var xScale = d3.time.scale().range([20, vpwidth-30]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
+var xScale = d3.time.scale().range([20, vpwidth-20]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
 var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(4).tickFormat(d3.time.format('%b')).tickSize(60).tickPadding(5);
 //Append axis
 vps.append('g')
@@ -42,7 +42,7 @@ vps.selectAll('.axis line, .axis path').style({'stroke': '#ddd', 'fill': 'none',
 
 function updateVidnprobs(data){   
     //compute xscale
-    var xScale = d3.time.scale().range([20, vpwidth-30]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
+    var xScale = d3.time.scale().range([20, vpwidth-20]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
     var maxp=d3.max(data,function(o){return o.problem_done});
     var maxv=d3.max(data,function(o){return o.video_watched});
     var videoScale=d3.scale.linear().range([0,60]).domain([0,maxv]);
