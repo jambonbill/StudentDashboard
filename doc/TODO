@@ -1,20 +1,28 @@
 TODO
 ---------------------------
 Global : 
+--------
+TODO : Add a last bar on the right, to progress detail
+TODO : Afficher la session moyenne
+TODO : Afficher le score
+TODO : Pourcentages plus gros
 
+DONE : Select the correct user
+DONE : Always draw scale on Video watched
+DONE : Always draw scale on Constancy
 
 
 
 Progress Overview
 -----------------------
-Align the % and the label correctly
-Watch the vertical spacings for all parts
+TODO : Align the % and the label correctly
+TODO : Watch the vertical spacings for all parts
 
-"Bad - Correct" become "Bad - Good"
+DONE : "Bad - Correct" become "Bad - Good"
+DONE : Mettre la colone 'Session' avant 'Start'
 
 Move the Legend 
 
-Mettre la colone 'Session' avant 'Start'
 Fusioner dans les colonnes
 
 

@@ -68,6 +68,7 @@ $(function(){
 			o.problem_done=+o.problem_done;
 			o.problem_score=+o.problem_score;
 			o.sessions=+o.sessions;
+			o.session_avg=+o.session_avg;
 			o.time_spent=+o.time_spent;
 			o.video_count=+o.video_count;
 			o.video_watched=+o.video_watched;

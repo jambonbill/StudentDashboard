@@ -52,8 +52,8 @@ function colorLegend(colors){
     pvis.append('text')
         .attr('font-size', '12px' )
         .attr("fill", "#999")
-        .attr("transform", "translate("+(x+78)+","+(y+20)+")")
-        .text('Correct');
+        .attr("transform", "translate("+(x+88)+","+(y+20)+")")
+        .text('Good');
 
     pvis.selectAll(".colors")
         .data(colors)
@@ -82,12 +82,10 @@ var arc1 = d3.svg.arc()
     .outerRadius(54)
     .startAngle(0);
 
-
 var arc2 = d3.svg.arc()
     .innerRadius(31)
     .outerRadius(39)
     .startAngle(0);
-
 
 // add a first circle
 pvis.append("circle")
@@ -106,7 +104,6 @@ pvis.append("circle")
     .attr("fill","white")
     .attr("stroke","#ddd")
     .attr("stroke-width",1)
-
 
 function computeStats(data){
     
@@ -178,7 +175,8 @@ function computeStats(data){
             htm+="<table width=100%>";
             htm+="<tr><td>Completion<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
             var pct=Math.round(problemscore*100);
-            htm+="<tr><td>Score<td>"+problem_score+"/"+problem_done+"<td><b style='color:"+colorDomain(pct)+"'>"+pct+"%</b>";
+            var color=colorDomain(pct);
+            htm+="<tr><td style='color:"+color+"'>Score<td style='color:"+color+"'>"+problem_score+"/"+problem_done+"<td><b style='color:"+color+"'>"+pct+"%</b>";
             htm+="</table>";
             ttover(htm);
         })
@@ -212,7 +210,7 @@ function computeStats(data){
 
     pvis.append("text").attr("class","pct")
         .attr("x",60).attr("y",65).text(Math.round(videoprogress*100)+"%")
-        .style("font-size", "20px").style("text-anchor", "middle");
+        .style("font-size", "24px").style("text-anchor", "middle");
 
     pvis.append("text").attr("class","pct")
         .attr("x",60).attr("y",75).text("Video")
@@ -220,13 +218,13 @@ function computeStats(data){
         .style("font-size", "10px").style("text-anchor", "middle");
 
     pvis.append("text").attr("class","pct")
-        .attr("x",100).attr("y",15).text(Math.round(problemprogress*100)+"%")    
+        .attr("x",125).attr("y",18).text(Math.round(problemprogress*100)+"%")    
         .attr("fill",colorDomain(problemscore*100))
-        .style("font-size", "20px");
+        .style("font-size", "24px").style("text-anchor", "middle");
 
     pvis.append("text").attr("class","pct")
-        .attr("x",105).attr("y",25).text("Problems")
-        .style("font-size", "10px");
+        .attr("x",125).attr("y",28).text("Problems")
+        .style("font-size", "10px").style("text-anchor", "middle");
     
 }
 

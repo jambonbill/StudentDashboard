@@ -3,7 +3,7 @@ var colors;//color domain
 var colorDomain;
 
 var width = 700,
-    height = 50,
+    height = 60,
     cellSize = 12, // cell size
     colwidth=(width)/8;//col width (weeks)
 
@@ -21,7 +21,7 @@ var weeks=vis.selectAll(".weeks")
     .attr("style", "font-size:11px")
     .attr("fill", "#999")
     .attr("transform", function(d,i){
-        return "translate(" + (i*((width)/8)) + ",0)";
+        return "translate(" + (i*((width)/8)) + ",10)";
     })
     ;
 

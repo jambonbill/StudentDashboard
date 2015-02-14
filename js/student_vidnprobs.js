@@ -1,6 +1,5 @@
 // Video watched and problems view
-
-var width = 700, height = 160;
+var vpwidth = 700, vpheight = 135;
 var day = d3.time.format("%w"),
     week = d3.time.format("%U"),
     percent = d3.format(".1%"),
@@ -9,8 +8,8 @@ var day = d3.time.format("%w"),
 var vps = d3.select("#vidnprobs")
     .append("svg")
     //.attr("style", 'background-color:red')//test
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", vpwidth)
+    .attr("height", vpheight);
     
 //add legent
 vps.append("text")
@@ -27,26 +26,30 @@ vps.append("text")
         .style("fill", "#999")
         .text("PROBLEMS");
 
+var xScale = d3.time.scale().range([20, vpwidth-30]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
+var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(4).tickFormat(d3.time.format('%b')).tickSize(60).tickPadding(5);
+//Append axis
+vps.append('g')
+    .attr('class', 'axis')
+    .attr('transform', 'translate(0, 60)')
+    .style('shape-rendering','crispEdges')
+    .call(xAxis)
+    .selectAll("text")
+    .style("font-size", "11px")
+    .style("text-anchor", "start");
+//override css
+vps.selectAll('.axis line, .axis path').style({'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
-
-function updateVidnprobs(data){
-
-    //console.log('updateVidnprobs()',data);    
-    //compute o.problem_done and o.video_watched
-    
+function updateVidnprobs(data){   
     //compute xscale
-    dateDomain=[new Date("2018-09-14"),new Date("2018-12-24")];//fixed scale
-    var xScale = d3.time.scale().range([20, width-30]).domain(dateDomain);
-
+    var xScale = d3.time.scale().range([20, vpwidth-30]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
     var maxp=d3.max(data,function(o){return o.problem_done});
     var maxv=d3.max(data,function(o){return o.video_watched});
     //console.log(maxp,maxv);
-    
     var videoScale=d3.scale.linear().range([0,60]).domain([0,maxv]);
     var problemScale=d3.scale.linear().range([0,60]).domain([0,maxp]);
 
     //delete previous axis (a bit silly since it dont change)
-    
     
     //define xAxis
     var xAxis = d3.svg.axis()
@@ -59,6 +62,7 @@ function updateVidnprobs(data){
         .tickPadding(5);
         
     //append axis
+    /*
     vps.selectAll('g').remove();
     vps.append('g')
         .attr('class', 'axis')
@@ -68,7 +72,7 @@ function updateVidnprobs(data){
         .selectAll("text")
             .style("font-size", "11px")
             .style("text-anchor", "start");
-    
+    */
     //override css
     vps.selectAll('.axis line, .axis path').style({'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
     
@@ -150,7 +154,7 @@ function updateVidnprobs(data){
             //htm+="<b>"+d.problem.length+" problem(s) done</b>";
             htm+="<table width=100%>";
             htm+="<thead>";
-            htm+="<th>Problem(s) done</th>";
+            htm+="<th>Problem(s) answered</th>";
             htm+="<th style='text-align:right'>Score</th>";
             htm+="</thead>";
             htm+="<tbdody>";
@@ -159,7 +163,7 @@ function updateVidnprobs(data){
                 htm+="<td>"+d.problem[i].section+" - "+d.problem[i].problem_id;
                 htm+="<td style='text-align:right'>"+d.problem[i].score+"/1";
             }
-            htm+="<tr><td><td style='text-align:right'>"+d.problem_score+"/"+d.problem_done+" ("+pct+"%)</tr>";
+            htm+="<tr><td><td style='text-align:right;color:"+colorDomain(pct)+"'><b>"+d.problem_score+"/"+d.problem_done+" ("+pct+"%)</b></td></tr>";
             htm+="</tbody>";
             htm+="</table>";
             
