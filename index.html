@@ -42,32 +42,23 @@
 
 <div class='row'>
 	<div class='col-xs-3'>
-		<h3><i class='fa fa-star-half-o'></i> Progress</h3>
+		<h3>Progress</h3>
 		<div id='progressOvDiv'></div>
 	</div>
 
 	<div class='col-xs-3'>
-		<h3 id='connectedTitle'><i class='fa fa-calendar-o'></i> Connected</h3>
-		<div id='connectedBody'>
-		x times<br />
-		Last conn. : x days ago
-		<i class='text-muted'>Today is 2018-12-24</i>
-		</div>
-	</div>
-	<div class='col-xs-3'>
 		<h3><i class='fa fa-calendar'></i> Start</h3>
-		<div id='start'>
-		x mon yyyy<br />
-		<i class='text-muted'>(x days ago)</i>
-		</div>
+		<div id='start'></div>
 	</div>
+
 	<div class='col-xs-3'>
-		<h3 id='endTitle'><i class='fa fa-flag-checkered'></i> End</h3>
-		<div id='endBody'>
-		x Days<br />
-		(at this pace)
-		
-		</div>
+		<h3 id='connectedTitle'><i class='fa fa-calendar-o'></i> Connected</h3>
+		<div id='connectedBody'></div>
+	</div>
+	
+	<div class='col-xs-3'>
+		<h3 id='endTitle'></h3>
+		<div id='endBody'></div>
 	</div>
 </div>
 
@@ -78,16 +69,18 @@
 <h3>Progression detail per week <small id='progressMore'></small></h3>
 <div id='progressDiv'></div>
 
-<!-- student_video_and_problems.php -->
-<h3>Video watched and problems answered<small id='moreVidndprobs'></small></h3>
-<div id='vidnprobs'></div>
 
 <!-- student_constancy.php -->
 <h3>Constancy <small id='moreConstant'></small></h3>
 <div id='constantDiv'></div>
 
 
-<hr />
+
+<!-- student_video_and_problems.php -->
+<h3>Videos watched and problems answered<small id='moreVidndprobs'></small></h3>
+<div id='vidnprobs'></div>
+
+
 
 <!-- Compare to class -->
 <div class='row'>
@@ -110,9 +103,9 @@
 	<h3>Ranking</h3>
 	<div id='colB'></div>
 		<select id='selector2' class='form-control'>
+			<option value='problem_score'>Problems score</option>			
+			<option value='problem_done'>Problems answered</option>
 			<option value='video_watched'>Video watched</option>
-			<option value='problem_done'>Problem done (course completion)</option>
-			<option value='problem_score'>Problem score (for problem done !)</option>
 			<option value='time_spent'>Total time spent on site</option>
 			<option value='sessions'>Number of sessions</option>
 			<option value='session_avg'>Session average</option>
@@ -152,6 +145,7 @@ $(function(){
 });
 
 function updateStudent(student_id){
+	if(!student_id)student_id=0;
 	$('#student_id').html('#'+student_id);
 	var dat=getStudentData(student_id);
 	computeStats(dat);//columns and arcs

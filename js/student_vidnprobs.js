@@ -1,5 +1,5 @@
 // Video watched and problems view
-var vpwidth = 700, vpheight = 135;
+var vpwidth = 730, vpheight = 135;
 var day = d3.time.format("%w"),
     week = d3.time.format("%U"),
     percent = d3.format(".1%"),
@@ -11,13 +11,13 @@ var vps = d3.select("#vidnprobs")
     .attr("width", vpwidth)
     .attr("height", vpheight);
     
-//add legent
+//add legend
 vps.append("text")
         .attr("transform", "translate(10,50),rotate(-90)")
         .style("text-anchor", "left")
         .style("font-size", "10px")
         .style("fill", "#999")
-        .text("VIDEO");
+        .text("VIDEOS");
 
 vps.append("text")
         .attr("transform", "translate(10,130),rotate(-90)")
@@ -45,12 +45,9 @@ function updateVidnprobs(data){
     var xScale = d3.time.scale().range([20, vpwidth-30]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
     var maxp=d3.max(data,function(o){return o.problem_done});
     var maxv=d3.max(data,function(o){return o.video_watched});
-    //console.log(maxp,maxv);
     var videoScale=d3.scale.linear().range([0,60]).domain([0,maxv]);
     var problemScale=d3.scale.linear().range([0,60]).domain([0,maxp]);
-
-    //delete previous axis (a bit silly since it dont change)
-    
+   
     //define xAxis
     var xAxis = d3.svg.axis()
         .scale(xScale)
@@ -59,22 +56,7 @@ function updateVidnprobs(data){
         //https://github.com/mbostock/d3/wiki/Time-Formatting
         .tickFormat(d3.time.format('%b'))//Sep
         .tickSize(60)
-        .tickPadding(5);
-        
-    //append axis
-    /*
-    vps.selectAll('g').remove();
-    vps.append('g')
-        .attr('class', 'axis')
-        .attr('transform', 'translate(0, 60)')
-        .style('shape-rendering','crispEdges')
-        .call(xAxis)
-        .selectAll("text")
-            .style("font-size", "11px")
-            .style("text-anchor", "start");
-    */
-    //override css
-    vps.selectAll('.axis line, .axis path').style({'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
+        .tickPadding(5);    
     
     var b = vps.selectAll("rect.video").data(data);
     b.enter().append("rect")// video
@@ -101,7 +83,7 @@ function updateVidnprobs(data){
                         htm+="<tr>";
                         htm+="<td>"+d.video[i].section+" - "+d.video[i].video_id;
                         //htm+="<td>"+d.video[i].video_id;
-                        htm+="<td style='text-align:center'>"+d.video[i].duration_seconds;
+                        htm+="<td style='text-align:center'>"+Math.round(d.video[i].duration_seconds/60)+"min "+d.video[i].duration_seconds%60+"s";
                         
                         var pct=Math.round(d.video[i].watched_seconds/d.video[i].duration_seconds*100);
                         htm+="<td style='text-align:right;color:"+greyScale(pct)+"'><b>"+pct+"%</b></td>";

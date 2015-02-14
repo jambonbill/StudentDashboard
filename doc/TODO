@@ -2,15 +2,26 @@ TODO
 ---------------------------
 Global : 
 --------
-TODO : Add a last bar on the right, to progress detail
-TODO : Afficher la session moyenne
-TODO : Afficher le score
-TODO : Pourcentages plus gros
 
+
+TODO : Animate arcs :)
+TODO : Afficher la session moyenne
+
+TODO : Add a last bar on the right, to progress detail
+TODO : Afficher le score
+
+
+TODO : Constancy : reduce the space between title and graph (hmmm)
+
+DONE : Nettoyer le border par default dans la partie overview
+DONE : Last seen xx days ago in grey
+DONE : Pourcentages plus gros
+DONE : Compute the video durations in minutes !
 DONE : Select the correct user
 DONE : Always draw scale on Video watched
 DONE : Always draw scale on Constancy
-
+DONE : CLASS VIEW : Axis titles in GREY
+DONE : Constancy : Add "Session length" on the left
 
 
 Progress Overview

@@ -2,7 +2,7 @@
 var colors;//color domain
 var colorDomain;
 
-var width = 700,
+var width = 710,
     height = 60,
     cellSize = 12, // cell size
     colwidth=(width)/8;//col width (weeks)
@@ -74,8 +74,8 @@ function updateProgressDetails(data){
             
             htm+="<table width=100%>";
             htm+="<thead><th></th>";
-            htm+="<th style='text-align:center'>Done</th>";
-            htm+="<th style='text-align:right'>Score</th>";
+            htm+="<th style='text-align:center'>Answered</th>";
+            htm+="<th style='text-align:right'>Success</th>";
             htm+="</thead>";
             htm+="<tbody>";
             $.each(data[d],function(lecture,o){                
@@ -135,7 +135,9 @@ function updateProgressDetails(data){
             for(var i=0;i<Object.keys(o.video).length;i++){
                 var k=Object.keys(o.video)[i];
                 htm+="<tr><td>"+k;
-                htm+="<td style='text-align:center'>"+o.video[k].duration_seconds;
+                
+                htm+="<td style='text-align:center'>"+Math.round(o.video[k].duration_seconds/60)+"m "+o.video[k].duration_seconds%60+"s";
+                
                 if(o.video[k].watched_seconds){
                     var pct=Math.round(o.video[k].watched_seconds/o.video[k].duration_seconds*100);
                 } else {

@@ -12,7 +12,7 @@ colors.push('#B9DB50');
 colors.push('#8DD685');
 colors.push('#30ad77');//Vert correct
 
-var colorDomain=d3.scale.linear().domain([0,50,60,70,80,90,100]).range(colors);
+var colorDomain=d3.scale.linear().domain([0,40,50,60,80,90,100]).range(colors);
 
 var greyScale=d3.scale.linear().domain([0,100]).range(['#666','#eee']);//video completion
 
@@ -38,21 +38,21 @@ function colorLegend(colors){
     var cellwidth=16;
 
     pvis.append('text')
-        .attr('font-size', '12px' )
+        .attr('font-size', '11px' )
         .attr("fill", "#000")
         .attr("transform", "translate("+x+","+y+")")
         .text('Answer quality legend');
 
     pvis.append('text')
-        .attr('font-size', '12px' )
+        .attr('font-size', '11px' )
         .attr("fill", "#999")
         .attr("transform", "translate("+x+","+(y+20)+")")
         .text('Bad');
 
     pvis.append('text')
-        .attr('font-size', '12px' )
+        .attr('font-size', '11px' )
         .attr("fill", "#999")
-        .attr("transform", "translate("+(x+88)+","+(y+20)+")")
+        .attr("transform", "translate("+(x+90)+","+(y+20)+")")
         .text('Good');
 
     pvis.selectAll(".colors")
@@ -127,23 +127,39 @@ function computeStats(data){
     // HTML //
     // HTML //
 
-    // Start date
-    var htm=mm[0]+"<br>";
+    // Start date - https://github.com/mbostock/d3/wiki/Time-Formatting
+    var htm=d3.time.format('%A %d %b %Y')(mm[0])+"<br />";
+    htm+="<i class='fa fa-clock-o'></i> "+Math.round(minutes_on_site/60)+" hours working<br />";
+
     var daysago=daysBetween(new Date(mm[0]),new Date('2018-12-24'));//last connection
-    htm+="<i class='text-muted'>("+daysago+" days ago)</i>"
+    
+    htm+="<hr />";
+    htm+="<i class='text-muted'>"+daysago+" days ago</i>";
     $('#start').html(htm);
 
 
+
+
     // 'Connected' (sessions)
-    $('#connectedTitle').html("<i class='fa fa-calendar-o'></i> "+data.length+" sessions");
+    $('#connectedTitle').html("<i class='fa fa-calendar-o'></i> Sessions");
 
     var htm="";
-    //htm+=""
+    
+    //Sessions
+    htm+="<b>"+data.length+"</b> session(s)<br />";
+
+    // Average session time
+    var avg=Math.round(minutes_on_site/data.length);
+    //htm+="Avg session : "+avg+" min<br />";
+    htm+="<i class='fa fa-clock-o'></i> "+avg+" minutes avg.<br />";
+
+    htm+="<hr />";
+
     var daysago=daysBetween(new Date(mm[1]),new Date('2018-12-24'));//last connection
     if(daysago>15){
-        htm+="<i class='fa fa-warning' style='color:#c00'></i> Last seen "+daysago+" days ago</i><br />";
+        htm+="<i class='fa fa-warning' style='color:#c00'></i> <i class='text-muted'>Last seen "+daysago+" days ago</i><br />";
     }else{
-        htm+="<i class='text-muted'></i> Last seen : "+daysago+" days ago</i><br />";
+        htm+="<i class='text-muted'>Last seen "+daysago+" day(s) ago</i><br />";
     }
     
        

@@ -1,5 +1,5 @@
 
-var width = 300,height = 160;//todo : reduce height
+var width = 340,height = 260;//todo : reduce height
 //var width = 340,height = 340;//todo : reduce height
 
 var cola = d3.select("#colA").append("svg").attr("width", width).attr("height", height);
@@ -116,14 +116,15 @@ function updateClass1(data,criteria,student_id){
 
 	//X label
 	cola.append('text')
-       	.attr("transform","translate("+width+","+(height-42)+")")
+       	.attr("transform","translate("+width+","+(height-10)+")")
+       	.attr("fill", "#999")
        	.style("text-anchor", "end")
        	.style("font-size", "11px")
        	.text(labelx);
 
     //Y label
     cola.append('text')
-    	.attr("transform","")
+    	.attr("fill", "#999")
     	.attr("transform","translate(42,0),rotate(-90)")
 		.style("text-anchor", "end")
        	.style("font-size", "11px")
@@ -144,7 +145,9 @@ function updateClass1(data,criteria,student_id){
 	var vline= cola.selectAll("line.vline").data([data[ipos]]);
 	vline.enter().append("line")
 		.attr("class","vline")
-		.attr("stroke","#ccc")
+		.attr("stroke","#f98d70")
+		.style("stroke-dasharray", ("3, 3"))
+		.style("opacity",0.5)
 		.attr("stroke-width",1)
 		.style('shape-rendering','crispEdges');
 	
@@ -158,8 +161,10 @@ function updateClass1(data,criteria,student_id){
 	var vline= cola.selectAll("line.hline").data([data[ipos]]);
 	vline.enter().append("line")
 		.attr("class","hline")
-		.attr("stroke","#ccc")
+		.style("stroke-dasharray", ("3, 3"))
+		.attr("stroke","#f98d70")
 		.attr("stroke-width",1)
+		.style("opacity",0.5)
 		.style('shape-rendering','crispEdges');
 	
 	vline.transition()
@@ -310,13 +315,15 @@ function updateClass2(data,criteria,student_id){
 
 	//X label
 	colb.append('text')
-       	.attr("transform","translate("+width+","+(height-42)+")")
+		.attr("fill", "#999")
+       	.attr("transform","translate("+width+","+(height-10)+")")
        	.style("text-anchor", "end")
        	.style("font-size", "11px")
        	.text("Students");
 
     //Y label
     colb.append('text')
+    	.attr("fill", "#999")
     	.attr("transform","")
     	.attr("transform","translate(42,0),rotate(-90)")
 		.style("text-anchor", "end")
@@ -345,32 +352,6 @@ function updateClass2(data,criteria,student_id){
 	//override css
     colb.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 
-/*
-    // Draw Line / Area
-	var area = d3.svg.area().interpolate("linear")
-    	.x(function(d,i){return xScale(i);})
-    	.y0(200)
-    	.y1(function(d){return yScale(d.val);});
-                
-	var lineFunction = d3.svg.line()
-        .x(function(d,i){return xScale(i);})
-        .y(function(d){return yScale(d.val);});
-	
-    colb.selectAll("path.area").remove();
-	colb.append("path")
-		.attr("class", "area")
-		.attr("opacity", 0.1)
-		.attr("d", area(data));
-	
-	colb.selectAll("path.line").remove();
-	var linegraph = colb.append("path")
-        .attr("class", "line")
-        .attr("d", lineFunction(data))
-        .attr("stroke", "#999")
-        .attr("stroke-width", 2)
-        .attr("fill", "none");
-	*/
-
 	var ipos=0;//studend position
 	$.each(data,function(i,d){if(d.student_id==student_id)ipos=i;});
 	
@@ -378,7 +359,9 @@ function updateClass2(data,criteria,student_id){
 	var vline= colb.selectAll("line.vline").data([ipos]);
 	vline.enter().append("line")
 		.attr("class","vline")
-		.attr("stroke","#ccc")
+		.attr("stroke","#f98d70")
+		.style("stroke-dasharray", ("3, 3"))
+		.style("opacity",0.5)
 		.attr("stroke-width",1)
 		.style('shape-rendering','crispEdges')
 		;
@@ -392,7 +375,10 @@ function updateClass2(data,criteria,student_id){
 	var vline= colb.selectAll("line.hline").data([ipos]);
 	vline.enter().append("line")
 		.attr("class","hline")
-		.attr("stroke","#ccc")
+		.attr("stroke","#f98d70")
+		.style("stroke-dasharray", ("3, 3"))
+		.style("opacity",0.5)
+
 		.attr("stroke-width",1)
 		.style('shape-rendering','crispEdges');
 	
@@ -410,7 +396,7 @@ function updateClass2(data,criteria,student_id){
 			if(d.student_id==student_id)return 1;
 			return 0.5;
 		})
-		.attr("fill","#999")
+		.attr("fill","#939da9")
 		.attr("stroke","#000")
 		.attr("stroke-width",0)
 		.on("mouseover",function(d,i){
@@ -470,7 +456,7 @@ function updateClass2(data,criteria,student_id){
 		})
 		.attr("r",function(d){
 			if(d.student_id==student_id)return 5;
-			return 3;
+			return 4;
 		})
 		;
 		

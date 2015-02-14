@@ -1,7 +1,7 @@
 // Constant view
 // Average session length : 40 minutes
 // SELECT AVG(minutes_on_site) FROM `minutes_per_day` WHERE 1
-var constwidth = 700, constheight = 60;
+var constwidth = 730, constheight = 70;
 
 //var weekday=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 //var month=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -30,6 +30,15 @@ cns.append('g')
     
     //override css
     cns.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
+
+//add legend
+cns.append("text")
+    .attr("transform", "translate(10,60),rotate(-90)")
+    .style("text-anchor", "left")
+    .style("font-size", "10px")
+    .style("fill", "#999")
+    .text("DURATION");
+
 
 function updateConstancy(data){
     
