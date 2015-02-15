@@ -28,10 +28,10 @@
 	<i class='fa fa-tachometer'></i> Student dashboard
 	<small id='student_id'>#</small>
 	<div class='btn-group pull-right'>
-	<a href=# class='btn btn-primary' id='btn100' title='Show student with 100% progress'><i class='fa fa-star'></i></a>
-	<a href=# class='btn btn-primary' id='btn50' title='Show student with good progress'><i class='fa fa-star-half-o'></i></a>
-	<a href=# class='btn btn-primary' id='btn0' title='Show student with little progress'><i class='fa fa-star-o'></i></a>
-	<a href=# class='btn btn-primary' id='btnRand' title='Pick a random student'><i class='fa fa-question'></i></a>
+	<a href='#btn' class='btn btn-primary' id='btn100' title='Show student with 100% progress'><i class='fa fa-star'></i></a>
+	<a href='#btn' class='btn btn-primary' id='btn50' title='Show student with good progress'><i class='fa fa-star-half-o'></i></a>
+	<a href='#btn' class='btn btn-primary' id='btn0' title='Show student with little progress'><i class='fa fa-star-o'></i></a>
+	<a href='#btn' class='btn btn-primary' id='btnRand' title='Pick a random student'><i class='fa fa-question'></i></a>
 	</div>
 </h1>
 <hr />

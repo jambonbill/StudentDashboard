@@ -7,12 +7,10 @@ var csv_class;//	***
 
 //100% progress
 var group_100=[23,47,84,95,119,127,129,130,146,158,208,214,246,287,296,307,315,346,369,370,393,394,408,431,450,461,499];
-
 //Over 50% progress
 var group_50=[92,159,113,363,152,342,449,423,161,460,283,162,178,120];
-
 //lazy users
-var group_0=[4,7,16,22,30];
+var group_0=[4,7,10,16,22,30,71,82,166,244,281,290,306,403];
 
 $(function(){
 	
@@ -68,6 +66,7 @@ $(function(){
 			o.problem_done=+o.problem_done;
 			o.problem_score=+o.problem_score;
 			o.sessions=+o.sessions;
+			o.session_avg=+o.session_avg;
 			o.time_spent=+o.time_spent;
 			o.video_count=+o.video_count;
 			o.video_watched=+o.video_watched;

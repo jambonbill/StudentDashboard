@@ -10,6 +10,7 @@ $js[]='js/student_vidnprobs.js';
 $js[]='js/student_class.js';
 $js[]='js/tooltip.js';
 $js[]='js/csvdata.js';
+//$js[]='js/csvdatabits.js';
 $js[]='js/init.js';
 
 $script=[];
