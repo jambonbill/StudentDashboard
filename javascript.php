@@ -1,6 +1,4 @@
 <?php
-//javascript.php
-
 //read all the javascript files, and return one big javascript blob :)
 $js=[];
 $js[]='js/student_progress_overview.js';
@@ -22,8 +20,6 @@ foreach($js as $file){
 		if($line)$script[]=$line;
 	}
 }
-
-//echo implode("\n",$script);
 
 $f=fopen("pack.js","w+");
 fwrite($f,implode("\n",$script));

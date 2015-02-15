@@ -7,19 +7,17 @@ var csv_class;//	***
 
 //100% progress
 var group_100=[23,47,84,95,119,127,129,130,146,158,208,214,246,287,296,307,315,346,369,370,393,394,408,431,450,461,499];
-
 //Over 50% progress
 var group_50=[92,159,113,363,152,342,449,423,161,460,283,162,178,120];
-
 //lazy users
-var group_0=[4,7,16,22,30];
+var group_0=[4,7,10,16,22,30,71,82,166,244,281,290,306,403];
 
 $(function(){
 	
 	// https://github.com/mbostock/d3/wiki/CSV
     $('#student_id').html("Loading csv data...");
     
-	d3.csv("minutes_per_day.csv", function(error,data) {
+	d3.csv("csv/minutes_per_day.csv", function(error,data) {
 		data.forEach(function(d){
 			d.student_id=+d.student_id;
 			d.date=new Date(d.date);
@@ -28,7 +26,7 @@ $(function(){
    		csv_minutes_per_day=data;
 	});
 
-	d3.csv("problem_attempts.csv", function(error,data) {
+	d3.csv("csv/problem_attempts.csv", function(error,data) {
 		data.forEach(function(d){
 			d.student_id=+d.student_id;
 			d.date_attempted=new Date(d.date_attempted);
@@ -38,14 +36,14 @@ $(function(){
    		csv_problem_attempts=data;
 	});
 
-	d3.csv("problems.csv", function(error,o) {
+	d3.csv("csv/problems.csv", function(error,o) {
 		o.forEach(function(r){
 			r.max_points=+r.max_points;
 		});
    		csv_problems=o;
 	});
 
-	d3.csv("video_views.csv", function(error,data) {
+	d3.csv("csv/video_views.csv", function(error,data) {
 		data.forEach(function(d){
 			d.student_id=+d.student_id;
 			d.date_viewed=new Date(d.date_viewed);
@@ -55,14 +53,14 @@ $(function(){
    		csv_video_views=data;
 	});
 
-	d3.csv("videos.csv", function(error,data) {
+	d3.csv("csv/videos.csv", function(error,data) {
 		data.forEach(function(d){
 			d.duration_seconds=+d.duration_seconds;
 		});
    		csv_videos=data;
 	});
 
-	d3.csv("class.csv",function(error,d){
+	d3.csv("csv/class.csv",function(error,d){
 		d.forEach(function(o){
 			o.student_id=+o.student_id;
 			o.problem_done=+o.problem_done;
@@ -90,10 +88,11 @@ $(function(){
 			console.log("csv_video_views",csv_video_views.length);
 			console.log("csv_videos",csv_videos.length);
 			console.log("csv_class",csv_class.length);
-			//updateStudent(Math.round(Math.random()*500));
+			// Show student data
+			updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
 			return ld;
 		}else{
-			console.log('loading csv...');
+			$('#title').html('loading csv...');
 			t=setTimeout(csvloaded,50);
 		}
 	}

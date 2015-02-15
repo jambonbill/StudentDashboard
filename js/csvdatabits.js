@@ -82,18 +82,18 @@ $(function(){
 		if(!csv_video_views)ld=false;
 		if(!csv_videos)ld=false;
 		if(ld){
-			console.log("csv_minutes_per_day",csv_minutes_per_day.length);
-			console.log("csv_problem_attempts",csv_problem_attempts.length);
-			console.log("csv_problems",csv_problems.length);
-			console.log("csv_video_views",csv_video_views.length);
-			console.log("csv_videos",csv_videos.length);
-			console.log("csv_class",csv_class.length);
-			//updateStudent(Math.round(Math.random()*500));
-			$('#student_id').html('csv loaded');
+			//console.log("csv_minutes_per_day",csv_minutes_per_day.length);
+			//console.log("csv_problem_attempts",csv_problem_attempts.length);
+			//console.log("csv_problems",csv_problems.length);
+			//console.log("csv_video_views",csv_video_views.length);
+			//console.log("csv_videos",csv_videos.length);
+			//console.log("csv_class",csv_class.length);
+			// Show student data
+			updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
 			return ld;
 		}else{
 			//console.log('loading csv...');
-			$('#student_id').html('loading csv...');
+			$('#title').html('loading csv...');
 			t=setTimeout(csvloaded,100);
 		}
 	}

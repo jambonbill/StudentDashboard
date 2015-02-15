@@ -680,7 +680,7 @@ break;
 }
 var xDomain=d3.extent(data,function(d){return d.vx;});
 var yDomain=d3.extent(data,function(d){return d.vy;});
-var xScale=d3.scale.linear().range([30, width-10]).domain(xDomain);
+var xScale=d3.scale.linear().range([40, width-10]).domain(xDomain);
 var yScale=d3.scale.linear().range([height-40, 10]).domain(yDomain);
 var xAxis = d3.svg.axis().scale(xScale).orient('bottom')
 .ticks(5)//x tick
@@ -688,8 +688,8 @@ var xAxis = d3.svg.axis().scale(xScale).orient('bottom')
 .tickPadding(4);
 var yAxis = d3.svg.axis().scale(yScale).orient('left')
 .ticks(5)//x tick
-.tickSize(5)
-.tickPadding(5);
+.tickSize(3)
+.tickPadding(2);
 cola.selectAll('g,text').remove();//delete axis
 cola.append('g').attr('class', 'axis')
 .style('shape-rendering','crispEdges')
@@ -700,7 +700,7 @@ cola.append('g').attr('class', 'axis')
 .style("text-anchor", "start");
 cola.append('g').attr('class','axis')
 .style('shape-rendering','crispEdges')
-.attr('transform', 'translate(30, 0)')
+.attr('transform', 'translate(40, 0)')
 .call(yAxis)
 .selectAll("text")
 .style("font-size", "11px")
@@ -713,7 +713,7 @@ cola.append('text')
 .text(labelx.toUpperCase());
 cola.append('text')
 .attr("fill", "#999")
-.attr("transform","translate(42,0),rotate(-90)")
+.attr("transform","translate(10,0),rotate(-90)")
 .style("text-anchor", "end")
 .style("font-size", "10px")
 .text(labely.toUpperCase());
@@ -732,18 +732,18 @@ vline.transition()
 .attr("x1",function(d){return xScale(d.vx);})
 .attr("x2",function(d){return xScale(d.vx);})
 .attr("y1",0).attr("y2",height-40);
-var vline= cola.selectAll("line.hline").data([data[ipos]]);
-vline.enter().append("line")
+var hline= cola.selectAll("line.hline").data([data[ipos]]);
+hline.enter().append("line")
 .attr("class","hline")
 .style("stroke-dasharray", ("3, 3"))
 .attr("stroke","#f98d70")
 .attr("stroke-width",1)
 .style("opacity",0.5)
 .style('shape-rendering','crispEdges');
-vline.transition()
+hline.transition()
 .attr("y1",function(d){return yScale(d.vy);})
 .attr("y2",function(d){return yScale(d.vy);})
-.attr("x1",30).attr("x2",width);
+.attr("x1",40).attr("x2",width);
 var m=cola.selectAll("circle.student").data(data);
 m.enter().append("circle").attr("class","student")
 .attr("cx",width/2)
@@ -817,7 +817,7 @@ var labely="Problems score";
 $.each(data,function(i,d){d.val=d.problem_score});
 break;
 case 'time_spent':
-var labely="Time spent";
+var labely="Time spent on course";
 $.each(data,function(i,d){d.val=d.time_spent});
 break;
 case 'sessions':
@@ -832,7 +832,7 @@ default:console.log('criteria error');return false;break;
 }
 data.sort(function(a,b){return a.val-b.val});
 var domain=d3.extent(data,function(d){return d.val});
-var xScale = d3.scale.linear().range([30, width-20]).domain([0,500]);
+var xScale = d3.scale.linear().range([40, width-20]).domain([0,500]);
 var xAxis = d3.svg.axis()
 .scale(xScale)
 .orient('bottom')
@@ -857,11 +857,10 @@ colb.append('text')
 colb.append('text')
 .attr("fill", "#999")
 .attr("transform","")
-.attr("transform","translate(42,0),rotate(-90)")
+.attr("transform","translate(10,0),rotate(-90)")
 .style("text-anchor", "end")
 .style("font-size", "10px")
 .text(labely.toUpperCase());
-colb.selectAll('.axis line, .axis path').style({ 'stroke': '#ddd', 'fill': 'none', 'stroke-width': '1px'});
 var yScale = d3.scale.linear().range([height-40,10]).domain(domain);
 var yAxis = d3.svg.axis().scale(yScale).orient('left')
 .ticks(5)//x tick
@@ -869,7 +868,7 @@ var yAxis = d3.svg.axis().scale(yScale).orient('left')
 .tickPadding(2);
 colb.append('g').attr('class','axis')
 .style('shape-rendering','crispEdges')
-.attr('transform', 'translate(30, 0)')
+.attr('transform', 'translate(40, 0)')
 .call(yAxis)
 .selectAll("text")
 .style("font-size", "11px")
@@ -901,7 +900,7 @@ vline.enter().append("line")
 vline.transition()
 .attr("y1",function(d){return yScale(data[d].val);})
 .attr("y2",function(d){return yScale(data[d].val);})
-.attr("x1",30).attr("x2",width);
+.attr("x1",40).attr("x2",width);
 var us=colb.selectAll("circle.classroom").data(data)
 us.enter()
 .append("circle")
@@ -964,34 +963,14 @@ return 0.5;
 .attr("r",function(d){
 if(d.student_id==student_id)return 5;
 return 4;
-})
-;
+});
 }
-/*
-var csv_class=[];
-d3.csv("class.csv",function(error,d){
-d.forEach(function(o){
-o.student_id=+o.student_id;
-o.problem_done=+o.problem_done;
-o.problem_score=+o.problem_score;
-o.sessions=+o.sessions;
-o.session_avg=+o.session_avg;
-o.time_spent=+o.time_spent;
-o.video_count=+o.video_count;
-o.video_watched=+o.video_watched;
-});
-csv_class=d;
-console.log("csv_class",csv_class.length);
-updateClass1(csv_class,$('#selector1').val(),119);
-updateClass2(csv_class,$('#selector2').val(),119);
-});
-*/
 $(function(){
 $('#selector1').change(function(o){
-if($('#selector1').val())updateClass1(csv_class,$('#selector1').val(),119);
+if($('#selector1').val())updateClass1(csv_class,$('#selector1').val(),+$('#student_id').val());
 });
 $('#selector2').change(function(o){
-if($('#selector2').val())updateClass2(csv_class,$('#selector2').val(),119);
+if($('#selector2').val())updateClass2(csv_class,$('#selector2').val(),+$('#student_id').val());
 });
 });
 var ttdiv = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 1e-6);
@@ -1021,10 +1000,10 @@ var csv_videos;//	id,section,subsection,duration_seconds
 var csv_class;//	***
 var group_100=[23,47,84,95,119,127,129,130,146,158,208,214,246,287,296,307,315,346,369,370,393,394,408,431,450,461,499];
 var group_50=[92,159,113,363,152,342,449,423,161,460,283,162,178,120];
-var group_0=[4,7,16,22,30];
+var group_0=[4,7,10,16,22,30,71,82,166,244,281,290,306,403];
 $(function(){
 $('#student_id').html("Loading csv data...");
-d3.csv("minutes_per_day.csv", function(error,data) {
+d3.csv("http://databits.io/bits/student-dashboard/files/minutes_per_day.csv", function(error,data) {
 data.forEach(function(d){
 d.student_id=+d.student_id;
 d.date=new Date(d.date);
@@ -1032,7 +1011,7 @@ d.minutes_on_site=+d.minutes_on_site;
 });
 csv_minutes_per_day=data;
 });
-d3.csv("problem_attempts.csv", function(error,data) {
+d3.csv("http://databits.io/bits/student-dashboard/files/problem_attempts.csv", function(error,data) {
 data.forEach(function(d){
 d.student_id=+d.student_id;
 d.date_attempted=new Date(d.date_attempted);
@@ -1041,13 +1020,13 @@ d.score=+d.score;
 });
 csv_problem_attempts=data;
 });
-d3.csv("problems.csv", function(error,o) {
-o.forEach(function(r){
-r.max_points=+r.max_points;
+d3.csv("http://databits.io/bits/student-dashboard/files/problems.csv", function(error,data) {
+data.forEach(function(d){
+d.max_points=+d.max_points;
 });
-csv_problems=o;
+csv_problems=data;
 });
-d3.csv("video_views.csv", function(error,data) {
+d3.csv("http://databits.io/bits/student-dashboard/files/video_views.csv", function(error,data) {
 data.forEach(function(d){
 d.student_id=+d.student_id;
 d.date_viewed=new Date(d.date_viewed);
@@ -1056,13 +1035,13 @@ d.watched_seconds=+d.watched_seconds;
 });
 csv_video_views=data;
 });
-d3.csv("videos.csv", function(error,data) {
+d3.csv("http://databits.io/bits/student-dashboard/files/videos.csv", function(error,data) {
 data.forEach(function(d){
 d.duration_seconds=+d.duration_seconds;
 });
 csv_videos=data;
 });
-d3.csv("class.csv",function(error,d){
+d3.csv("http://databits.io/bits/student-dashboard/files/class.csv",function(error,d){
 d.forEach(function(o){
 o.student_id=+o.student_id;
 o.problem_done=+o.problem_done;
@@ -1083,16 +1062,11 @@ if(!csv_problems)ld=false;
 if(!csv_video_views)ld=false;
 if(!csv_videos)ld=false;
 if(ld){
-console.log("csv_minutes_per_day",csv_minutes_per_day.length);
-console.log("csv_problem_attempts",csv_problem_attempts.length);
-console.log("csv_problems",csv_problems.length);
-console.log("csv_video_views",csv_video_views.length);
-console.log("csv_videos",csv_videos.length);
-console.log("csv_class",csv_class.length);
+updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
 return ld;
 }else{
-console.log('loading csv...');
-t=setTimeout(csvloaded,50);
+$('#title').html('loading csv...');
+t=setTimeout(csvloaded,100);
 }
 }
 var t=setTimeout(csvloaded,50);//todo -> retry on fail
@@ -1204,31 +1178,20 @@ dat[week][lecture].watched_progress=Math.round(watched/duration*100);
 return dat;
 }
 $(function(){
-$('#btn0').click(function(){
-updateStudent(group_0[Math.round(Math.random()*group_0.length-1)]);
-});
-$('#btn50').click(function(){
-updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
-});
-$('#btn100').click(function(){
-updateStudent(group_100[Math.round(Math.random()*group_100.length-1)]);
-});
-$('#btnRand').click(function(){
-updateStudent(Math.round(Math.random()*500))
-});
-setTimeout(function(){
-updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);
-},500);
+$('#btn0').click(function(){updateStudent(group_0[Math.round(Math.random()*group_0.length-1)]);});
+$('#btn50').click(function(){updateStudent(group_50[Math.round(Math.random()*group_50.length-1)]);});
+$('#btn100').click(function(){updateStudent(group_100[Math.round(Math.random()*group_100.length-1)]);});
+$('#btnRand').click(function(){updateStudent(Math.round(Math.random()*500))});
 });
 function updateStudent(student_id){
 if(!student_id)student_id=0;
-$('#student_id').html('#'+student_id);
+$('#title').html('Student #'+student_id);
+$('#student_id').val(student_id);
 var dat=getStudentData(student_id);
 computeStats(dat);//columns and arcs
 updateConstancy(dat);
 updateVidnprobs(dat);
 updateClass1(csv_class,$('#selector1').val(),student_id);
 updateClass2(csv_class,$('#selector2').val(),student_id);
-var weeklydata=getWeeklyData(student_id);
-updateProgressDetails(weeklydata);
+updateProgressDetails(getWeeklyData(student_id));
 }
