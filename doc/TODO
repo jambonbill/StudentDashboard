@@ -3,7 +3,7 @@ TODO
 Global : 
 --------
 
-DONE : Move the Legend to the right part
+
 
 TODO : Mettre la legende plus bas, en dessous d'un HR gris
 
@@ -11,8 +11,8 @@ TODO : Afficher le score !! (Au niveau de la legende ?)
 TODO : Ajouter un couleur sombre pouir le range 0-30% ?
 
 TODO : Alonger les ticks (toute la hauteru) dans "videos and problems"
-
-TODO : Corriger certaines echelles dans la partie ranking
+TODO : S'assurer que le pastille rouge du student apparaisse toujours au dessus de la classe
+TODO : Corriger les echelles "Video watched" et "time spent" dans la partie ranking
 
 TODO : Mettre les valeurs sur la legende, ou au moins une explication : "Problems answered score"
 
@@ -22,10 +22,8 @@ TODO : Animate arcs :)
 
 
 
-TODO : Class, essayer de mettre les legendes y "en dehors" du graph
-
-TODO : Constancy : reduce the space between title and graph (hmmm)
-
+DONE : Class, essayer de mettre les legendes y "en dehors" du graph
+DONE : Move the Legend to the right part
 DONE : Afficher la session moyenne
 DONE : On progress details, add a last bar on the right, 
 DONE : Nettoyer le border par default dans la partie overview
