@@ -1,29 +1,21 @@
 
-var colors;//color domain
-var colorDomain;
+//var colors;//color domain
+//var colorDomain;//already defined 
 
-var width = 710,
-    height = 60,
-    cellSize = 12, // cell size
+var width = 710,height = 60,cellSize = 12, // cell size
     colwidth=(width)/8;//col width (weeks)
 
-var vis = d3.select("#progressDiv").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
+var vis = d3.select("#progressDiv").append("svg").attr("width", width).attr("height", height);
 
 // draw week groups
 var weeks=vis.selectAll(".weeks")
     .data(['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6','Week 7','Week 8'])
-  .enter()
-    .append("g")
-    .attr("class", "weeks")
+  .enter().append("g").attr("class", "weeks")
     .attr("style", "font-size:11px")
     .attr("fill", "#999")
     .attr("transform", function(d,i){
         return "translate(" + (i*((width)/8)) + ",10)";
-    })
-    ;
+    });
 
 // Draw title
 weeks.append("text")
@@ -33,24 +25,17 @@ weeks.append("text")
 
 // Draw vertical separators
 weeks.append("line")
-    .attr("x1",0)
-    .attr("x2",0)
-    .attr("y1",0)
-    .attr("y2",50)
+    .attr("x1",0).attr("x2",0)
+    .attr("y1",0).attr("y2",50)
     .attr('stroke', '#ddd')
     .attr('stroke-width', 1)
-    .attr("class","crisp")
-    ;
+    .attr("class","crisp");
 // Draw last separator
 vis.append("line")
-    .attr("x1",width-1)
-    .attr("x2",width-1)
-    .attr("y1",10)
-    .attr("y2",60)
-    .attr('stroke', '#ddd')
+    .attr("x1",width-1).attr("x2",width-1).attr("y1",10)
+    .attr("y2",60).attr('stroke', '#ddd')
     .attr('stroke-width', 1)
-    .attr("class","crisp")
-    ;
+    .attr("class","crisp");
 
 
 function updateProgressDetails(data){
@@ -58,12 +43,9 @@ function updateProgressDetails(data){
     weeks.selectAll("rect").remove();
 
     // Draw problems done
-    var pbs=weeks.append("rect")
-        .attr("class","problem")
-        .attr("x",0)
-        .attr("y",20)
-        .attr("width",0)
-        .attr("height",8)
+    var pbs=weeks.append("rect").attr("class","problem")
+        .attr("x",0).attr("y",20)
+        .attr("width",0).attr("height",8)
         .attr("fill",function(d){
             //console.log(data[d]);
             var score=0;
@@ -74,10 +56,18 @@ function updateProgressDetails(data){
             });
             return colorDomain(score/done*100);
         })//vert
-        .attr("stroke","#000")
+        .attr("stroke",function(d){
+            var score=0;
+            var done=0;
+            $.each(data[d],function(lecture,o){
+                if(o.problem_score)score+=o.problem_score;
+                if(o.problem_done)done+=o.problem_done;
+            });
+            return colorDomain(score/done*100);
+        })
         .attr("stroke-width","0")
         .on("mouseover",function(d){
-            d3.select(this).style('stroke-width', 1);
+            d3.select(this).style('stroke-width', 2);
             
             var htm="<b>"+d +" Problems</b><hr />";
             
@@ -100,8 +90,7 @@ function updateProgressDetails(data){
             ttover(htm);
         })
         .on("mousemove",function(){ttmove();})
-        .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-        ;
+        .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();});
 
     pbs.transition().delay(function(d,i){return i*100})
     .attr("width",function(d){
@@ -120,12 +109,9 @@ function updateProgressDetails(data){
     //pbs.exit().remove();
 
     // Draw video rectangles
-    var vids=weeks.append("rect")
-      .attr("class","video")
-      .attr("x",0)
-      .attr("y",30)
-      .attr("width",0)
-    .attr("height",8)
+    var vids=weeks.append("rect").attr("class","video")
+      .attr("x",0).attr("y",30)
+      .attr("width",0).attr("height",8)
     .attr("fill","#000")
     .attr("stroke","#000")
     .attr("stroke-width","0")
@@ -163,13 +149,11 @@ function updateProgressDetails(data){
         ttover(htm);
     })
     .on("mousemove",function(){ttmove();})
-    .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-    ;
+    .on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();});
 
     vids.transition().delay(function(d,i){return i*100})
         .attr("width",function(d){
-        var duration=0;
-        var watched=0;
+        var duration=0,watched=0;
         $.each(data[d],function(lecture,o){
             duration+=o.video_duration;
             if(o.watched_seconds)watched +=o.watched_seconds;

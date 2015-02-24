@@ -18,7 +18,6 @@ vps.append("text")
         .style("font-size", "10px")
         .style("fill", "#999")
         .text("VIDEOS");
-
 vps.append("text")
         .attr("transform", "translate(10,130),rotate(-90)")
         .style("text-anchor", "left")
@@ -26,12 +25,16 @@ vps.append("text")
         .style("fill", "#999")
         .text("PROBLEMS");
 
+vps.append("line").attr("class","axis")
+        .attr("x1",20).attr("x2",width).attr("y1",60).attr("y2",60)
+        .style('shape-rendering','crispEdges').style("stroke", "#ddd").style("stroke-width", 1);
+
+
 var xScale = d3.time.scale().range([20, vpwidth-20]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
-var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(4).tickFormat(d3.time.format('%b')).tickSize(60).tickPadding(5);
+var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(4).tickFormat(d3.time.format('%b')).tickSize(120).tickPadding(5);
 //Append axis
-vps.append('g')
-    .attr('class', 'axis')
-    .attr('transform', 'translate(0, 60)')
+vps.append('g').attr('class', 'axis')
+    .attr('transform', 'translate(0,-1)')
     .style('shape-rendering','crispEdges')
     .call(xAxis)
     .selectAll("text")

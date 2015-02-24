@@ -6,16 +6,8 @@ var cola = d3.select("#colA").append("svg").attr("width", width).attr("height", 
 var colb = d3.select("#colB").append("svg").attr("width", width).attr("height", height);
 
 //Progress colors (Ailadi scheme) (already defined in overview)
-
-var colors=[];
-colors.push('#FF5F06');//Rouge orange
-colors.push('#F39224');
-colors.push('#EDC82B');
-colors.push('#E5E131');
-colors.push('#B9DB50');
-colors.push('#8DD685');
-colors.push('#30ad77');//Vert correct
-var colorDomain=d3.scale.linear().domain([0,50,60,70,80,90,100]).range(colors);
+//var colors=['#FF5F06','#F39224','#EDC82B','#E5E131','#B9DB50','#8DD685','#30ad77'];//Vert correct
+//var colorDomain=d3.scale.linear().domain([0,50,60,70,80,90,100]).range(colors);
 
 // Column A
 function updateClass1(data,criteria,student_id){

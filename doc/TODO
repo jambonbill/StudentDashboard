@@ -3,25 +3,16 @@ TODO
 Global : 
 --------
 
-
-
-TODO : Mettre la legende plus bas, en dessous d'un HR gris
-
-TODO : Afficher le score !! (Au niveau de la legende ?)
-TODO : Ajouter un couleur sombre pouir le range 0-30% ?
-
-TODO : Alonger les ticks (toute la hauteru) dans "videos and problems"
 TODO : S'assurer que le pastille rouge du student apparaisse toujours au dessus de la classe
 TODO : Corriger les echelles "Video watched" et "time spent" dans la partie ranking
-
-TODO : Mettre les valeurs sur la legende, ou au moins une explication : "Problems answered score"
-
 TODO : Animate arcs :)
 
 
-
-
-
+DONE : Mettre la legende plus bas, en dessous d'un HR gris
+DONE : Ajouter un couleur sombre pouir le range 0-30% ?
+DONE : Mettre les valeurs sur la legende, ou au moins une explication : "Problems answered score"
+DONE : Afficher le score !! (Au niveau de la legende ?)
+DONE : Alonger les ticks (toute la hauteru) dans "videos and problems"
 DONE : Class, essayer de mettre les legendes y "en dehors" du graph
 DONE : Move the Legend to the right part
 DONE : Afficher la session moyenne
@@ -41,23 +32,15 @@ Progress Overview
 -----------------------
 DONE : Align the % and the label correctly
 DONE : Watch the vertical spacings for all parts
-
 DONE : "Bad - Correct" become "Bad - Good"
 DONE : Mettre la colone 'Session' avant 'Start'
-
-
-
-??? Fusioner dans les colonnes
 
 
 Progression detail
 ------------------------
 
-
-
 Constancy
 ------------------------
-Add "Today" on the scale->right ?
 
 
 Video watched and problems done

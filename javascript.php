@@ -1,5 +1,6 @@
 <?php
 //read all the javascript files, and return one big javascript blob :)
+$DEBUG=true;
 $js=[];
 $js[]='js/student_progress_overview.js';
 $js[]='js/student_progress_detail.js';
@@ -11,6 +12,7 @@ $js[]='js/csvdata.js';
 //$js[]='js/csvdatabits.js';
 $js[]='js/init.js';
 
+
 $script=[];
 foreach($js as $file){
 	$f=file($file);
@@ -21,8 +23,16 @@ foreach($js as $file){
 	}
 }
 
-$f=fopen("pack.js","w+");
+$f=fopen("js/pack.js","w+");
 fwrite($f,implode("\n",$script));
 fclose($f);
 
-echo implode("\n",$script);
+if($DEBUG){
+	foreach($js as $file){
+		echo "<script src='$file'></script>\n";
+	}
+}else{
+	echo "<script>";
+	echo implode("\n",$script);
+	echo "</script>";
+}

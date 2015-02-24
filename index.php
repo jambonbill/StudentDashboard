@@ -14,11 +14,7 @@
 <script src="bootstrap/js/bootstrap.min.js"></script>
 <!-- D3JS -->
 <script src="js/d3.min.js"></script>
-<style>
-@media (min-width: 970px){
-  .container{width: 750px;}
-}
-</style>
+<style>@media (min-width: 970px){.container{width: 750px;}}</style>
 <title>Student dashboard</title>
 </head>
 
@@ -43,6 +39,12 @@
 	</div>
 
 	<div class='col-xs-3'>
+		<h3 id='scoreTitle'>Score</h3>
+		<div id='scoreBody'></div>
+		<div id='scoreLegend'></div>
+	</div>
+
+	<div class='col-xs-3'>
 		<h3><i class='fa fa-calendar'></i> Start</h3>
 		<div id='start'></div>
 	</div>
@@ -52,10 +54,7 @@
 		<div id='connectedBody'></div>
 	</div>
 	
-	<div class='col-xs-3'>
-		<h3 id='endTitle'>Legend</h3>
-		<div id='endBody'></div>
-	</div>
+	
 </div>
 
 <hr />
@@ -113,4 +112,4 @@
 <script src='js/csvdata.js'></script>
 <script src='js/init.js'></script>
 -->
-<script><?php include "javascript.php";?></script>
+<?php include "javascript.php";?>
