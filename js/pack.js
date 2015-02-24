@@ -1,112 +1,74 @@
 var tau = 2 * Math.PI; // http://tauday.com/tau-manifesto
-var colors=[];
-colors.push('#FF5F06');//Rouge orange
-colors.push('#F39224');
-colors.push('#EDC82B');
-colors.push('#E5E131');
-colors.push('#B9DB50');
-colors.push('#8DD685');
-colors.push('#30ad77');//Vert correct
-var colorDomain=d3.scale.linear().domain([0,40,50,60,80,90,100]).range(colors);
+var colors=['#CC0000','#FF5F06','#F39224','#EDC82B','#E5E131','#E5E131','#B9DB50','#B9DB50','#8DD685','#30ad77'];
+var scoreDomain=[0,10,20,30,40,50,60,70,80,90,100];
+var colorDomain=d3.scale.linear().domain(scoreDomain).range(colors);
 var greyScale=d3.scale.linear().domain([0,100]).range(['#666','#eee']);//video completion
 var pvis = d3.select("#progressOvDiv").append("svg").attr("width", 200).attr("height", 114);
-var lgnd = d3.select("#endBody").append("svg").attr("width", 200).attr("height", 100);
+var lgnd = d3.select("#scoreLegend").append("svg").attr("width", 200).attr("height", 30);
 function daysBetween(a, b) {
 var one = new Date(a.getFullYear(), a.getMonth(), a.getDate());
 var two = new Date(b.getFullYear(), b.getMonth(), b.getDate());
 var msecondsPerDay = 1000 * 60 * 60 * 24;
 var mBetween = two.getTime() - one.getTime();
-var days = mBetween / msecondsPerDay;
-return Math.floor(days);// Round down.
+return Math.floor(mBetween/msecondsPerDay);
 }
-function colorLegend(colors){
-var x=0,y=130,cellwidth=16;
-pvis.append('text').attr('font-size', '11px' )
-.attr("fill", "#000")
-.attr("transform", "translate("+x+","+y+")")
-.text('Answer quality legend');
-pvis.append('text').attr('font-size', '11px' )
-.attr("fill", "#999")
-.attr("transform", "translate("+x+","+(y+20)+")")
-.text('BAD');
-pvis.append('text').attr('font-size', '11px' )
-.attr("fill", "#999")
-.attr("transform", "translate("+(x+90)+","+(y+20)+")")
-.text('GOOD');
-pvis.selectAll(".colors").data(colors)
-.enter()
-.append("rect")
-.attr("width", cellwidth)
-.attr("height", 6)
-.attr("x", function(d,i){return x+i*(cellwidth+1);})
-.attr("y", y+4)
-.attr("fill", function(d){return d;})
-.append("title").text(function(d){return d;});
+function colorLegend2(colors){
+var x=0,y=0,cellwidth=150/colors.length;
+lgnd.selectAll(".colors").data(colors).enter()
+.append("rect").attr("width", cellwidth).attr("height", 8)
+.attr("x", function(d,i){return x+i*(cellwidth+1);}).attr("y", y+8)
+.attr("fill", function(d,i){return d;})
+.on("mouseover",function(d,i){
+var htm=scoreDomain[i]+"%";
+if(i<scoreDomain.length-1){
+htm="Problem score from "+scoreDomain[i]+"% to "+scoreDomain[(i+1)]+"%";
+}else{
+htm="Problem score over "+scoreDomain[i]+"%";
+}
+ttover(htm);
+})
+.on("mousemove",function(d){ttmove()})
+.on("mouseout", function(d){ttout();});
 }
 colorLegend2(colors);
-function colorLegend2(colors){
-var x=0,y=0,cellwidth=140/colors.length;
-/*
-lgnd.append('text').attr('font-size', '11px' )
-.attr("fill", "#000")
-.attr("transform", "translate("+x+","+y+")")
-.text('Problem answer legend');
-*/
-lgnd.append('text').attr('font-size','11px').attr("fill","#999")
-.attr("transform", "translate("+x+","+(y+26)+")").text('BAD');
-lgnd.append('text').attr('font-size', '11px' ).attr("fill","#999")
-.attr("transform","translate("+(x+146)+","+(y+26)+")")
-.style("text-anchor","end").text('GOOD');
-lgnd.selectAll(".colors").data(colors).enter()
-.append("rect")
-.attr("width", cellwidth).attr("height", 8)
-.attr("x", function(d,i){return x+i*(cellwidth+1);})
-.attr("y", y+8)
-.attr("fill", function(d){return d;})
-.append("title").text(function(d){return d;});
-}
-var arc1 = d3.svg.arc()
-.innerRadius(46)
-.outerRadius(54)
-.startAngle(0);
-var arc2 = d3.svg.arc()
-.innerRadius(31)
-.outerRadius(39)
-.startAngle(0);
-pvis.append("circle")
-.attr("cx",60)
-.attr("cy",60)
-.attr("r",50)
-.attr("fill","white")
-.attr("stroke","#ddd")
-.attr("stroke-width",1)
-pvis.append("circle")
-.attr("cx",60)
-.attr("cy",60)
-.attr("r",35)
-.attr("fill","white")
-.attr("stroke","#ddd")
-.attr("stroke-width",1)
-pvis.append("text").attr("class","txt")
-.attr("x",60).attr("y",75).text("Video")
-.attr("fill","#999")
+var arc1 = d3.svg.arc().innerRadius(46).outerRadius(54).startAngle(0);
+var arc2 = d3.svg.arc().innerRadius(31).outerRadius(39).startAngle(0);
+pvis.append("circle").attr("cx",60).attr("cy",60).attr("r",50).attr("fill","white").attr("stroke","#ddd").attr("stroke-width",1);
+pvis.append("circle").attr("cx",60).attr("cy",60).attr("r",35).attr("fill","white").attr("stroke","#ddd").attr("stroke-width",1);
+pvis.append("text").attr("class","txt").attr("x",60).attr("y",75).text("Video").attr("fill","#999")
 .style("font-size", "10px").style("text-anchor", "middle");
-pvis.append("text").attr("class","txt")
-.attr("x",125).attr("y",28).text("Problems")
-.attr("fill", "#999")
+pvis.append("text").attr("class","txt").attr("x",125).attr("y",28).text("Problems").attr("fill", "#999")
 .style("font-size", "10px").style("text-anchor", "middle");
 function computeStats(data){
 var mm=d3.extent(data,function(d){return d.date});
-var problem_done=0,
-problem_score=0,
-video_watched=0,
-minutes_on_site=0;
+var problem_done=0,problem_score=0,video_watched=0,minutes_on_site=0;
 $.each(data,function(i,o){
 if(o.problem_done)problem_done+=o.problem_done;
 if(o.problem_score)problem_score+=o.problem_score;
 if(o.video_watched)video_watched+=o.video_watched;//in seconds
 if(o.minutes_on_site)minutes_on_site+=o.minutes_on_site;
 });
+var problemprogress=(problem_done/108);
+var problemscore=0;
+if(problem_score>0&&problem_done>0)var problemscore=(problem_score/problem_done);
+var videoprogress=(video_watched/49452);
+$('#scoreTitle').html("Score: <span style='color:"+colorDomain(problemscore*100)+"'>"+problem_score+"/"+problem_done+"</span>");
+$('#scoreTitle').attr("title",problem_score+'/'+problem_done+" problem(s) done");
+var htm="";
+if(problem_done>0){
+htm+=problem_score+"/"+problem_done+" correct <span class='pull-right' style='color:"+colorDomain(problemscore*100)+"'>"+Math.round(problemscore*100)+"%</span><br />";
+}else{
+htm+="<br />";
+}
+if(problem_done==108){
+htm+="<i class='fa fa-exclamation-circle' style='color:"+colorDomain(problemscore*100)+"'></i> All problems done !";
+} else if(problem_done==0) {
+htm+="<i class='fa fa-warning' style='color:#c00'></i> No problem done";
+} else {
+htm+="<i class='fa fa-arrow-right'></i> <b>"+(108-problem_done) +"</b> problem(s) left";
+}
+htm+="<hr />";
+$('#scoreBody').html(htm);
 var htm=d3.time.format('%A %d %b %Y')(mm[0])+"<br />";
 htm+="<i class='fa fa-clock-o'></i> "+Math.round(minutes_on_site/60)+" hours working<br />";
 var daysago=daysBetween(new Date(mm[0]),new Date('2018-12-24'));//last connection
@@ -126,9 +88,6 @@ htm+="<i class='fa fa-warning' style='color:#c00'></i> <i class='text-muted'>Las
 htm+="<i class='text-muted'>Last seen "+daysago+" day(s) ago</i><br />";
 }
 $('#connectedBody').html(htm);
-var problemprogress=(problem_done/108);
-var problemscore=(problem_score/problem_done);
-var videoprogress=(video_watched/49452);
 pvis.selectAll("path").remove();//Todo : update path instead
 var foreground1=pvis.append("path")
 .attr("class", 'arc1')
@@ -140,7 +99,7 @@ var foreground1=pvis.append("path")
 .attr("transform", "translate(60,60)")
 .on("mouseover",function(d){
 d3.select(this).style('stroke-width', 2);
-var htm="<b>Course problems</b><hr />";
+var htm="<b>Course problems progression</b><hr />";
 htm+="<table width=100%>";
 htm+="<tr><td>Completion<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
 var pct=Math.round(problemscore*100);
@@ -150,8 +109,7 @@ htm+="</table>";
 ttover(htm);
 })
 .on("mousemove",function(){ttmove();})
-.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-;
+.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();});
 var foreground2=pvis.append("path")
 .attr("class", 'arc2')
 .datum({endAngle:(videoprogress*tau)})
@@ -162,7 +120,7 @@ var foreground2=pvis.append("path")
 .attr("transform", "translate(60,60)")
 .on("mouseover",function(d){
 d3.select(this).style('stroke-width', 2);
-var htm="<b>Course videos</b><hr />";
+var htm="<b>Course videos progression</b><hr />";
 htm+="<table width=100%>";
 htm+="<tr><td>"+Math.round(video_watched/60)+"/"+Math.round(49452/60)+" minutes";
 htm+="<td>"+Math.round(videoprogress*100)+"%</tr>";
@@ -170,123 +128,56 @@ htm+="</table>";
 ttover(htm);
 })
 .on("mousemove",function(){ttmove();})
-.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-;
+.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();});
 var a = pvis.selectAll("text.pctvideo").data([Math.round(videoprogress*100)]);
 a.enter().append("text").attr("class","pctvideo")
 .attr("x",60).attr("y",65).text("0%")
 .style("font-size", "24px").style("text-anchor", "middle")
 a.transition().text(function(d){return d+"%";});
-var b = pvis.selectAll("text.pctproblem").data([Math.round(problemprogress*100)]);
+var b = pvis.selectAll("text.pctproblem").data([problemprogress]);
 b.enter().append("text").attr("class","pctproblem")
 .attr("x",125).attr("y",18).text("0%")
 .style("font-size", "24px").style("text-anchor", "middle");
 b.transition()
-.attr("fill",colorDomain(problemscore*100))
-.text(function(d){return d+"%";});
-}
-/*
-var foreground1=pvis.append("path")
-.attr("class", 'arc1')
-.datum({endAngle:(1*tau)})
-.style("fill", colorDomain(0))
-.style("stroke", colorDomain(0))
-.style("stroke-width", 0)
-.attr("d", arc1)
-.attr("transform", "translate(60,60)")
-.on("mouseover",function(d){
-d3.select(this).style('stroke-width', 2);
-var htm="<b>Course problems</b><hr />";
-htm+="<table width=100%>";
-htm+="<tr><td>Completion<td>"+problem_done+"/108<td>"+Math.round(problemprogress*100)+"%";
-var pct=Math.round(problemscore*100);
-var color=colorDomain(pct);
-htm+="<tr><td style='color:"+color+"'>Score<td style='color:"+color+"'>"+problem_score+"/"+problem_done+"<td><b style='color:"+color+"'>"+pct+"%</b>";
-htm+="</table>";
-ttover(htm);
-})
-.on("mousemove",function(){ttmove();})
-.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-;
-var foreground2=pvis.append("path")
-.attr("class", 'arc2')
-.datum({endAngle:(1*tau)})
-.style("fill", "#000")
-.style("stroke", "#000")
-.style("stroke-width", 0)
-.attr("d", arc2)
-.attr("transform", "translate(60,60)")
-.on("mouseover",function(d){
-d3.select(this).style('stroke-width', 2);
-var htm="<b>Course videos</b><hr />";
-htm+="<table width=100%>";
-htm+="<tr><td>"+Math.round(video_watched/60)+"/"+Math.round(49452/60)+" minutes";
-htm+="<td>"+Math.round(videoprogress*100)+"%</tr>";
-htm+="</table>";
-ttover(htm);
-})
-.on("mousemove",function(){ttmove();})
-.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-;
-function arcTween(transition, newAngle) {
-transition.attrTween("d", function(d) {
-var interpolate = d3.interpolate(d.endAngle, newAngle);
-return function(t){
-d.endAngle = interpolate(t);
-return arc1(d);
-};
+.text(function(d){return Math.round(d*100)+"%";});
+var l=lgnd.selectAll("g.score").data([problem_score]);
+var g=l.enter().append("g").attr("class","score")
+.attr('font-family', 'FontAwesome').attr('font-size', '18px')
+.append("text").text("\uf0dd").append("title").text('title');
+l.transition().attr("transform", function(d){
+return "translate("+(d/100*140)+",5)";
 });
 }
-*/
-var colors;//color domain
-var colorDomain;
-var width = 710,
-height = 60,
-cellSize = 12, // cell size
+var width = 710,height = 60,cellSize = 12, // cell size
 colwidth=(width)/8;//col width (weeks)
-var vis = d3.select("#progressDiv").append("svg")
-.attr("width", width)
-.attr("height", height);
+var vis = d3.select("#progressDiv").append("svg").attr("width", width).attr("height", height);
 var weeks=vis.selectAll(".weeks")
 .data(['Week 1','Week 2','Week 3','Week 4','Week 5','Week 6','Week 7','Week 8'])
-.enter()
-.append("g")
-.attr("class", "weeks")
+.enter().append("g").attr("class", "weeks")
 .attr("style", "font-size:11px")
 .attr("fill", "#999")
 .attr("transform", function(d,i){
 return "translate(" + (i*((width)/8)) + ",10)";
-})
-;
+});
 weeks.append("text")
 .text( function(d,i){return d.toUpperCase();})
 .attr("transform", "translate(4,10)");
 weeks.append("line")
-.attr("x1",0)
-.attr("x2",0)
-.attr("y1",0)
-.attr("y2",50)
+.attr("x1",0).attr("x2",0)
+.attr("y1",0).attr("y2",50)
 .attr('stroke', '#ddd')
 .attr('stroke-width', 1)
-.attr("class","crisp")
-;
+.attr("class","crisp");
 vis.append("line")
-.attr("x1",width-1)
-.attr("x2",width-1)
-.attr("y1",10)
-.attr("y2",60)
-.attr('stroke', '#ddd')
+.attr("x1",width-1).attr("x2",width-1).attr("y1",10)
+.attr("y2",60).attr('stroke', '#ddd')
 .attr('stroke-width', 1)
-.attr("class","crisp")
-;
+.attr("class","crisp");
 function updateProgressDetails(data){
 weeks.selectAll("rect").remove();
-var pbs=weeks.append("rect")
-.attr("class","problem")
-.attr("x",0)
-.attr("y",20)
-.attr("width",0)
-.attr("height",8)
+var pbs=weeks.append("rect").attr("class","problem")
+.attr("x",0).attr("y",20)
+.attr("width",0).attr("height",8)
 .attr("fill",function(d){
 var score=0;
 var done=0;
@@ -296,10 +187,18 @@ if(o.problem_done)done+=o.problem_done;
 });
 return colorDomain(score/done*100);
 })//vert
-.attr("stroke","#000")
+.attr("stroke",function(d){
+var score=0;
+var done=0;
+$.each(data[d],function(lecture,o){
+if(o.problem_score)score+=o.problem_score;
+if(o.problem_done)done+=o.problem_done;
+});
+return colorDomain(score/done*100);
+})
 .attr("stroke-width","0")
 .on("mouseover",function(d){
-d3.select(this).style('stroke-width', 1);
+d3.select(this).style('stroke-width', 2);
 var htm="<b>"+d +" Problems</b><hr />";
 htm+="<table width=100%>";
 htm+="<thead><th></th>";
@@ -319,8 +218,7 @@ htm+="</table>";
 ttover(htm);
 })
 .on("mousemove",function(){ttmove();})
-.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-;
+.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();});
 pbs.transition().delay(function(d,i){return i*100})
 .attr("width",function(d){
 var problem_done=0;
@@ -333,12 +231,9 @@ var pct=Math.round(problem_done/problem_count*colwidth);
 if(pct)return pct;
 return 0;
 });
-var vids=weeks.append("rect")
-.attr("class","video")
-.attr("x",0)
-.attr("y",30)
-.attr("width",0)
-.attr("height",8)
+var vids=weeks.append("rect").attr("class","video")
+.attr("x",0).attr("y",30)
+.attr("width",0).attr("height",8)
 .attr("fill","#000")
 .attr("stroke","#000")
 .attr("stroke-width","0")
@@ -369,12 +264,10 @@ htm+="</table>";
 ttover(htm);
 })
 .on("mousemove",function(){ttmove();})
-.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();})
-;
+.on("mouseout",function(){d3.select(this).style('stroke-width', 0);ttout();});
 vids.transition().delay(function(d,i){return i*100})
 .attr("width",function(d){
-var duration=0;
-var watched=0;
+var duration=0,watched=0;
 $.each(data[d],function(lecture,o){
 duration+=o.video_duration;
 if(o.watched_seconds)watched +=o.watched_seconds;
@@ -499,11 +392,13 @@ vps.append("text")
 .style("font-size", "10px")
 .style("fill", "#999")
 .text("PROBLEMS");
+vps.append("line").attr("class","axis")
+.attr("x1",20).attr("x2",width).attr("y1",60).attr("y2",60)
+.style('shape-rendering','crispEdges').style("stroke", "#ddd").style("stroke-width", 1);
 var xScale = d3.time.scale().range([20, vpwidth-20]).domain([new Date("2018-09-14"),new Date("2018-12-24")]);
-var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(4).tickFormat(d3.time.format('%b')).tickSize(60).tickPadding(5);
-vps.append('g')
-.attr('class', 'axis')
-.attr('transform', 'translate(0, 60)')
+var xAxis = d3.svg.axis().scale(xScale).orient('bottom').ticks(4).tickFormat(d3.time.format('%b')).tickSize(120).tickPadding(5);
+vps.append('g').attr('class', 'axis')
+.attr('transform', 'translate(0,-1)')
 .style('shape-rendering','crispEdges')
 .call(xAxis)
 .selectAll("text")
@@ -618,15 +513,6 @@ c.exit().remove();
 var width = 340,height = 260;//todo : reduce height
 var cola = d3.select("#colA").append("svg").attr("width", width).attr("height", height);
 var colb = d3.select("#colB").append("svg").attr("width", width).attr("height", height);
-var colors=[];
-colors.push('#FF5F06');//Rouge orange
-colors.push('#F39224');
-colors.push('#EDC82B');
-colors.push('#E5E131');
-colors.push('#B9DB50');
-colors.push('#8DD685');
-colors.push('#30ad77');//Vert correct
-var colorDomain=d3.scale.linear().domain([0,50,60,70,80,90,100]).range(colors);
 function updateClass1(data,criteria,student_id){
 switch(criteria){
 case 'a0':
