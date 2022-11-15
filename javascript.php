@@ -23,9 +23,11 @@ foreach($js as $file){
 	}
 }
 
+/*
 $f=fopen("js/pack.js","w+");
 fwrite($f,implode("\n",$script));
 fclose($f);
+*/
 
 if($DEBUG){
 	foreach($js as $file){
