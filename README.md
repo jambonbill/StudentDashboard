@@ -1,2 +1,4 @@
-# dbstudent
-On se calme
+# Student Dashboard
+
+
+!(Student dashboard preview)[thumbnail.png]
