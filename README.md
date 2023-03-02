@@ -1,4 +1,4 @@
 # Student Dashboard
 
 
-!(Student dashboard preview)[thumbnail.png]
+![Student dashboard preview](thumbnail.png)
