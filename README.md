@@ -1,4 +1,4 @@
-# Student Dashboard
+# OpenEdx Student Dashboard prototype
 
 
-![Student dashboard preview](thumbnail.png)
+![Student dashboard preview](img/thumbnail.png)
